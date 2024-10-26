@@ -36,7 +36,7 @@ The IDP follows a microservices architecture with the following primary componen
 
 To maintain a clean and modular project, here’s a recommended folder structure:
 
-\`\`\`plaintext
+```
 IDP-Integrated-Developer-Platform/
 ├── backend/                     # Backend services and microservices in Go
 │   ├── api/                     # API endpoints and handlers
@@ -74,7 +74,7 @@ IDP-Integrated-Developer-Platform/
 ├── README.md                    # Project overview and setup guide
 ├── LICENSE                      # License for the project
 └── .gitignore                   # Git ignore file
-\`\`\`
+```
 
 ### Folder Descriptions
 
@@ -113,57 +113,57 @@ To set up and run the IDP locally or in a development environment, you’ll need
 ### Installation
 
 1. **Clone the Repository**:
-   \`\`\`bash
+   ```bash
    git clone https://github.com/Sam123ben/IDP-Integrated-Developer-Platform.git
    cd IDP-Integrated-Developer-Platform
-   \`\`\`
+   ```
 
 2. **Setup Kubernetes and Crossplane**:
    - Ensure your Kubernetes cluster is running.
    - Install Crossplane in your Kubernetes cluster:
-     \`\`\`bash
+     ```bash
      kubectl apply -f https://raw.githubusercontent.com/crossplane/crossplane/release-1.0/install.yaml
-     \`\`\`
+     ```
    - Configure Crossplane with the necessary provider (e.g., AWS, GCP, Azure).
 
 3. **Database Setup (PostgreSQL)**:
    - Install and start PostgreSQL, or use a managed instance.
    - Create a database for the IDP:
-     \`\`\`sql
+     ```sql
      CREATE DATABASE idp_db;
-     \`\`\`
+     ```
    - Add a user with access to this database and update the backend configuration with the database credentials.
 
 4. **Frontend Setup**:
    - Navigate to the frontend directory:
-     \`\`\`bash
+     ```bash
      cd frontend
      npm install
      npm start
-     \`\`\`
+     ```
    - This will start the React application on \`http://localhost:3000\`.
 
 5. **Backend Setup**:
    - Navigate to the backend directory:
-     \`\`\`bash
+     ```bash
      cd ../backend
      go mod download
-     \`\`\`
+     ```
    - Configure the backend with the PostgreSQL connection string:
-     \`\`\`bash
+     ```bash
      export DATABASE_URL="postgres://username:password@localhost:5432/idp_db"
-     \`\`\`
+     ```
    - Run the backend:
-     \`\`\`bash
+     ```bash
      go run main.go
-     \`\`\`
+     ```
 
 6. **Deploy to Kubernetes**:
    - Once both services are ready, deploy them to Kubernetes using the manifests provided in the \`/infra/kubernetes\` directory.
    - Apply the configuration:
-     \`\`\`bash
+     ```bash
      kubectl apply -f infra/kubernetes/
-     \`\`\`
+     ```
 
 ## Usage
 
