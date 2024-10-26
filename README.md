@@ -2,8 +2,6 @@
 
 ## Unified Developer Hub
 
-This repo will hold the pod I will do in regards to test Crossplane and IDP
-
 ## Overview
 
 Welcome to the **IDP - Integrated Developer Platform** project! This project is a microservice-based application with **React** as the frontend, **Go** for backend microservices, **Kubernetes** as the orchestrator, and **PostgreSQL** as the primary database. The IDP platform acts as a unified layer on top of cloud providers, enabling development teams to deploy and manage multiple environments effortlessly. With **Crossplane** for infrastructure-as-code (IaC) automation, this platform allows for both **persistent** and **ephemeral** feature environments.
@@ -38,7 +36,7 @@ The IDP follows a microservices architecture with the following primary componen
 
 To maintain a clean and modular project, here’s a recommended folder structure:
 
-```plaintext
+\`\`\`plaintext
 IDP-Integrated-Developer-Platform/
 ├── backend/                     # Backend services and microservices in Go
 │   ├── api/                     # API endpoints and handlers
@@ -76,31 +74,31 @@ IDP-Integrated-Developer-Platform/
 ├── README.md                    # Project overview and setup guide
 ├── LICENSE                      # License for the project
 └── .gitignore                   # Git ignore file
-```
+\`\`\`
 
-# IDP - Integrated Developer Platform
+### Folder Descriptions
 
-## Folder Descriptions
-- **`backend/`**: Contains Go microservices, API endpoints, and RBAC implementation.
-- **`frontend/`**: Holds the React application with UI components, pages, and services.
-- **`infra/`**: Infrastructure code, split into Kubernetes manifests, Crossplane configurations, and Terraform modules.
-- **`workflows/`**: CI/CD workflows, including files for testing, building, and deploying the project.
-- **`docs/`**: Project documentation, architecture notes, API references, and contribution guidelines.
+- **\`backend/\`**: Contains Go microservices, API endpoints, and RBAC implementation.
+- **\`frontend/\`**: Holds the React application with UI components, pages, and services.
+- **\`infra/\`**: Infrastructure code, split into Kubernetes manifests, Crossplane configurations, and Terraform modules.
+- **\`workflows/\`**: CI/CD workflows, including files for testing, building, and deploying the project.
+- **\`docs/\`**: Project documentation, architecture notes, API references, and contribution guidelines.
 
 ## Technology Stack
 
-| Component            | Technology     |
-|----------------------|----------------|
-| Frontend             | React          |
-| Backend              | Go (Golang)    |
-| Database             | PostgreSQL     |
-| Orchestrator         | Kubernetes     |
-| IaC Automation       | Crossplane     |
-| Containerization     | Docker         |
+| Component        | Technology    |
+|------------------|---------------|
+| Frontend         | React         |
+| Backend          | Go (Golang)   |
+| Database         | PostgreSQL    |
+| Orchestrator     | Kubernetes    |
+| IaC Automation   | Crossplane    |
+| Containerization | Docker        |
 
 ## Getting Started
 
 ### Prerequisites
+
 To set up and run the IDP locally or in a development environment, you’ll need the following:
 
 - **Docker**: For containerization
@@ -115,9 +113,87 @@ To set up and run the IDP locally or in a development environment, you’ll need
 ### Installation
 
 1. **Clone the Repository**:
-   ```bash
+   \`\`\`bash
    git clone https://github.com/Sam123ben/IDP-Integrated-Developer-Platform.git
    cd IDP-Integrated-Developer-Platform
-```
+   \`\`\`
 
+2. **Setup Kubernetes and Crossplane**:
+   - Ensure your Kubernetes cluster is running.
+   - Install Crossplane in your Kubernetes cluster:
+     \`\`\`bash
+     kubectl apply -f https://raw.githubusercontent.com/crossplane/crossplane/release-1.0/install.yaml
+     \`\`\`
+   - Configure Crossplane with the necessary provider (e.g., AWS, GCP, Azure).
 
+3. **Database Setup (PostgreSQL)**:
+   - Install and start PostgreSQL, or use a managed instance.
+   - Create a database for the IDP:
+     \`\`\`sql
+     CREATE DATABASE idp_db;
+     \`\`\`
+   - Add a user with access to this database and update the backend configuration with the database credentials.
+
+4. **Frontend Setup**:
+   - Navigate to the frontend directory:
+     \`\`\`bash
+     cd frontend
+     npm install
+     npm start
+     \`\`\`
+   - This will start the React application on \`http://localhost:3000\`.
+
+5. **Backend Setup**:
+   - Navigate to the backend directory:
+     \`\`\`bash
+     cd ../backend
+     go mod download
+     \`\`\`
+   - Configure the backend with the PostgreSQL connection string:
+     \`\`\`bash
+     export DATABASE_URL="postgres://username:password@localhost:5432/idp_db"
+     \`\`\`
+   - Run the backend:
+     \`\`\`bash
+     go run main.go
+     \`\`\`
+
+6. **Deploy to Kubernetes**:
+   - Once both services are ready, deploy them to Kubernetes using the manifests provided in the \`/infra/kubernetes\` directory.
+   - Apply the configuration:
+     \`\`\`bash
+     kubectl apply -f infra/kubernetes/
+     \`\`\`
+
+## Usage
+
+- **True Environments**: Developers can create persistent environments via the IDP, intended for long-term or production-like deployments.
+- **Ephemeral Feature Environments**: Triggered for each feature branch, allowing developers to test features in isolated, short-lived environments.
+- **Infrastructure as Code**: Through Crossplane, manage infrastructure resources across cloud providers, facilitating a consistent multi-cloud environment.
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a feature branch (\`git checkout -b feature-name\`).
+3. Commit your changes (\`git commit -m 'Add feature'\`).
+4. Push to the branch (\`git push origin feature-name\`).
+5. Open a pull request.
+
+Please refer to our [CONTRIBUTING.md](CONTRIBUTING.md) file for more details.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+---
+
+## Contact
+
+For any questions, please feel free to reach out to the project maintainer:
+
+- **Email**: [your-email@example.com](mailto:your-email@example.com)
+- **Slack**: IDP Development Channel (link to Slack workspace if applicable)
+
+---
