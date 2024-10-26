@@ -86,14 +86,14 @@ IDP-Integrated-Developer-Platform/
 
 ## Technology Stack
 
-| Component        | Technology    |
-|------------------|---------------|
-| Frontend         | React         |
-| Backend          | Go (Golang)   |
-| Database         | PostgreSQL    |
-| Orchestrator     | Kubernetes    |
-| IaC Automation   | Crossplane    |
-| Containerization | Docker        |
+| Component                | Technology    |
+|--------------------------|---------------|
+| Frontend                 | React         |
+| Backend                  | Go (Golang)   |
+| Database                 | PostgreSQL    |
+| Orchestrator             | Kubernetes    |
+| IaC Automation           | Crossplane, Terraform |
+| Containerization         | Docker        |
 
 ## Getting Started
 
