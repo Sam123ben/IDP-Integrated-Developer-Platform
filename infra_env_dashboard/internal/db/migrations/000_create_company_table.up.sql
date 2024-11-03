@@ -1,3 +1,6 @@
+-- Purpose: Create the company table and insert a new record.
+-- 000_create_company_table.up.sql
+
 -- Create the company table if it does not exist
 CREATE TABLE IF NOT EXISTS company (
     id SERIAL PRIMARY KEY,
