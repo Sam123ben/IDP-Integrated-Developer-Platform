@@ -1,0 +1,41 @@
+name: CI Docker Build and Push
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Log in to Docker Hub using the Access Token
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PAT_TOKEN }}
+
+      # Step 3: Build and Push Docker Image
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./infra_env_dashboard # Updated to the correct context for Dockerfile location
+          push: true
+          tags: sam123ben/infra-dashboard:latest
+
+      # Optional Step: Verify Docker Image
+      - name: Verify Docker Image
+        run: docker images sam123ben/infra-dashboard:latest
