@@ -38,7 +38,7 @@ The dashboard content is entirely driven by the **database**. The structure and 
 
 Before running the application, ensure the following prerequisites are met:
 
-- [Golang (v1.23 or later)](https://golang.org/doc/install)
+- [Golang (v1.21 or later)](https://golang.org/doc/install)
 - [Docker](https://docs.docker.com/get-docker/)
 - [PostgreSQL](https://www.postgresql.org/download/) (Local or remote instance)
 - A modern web browser (Chrome, Firefox, Safari)
@@ -161,7 +161,11 @@ infra_env_dashboard/
 │   └── dashboard.html             # Dashboard HTML template
 ├── test/
 │   ├── environments_test.go       # Unit tests for environment features
-│   └── integration_test.go        # Integration tests for full system testing
+│   ├── integration_test.go        # Integration tests for full system testing
+│   ├── db_test.go                 # Unit tests for PostgreSQL database connection and functions
+│   ├── handler_test.go            # Unit tests for HTTP handlers
+│   ├── service_test.go            # Unit tests for business logic in services
+│   └── utils_test.go              # Unit tests for common utility functions
 ├── go.mod                         # Go module file
 └── go.sum                         # Go dependencies
 ```
