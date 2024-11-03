@@ -73,10 +73,21 @@ document.addEventListener("DOMContentLoaded", function() {
         data.forEach(env => {
             const envItem = document.createElement("li");
             envItem.classList.add("env-item");
-            envItem.innerHTML = `<strong>${env.Name}</strong>: ${env.Description}`;
+            envItem.innerHTML = `
+                <strong>${env.environment_name}</strong> - ${env.description}
+                <p>Type: ${env.environment_type}</p>
+                <p>Group: ${env.group_name}</p>
+                <p>Customer: ${env.customer_name}</p>
+                <p>URL: <a href="${env.url}" target="_blank">${env.url}</a></p>
+                <p>Status: ${env.status}</p>
+                <p>Contact: ${env.contact}</p>
+                <p>App Version: ${env.app_version}</p>
+                <p>DB Version: ${env.db_version}</p>
+                <p>Comments: ${env.comments}</p>
+            `;
             envList.appendChild(envItem);
         });
-    }
+    }    
 
     // Debounced function to set auto-refresh interval
     function setAutoRefresh(interval) {

@@ -2,36 +2,36 @@ package environments
 
 import (
     "database/sql"
+    "infra_env_dashboard/internal/models"
     "log"
-    "time"
 )
 
-type Environment struct {
-    ID          int
-    Name        string
-    Description string
-    UpdatedAt   time.Time
-}
-
-// GetLatestData fetches the latest environment data, ordered by `updated_at`
-func GetLatestData(db *sql.DB) ([]Environment, error) {
-    query := "SELECT id, name, description, updated_at FROM environments ORDER BY updated_at DESC LIMIT 10"
+// GetLatestData fetches the latest environment data with the new columns
+func GetLatestData(db *sql.DB) ([]models.Environment, error) {
+    query := `
+    SELECT id, environment_name, description, created_at, updated_at, environment_type,
+           group_name, customer_name, url, status, contact, app_version, db_version, comments
+    FROM environments
+    ORDER BY updated_at DESC LIMIT 10`
+    
     rows, err := db.Query(query)
     if err != nil {
         return nil, err
     }
     defer rows.Close()
 
-    var data []Environment
+    var data []models.Environment
     for rows.Next() {
-        var env Environment
-        if err := rows.Scan(&env.ID, &env.Name, &env.Description, &env.UpdatedAt); err != nil {
+        var env models.Environment
+        if err := rows.Scan(&env.ID, &env.EnvironmentName, &env.Description, &env.CreatedAt,
+                            &env.UpdatedAt, &env.EnvironmentType, &env.GroupName,
+                            &env.CustomerName, &env.URL, &env.Status, &env.Contact,
+                            &env.AppVersion, &env.DBVersion, &env.Comments); err != nil {
             return nil, err
         }
         data = append(data, env)
     }
 
-    // Check for errors during row iteration
     if err = rows.Err(); err != nil {
         return nil, err
     }
