@@ -1,0 +1,51 @@
+.
+├── LICENSE
+├── README.md
+├── infra_env_dashboard
+│   ├── Dockerfile
+│   ├── cmd
+│   │   └── server
+│   │       └── main.go
+│   ├── configs
+│   │   ├── config.go
+│   │   └── config.yaml
+│   ├── go.mod
+│   ├── go.sum
+│   ├── internal
+│   │   ├── common
+│   │   │   ├── responses.go
+│   │   │   └── utils.go
+│   │   ├── db
+│   │   │   ├── migrations
+│   │   │   │   ├── 001_create_environments_table.down.sql
+│   │   │   │   ├── 001_create_environments_table.up.sql
+│   │   │   │   ├── 002_create_company_table.down.sql
+│   │   │   │   └── 002_create_company_table.up.sql
+│   │   │   └── postgres.go
+│   │   ├── environments
+│   │   │   ├── handler.go
+│   │   │   ├── repository.go
+│   │   │   └── service.go
+│   │   ├── middlewares
+│   │   │   └── auth.go
+│   │   └── models
+│   │       └── environment.go
+│   ├── pkg
+│   │   ├── database
+│   │   │   └── db.go
+│   │   └── logger
+│   │       └── logger.go
+│   ├── static
+│   │   ├── css
+│   │   │   └── style.css
+│   │   └── js
+│   │       └── script.js
+│   ├── templates
+│   │   ├── dashboard.html
+│   │   └── layout.html
+│   └── test
+│       ├── environments_test.go
+│       └── integration_test.go
+└── test.txt
+
+20 directories, 29 files

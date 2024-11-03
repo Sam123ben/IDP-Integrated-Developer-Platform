@@ -12,14 +12,22 @@
         <div class="company-banner">
             <h1>{{.CompanyName}}</h1>
             <p class="tagline">Monitor, Manage, and Optimize Your Infrastructure from a Single View</p>
-            <div id="settings" class="settings">
-                <div id="settings-icon" class="settings-icon"><i class="fas fa-cog"></i></div> <!-- Gear Icon -->
-                <div id="settings-dropdown" class="settings-dropdown hidden">
-                    <div class="theme-option" id="light-theme-option">
-                        <i class="fas fa-sun"></i> Light Theme
-                    </div>
-                    <div class="theme-option" id="dark-theme-option">
-                        <i class="fas fa-moon"></i> Dark Theme
+            <div class="icons-container">
+                <!-- Refresh Icon with standalone styling -->
+                <div id="refresh-container" class="refresh-container" title="Refresh">
+                    <i class="fas fa-sync-alt refresh-icon"></i>
+                </div>
+
+                <!-- Settings Icon with dropdown functionality and standalone styling -->
+                <div id="settings-container" class="settings-container">
+                    <i class="fas fa-cog settings-icon" title="Settings"></i>
+                    <div id="settings-dropdown" class="settings-dropdown hidden">
+                        <div class="theme-option" id="light-theme-option">
+                            <i class="fas fa-sun"></i> Light Theme
+                        </div>
+                        <div class="theme-option" id="dark-theme-option">
+                            <i class="fas fa-moon"></i> Dark Theme
+                        </div>
                     </div>
                 </div>
             </div>

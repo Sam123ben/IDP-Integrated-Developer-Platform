@@ -36,29 +36,51 @@ header {
     margin-top: 10px;
 }
 
-.settings {
+.icons-container {
     position: absolute;
     top: 20px;
     right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Separate spacing between icons */
+}
+
+/* Refresh Icon Styling */
+.refresh-container {
+    cursor: pointer;
+}
+
+.refresh-icon {
+    font-size: 24px;
+    color: black;
+    transition: transform 0.5s ease-in-out; /* Rotate animation */
+}
+
+.refresh-icon:hover {
+    transform: rotate(180deg); /* Rotate icon by 180 degrees on hover */
+}
+
+/* Settings Icon Styling */
+.settings-container {
+    position: relative;
     cursor: pointer;
 }
 
 .settings-icon {
     font-size: 24px;
     color: black;
-    transition: color 0.3s, transform 0.5s ease-in-out; /* Smooth transition for color and rotation */
+    transition: transform 0.5s ease-in-out; /* Rotate animation */
 }
 
-/* Animate settings icon on hover */
 .settings-icon:hover {
-    transform: rotate(90deg); /* Rotate icon by 90 degrees */
+    transform: rotate(90deg); /* Rotate icon by 90 degrees on hover */
 }
 
-/* Dropdown visibility and hover effect */
+/* Dropdown visibility and absolute positioning for settings only */
 .settings-dropdown {
     display: none; /* Hidden by default */
     position: absolute;
-    top: 40px;
+    top: 35px; /* Position below the settings icon */
     right: 0;
     background: white;
     border: 1px solid #ddd;
@@ -66,18 +88,12 @@ header {
     width: 150px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 10;
-    transition: opacity 0.3s ease-in-out; /* Smooth fade in/out */
     opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease-in-out; /* Smooth fade in/out */
 }
 
+/* Show dropdown on hover or focus on settings container */
 .settings-dropdown.show {
-    display: block; /* Show dropdown when triggered */
-    opacity: 1; /* Fully visible */
-}
-
-/* Keep dropdown open when hovering */
-.settings:hover .settings-dropdown,
-.settings-dropdown:hover {
     display: block;
     opacity: 1;
 }
@@ -101,31 +117,6 @@ header {
 
 .theme-option:hover {
     background-color: #e0e0e0; /* Light gray for better hover visibility */
-}
-
-.main-content {
-    padding: 0 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.environment-overview {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
-    text-align: center;
-}
-
-.environment-overview h2 {
-    font-size: 2em;
-    margin-bottom: 10px;
-    color: black; /* Always keep the Environment Overview heading in black */
-}
-
-.environment-overview p {
-    font-size: 1.1em;
-    color: black; /* Always keep the text in the Environment Overview section black */
 }
 
 /* Dark Theme Styles */
@@ -159,18 +150,4 @@ header.dark-theme {
 
 .theme-option.dark-theme:hover {
     background-color: #666; /* Darker hover effect for dark theme */
-}
-
-.environment-overview.dark-theme {
-    background: #444;
-    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1);
-}
-
-/* Ensure Environment Overview always remains black */
-.environment-overview.dark-theme h2 {
-    color: black; /* Override default dark theme color to ensure heading stays black */
-}
-
-.environment-overview.dark-theme p {
-    color: black; /* Override default dark theme color to ensure text stays black */
 }
