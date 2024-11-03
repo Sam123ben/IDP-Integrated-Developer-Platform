@@ -58,6 +58,19 @@ docker run --name my_postgres \
 
 Ensure that the `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB` are properly updated in the application code to match these values.
 
+If an external team is using their own PostgreSQL database, they can update the database configurations in the `configs/config.yaml` file. This file contains details such as the database host, port, user, and password. Make sure to update the following fields accordingly:
+
+```yaml
+database:
+  host: "<new_postgres_host>"
+  port: <new_postgres_port>
+  user: "<new_postgres_user>"
+  password: "<new_postgres_password>"
+  dbname: "<new_postgres_dbname>"
+```
+
+Additionally, ensure that the `internal/db/postgres.go` file correctly reads these configurations to establish a connection to the new PostgreSQL server.
+
 ## Running the Application
 
 You can run the application locally in two ways: **directly using Go** or **using Docker**.
