@@ -5,52 +5,22 @@ document.addEventListener("DOMContentLoaded", function() {
     const refreshDropdown = document.getElementById("refresh-dropdown");
     const body = document.body;
     let autoRefreshInterval = null;
-    let settingsHideTimeout, refreshHideTimeout;
 
-    // Function to show dropdown
-    function showDropdown(dropdown) {
-        dropdown.classList.add("show");
-    }
-
-    // Function to hide dropdown with delay
-    function hideDropdownWithDelay(dropdown, hideTimeoutVar) {
-        clearTimeout(hideTimeoutVar);
-        return setTimeout(() => {
-            dropdown.classList.remove("show");
-        }, 1000); // Delay of 1000ms to give user ample time
-    }
-
-    // Unified dropdown handling for both settings and refresh dropdowns
+    // Dropdown handling with touch support
     function setupDropdownLogic(container, dropdown) {
-        let hideTimeout;
-
-        container.addEventListener("mouseenter", () => {
-            clearTimeout(hideTimeout);
-            showDropdown(dropdown);
+        container.addEventListener("click", (event) => {
+            dropdown.classList.toggle("show");
+            event.stopPropagation();
         });
 
-        dropdown.addEventListener("mouseenter", () => {
-            clearTimeout(hideTimeout);
-            showDropdown(dropdown);
-        });
-
-        container.addEventListener("mouseleave", () => {
-            hideTimeout = hideDropdownWithDelay(dropdown, hideTimeout);
-        });
-
-        dropdown.addEventListener("mouseleave", () => {
-            hideTimeout = hideDropdownWithDelay(dropdown, hideTimeout);
-        });
-
-        // Close dropdown if clicking outside both container and dropdown
-        document.addEventListener("click", function(event) {
-            if (!container.contains(event.target) && !dropdown.contains(event.target)) {
+        document.addEventListener("click", (event) => {
+            if (!container.contains(event.target)) {
                 dropdown.classList.remove("show");
             }
         });
     }
 
-    // Apply unified dropdown logic to both settings and refresh containers
+    // Apply dropdown logic
     setupDropdownLogic(settingsContainer, settingsDropdown);
     setupDropdownLogic(refreshContainer, refreshDropdown);
 
@@ -58,80 +28,64 @@ document.addEventListener("DOMContentLoaded", function() {
     const lightThemeOption = document.getElementById("light-theme-option");
     const darkThemeOption = document.getElementById("dark-theme-option");
 
-    function setTheme(theme) {
-        if (theme === "dark") {
-            body.classList.add("dark-theme");
-            setCookie("theme", "dark", 7);
-        } else {
-            body.classList.remove("dark-theme");
-            setCookie("theme", "light", 7);
-        }
+    function applyTheme(theme) {
+        body.classList.toggle("dark-theme", theme === "dark");
+        localStorage.setItem("theme", theme);
     }
 
-    lightThemeOption.addEventListener("click", function() {
-        setTheme("light");
-        settingsDropdown.classList.remove("show");
-    });
-
-    darkThemeOption.addEventListener("click", function() {
-        setTheme("dark");
-        settingsDropdown.classList.remove("show");
-    });
-
-    // Cookie management functions
-    function setCookie(name, value, days) {
-        const date = new Date();
-        date.setTime(date.getTime() + days * 86400000); // 86400000 ms in a day
-        document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
-    }
-
-    function getCookie(name) {
-        const nameEQ = name + "=";
-        const ca = document.cookie.split(';');
-        for (let c of ca) {
-            c = c.trim();
-            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length);
-        }
-        return null;
-    }
+    lightThemeOption.addEventListener("click", () => applyTheme("light"));
+    darkThemeOption.addEventListener("click", () => applyTheme("dark"));
 
     // Apply stored theme on page load
-    const storedTheme = getCookie("theme");
-    if (storedTheme === "dark") {
-        body.classList.add("dark-theme");
-    } else {
-        body.classList.remove("dark-theme");
-    }
+    const storedTheme = localStorage.getItem("theme") || "light";
+    applyTheme(storedTheme);
 
-    // Refresh functionality
+    // Refresh functionality with loading indication
     async function fetchLatestData() {
+        const dashboardElement = document.getElementById("env-data");
+        const loadingMessage = document.getElementById("loading-message");
+        const errorMessage = document.getElementById("error-message");
+    
+        // Show loading message and hide error
+        loadingMessage.style.display = "block";
+        errorMessage.style.display = "none";
+        
         try {
             const response = await fetch('/api/latest-data');
+            if (!response.ok) throw new Error("Network response was not ok");
+            
             const data = await response.json();
             updateDashboard(data);
         } catch (error) {
             console.error("Failed to fetch latest data:", error);
+            errorMessage.style.display = "block"; // Show error message
+            dashboardElement.innerHTML = ""; // Clear the existing data display
+        } finally {
+            loadingMessage.style.display = "none"; // Hide loading message
         }
     }
-
+    
     function updateDashboard(data) {
         const dashboardElement = document.getElementById("env-data");
-        dashboardElement.innerHTML = "";
+        dashboardElement.innerHTML = "<ul class='env-list'></ul>";
+        
+        const envList = dashboardElement.querySelector(".env-list");
         data.forEach(env => {
             const envItem = document.createElement("li");
+            envItem.classList.add("env-item");
             envItem.innerHTML = `<strong>${env.Name}</strong>: ${env.Description}`;
-            dashboardElement.appendChild(envItem);
+            envList.appendChild(envItem);
         });
     }
 
-    // Set auto-refresh interval and store it in a cookie
+    // Debounced function to set auto-refresh interval
     function setAutoRefresh(interval) {
         if (autoRefreshInterval) clearInterval(autoRefreshInterval);
         if (interval) {
             autoRefreshInterval = setInterval(fetchLatestData, interval);
-            setCookie("autoRefreshInterval", interval, 7); // Store interval in cookie
+            localStorage.setItem("autoRefreshInterval", interval);
         } else {
-            setCookie("autoRefreshInterval", "", -1); // Delete the cookie if interval is null
+            localStorage.removeItem("autoRefreshInterval");
         }
     }
 
@@ -139,31 +93,15 @@ document.addEventListener("DOMContentLoaded", function() {
     refreshContainer.addEventListener("click", fetchLatestData);
 
     // Auto-refresh dropdown options
-    document.getElementById("auto-refresh-10sec").addEventListener("click", () => {
-        setAutoRefresh(10000);
-        refreshDropdown.classList.remove("show");
-    });
-    document.getElementById("auto-refresh-1min").addEventListener("click", () => {
-        setAutoRefresh(60000);
-        refreshDropdown.classList.remove("show");
-    });
-    document.getElementById("auto-refresh-5min").addEventListener("click", () => {
-        setAutoRefresh(300000);
-        refreshDropdown.classList.remove("show");
-    });
-    document.getElementById("auto-refresh-off").addEventListener("click", () => {
-        setAutoRefresh(null);
-        refreshDropdown.classList.remove("show");
-    });
+    document.getElementById("auto-refresh-10sec").addEventListener("click", () => setAutoRefresh(10000));
+    document.getElementById("auto-refresh-1min").addEventListener("click", () => setAutoRefresh(60000));
+    document.getElementById("auto-refresh-5min").addEventListener("click", () => setAutoRefresh(300000));
+    document.getElementById("auto-refresh-off").addEventListener("click", () => setAutoRefresh(null));
 
     // Apply stored auto-refresh interval on page load
-    const storedAutoRefresh = getCookie("autoRefreshInterval");
-    if (storedAutoRefresh) {
-        setAutoRefresh(parseInt(storedAutoRefresh));
-    } else {
-        // Set default auto-refresh interval to 5 minutes if no preference is stored
-        setAutoRefresh(300000); // 5 minutes in milliseconds
-    }
+    const storedAutoRefresh = parseInt(localStorage.getItem("autoRefreshInterval"));
+    if (storedAutoRefresh) setAutoRefresh(storedAutoRefresh);
+    else setAutoRefresh(300000); // Default to 5 minutes
 
     // Navigation handling
     const navLinks = document.querySelectorAll(".nav-menu ul li a");
@@ -173,11 +111,11 @@ document.addEventListener("DOMContentLoaded", function() {
         link.addEventListener("click", function(event) {
             event.preventDefault();
 
-            // Remove active class from all sections and nav links
+            // Toggle active classes
             navLinks.forEach(nav => nav.classList.remove("active"));
             contentSections.forEach(section => section.classList.remove("active"));
 
-            // Add active class to clicked link and corresponding section
+            // Activate clicked link and corresponding section
             link.classList.add("active");
             const sectionId = link.getAttribute("data-section");
             document.getElementById(sectionId).classList.add("active");

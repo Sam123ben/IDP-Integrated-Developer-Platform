@@ -4,7 +4,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f4f4f9;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 header {
@@ -27,6 +27,14 @@ header {
     align-items: center;
 }
 
+/* Responsive Styling for Banner */
+@media (max-width: 768px) {
+    .company-banner {
+        padding: 20px 15px;
+        font-size: 1.2em;
+    }
+}
+
 .company-banner h1 {
     margin: 0;
     font-size: 2.8em;
@@ -39,15 +47,6 @@ header {
     margin-top: 10px;
 }
 
-.icons-container {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
 /* Navigation Menu within Company Banner */
 .nav-menu {
     display: flex;
@@ -55,7 +54,6 @@ header {
     justify-content: center;
     padding: 5px 0;
     margin-top: 8px;
-    margin-bottom: 8px;
     border-top: 1px solid #e0f7fa;
     width: 100%;
     text-align: center;
@@ -70,32 +68,28 @@ header {
     gap: 20px;
 }
 
-.nav-menu ul li {
-    display: inline;
-}
-
 .nav-menu ul li a {
     text-decoration: none;
     color: white;
     font-weight: bold;
     padding: 6px 12px;
-    transition: background-color 0.2s ease-in-out;
-    line-height: 1.4;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .nav-menu ul li a:hover,
-.nav-menu ul li a.active {
+.nav-menu ul li a:focus {
     background-color: #0097a7;
     color: white;
     border-radius: 5px;
+    transform: scale(1.05);
 }
 
 /* Content Sections */
 .content-section {
-    display: none; /* Hidden by default */
+    display: none;
     padding: 20px;
     background-color: #fff;
-    color: black; /* Ensure text is black */
+    color: black;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
     margin-top: 20px;
@@ -104,77 +98,17 @@ header {
 }
 
 .content-section.active {
-    display: block; /* Show only the active section */
+    display: block;
 }
 
 /* Refresh Icon Styling */
-.refresh-container {
-    position: relative;
-    cursor: pointer;
-}
-
-.refresh-icon {
-    font-size: 24px;
-    color: black;
-    transition: transform 0.5s ease-in-out;
-}
-
-.refresh-icon:hover {
-    transform: rotate(180deg);
-}
-
-/* Dropdown styling for the refresh icon */
-.refresh-dropdown {
-    display: none;
-    position: absolute;
-    top: 35px;
-    right: 0;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    width: 80px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-
-.refresh-container:hover .refresh-dropdown,
-.refresh-dropdown.show {
-    display: block;
-    opacity: 1;
-}
-
-.refresh-dropdown div {
-    padding: 8px 12px;
-    cursor: pointer;
-    color: #333;
-    font-weight: bold;
-    text-align: center;
-    transition: background-color 0.2s ease-in-out;
-}
-
-.refresh-dropdown div:hover {
-    background-color: #e0e0e0;
-}
-
-/* Settings Icon Styling */
-.settings-container {
-    position: relative;
-    cursor: pointer;
-}
-
-.settings-icon {
-    font-size: 24px;
-    color: black;
-    transition: transform 0.5s ease-in-out;
-}
-
+.refresh-icon:hover,
 .settings-icon:hover {
     transform: rotate(90deg);
 }
 
-/* Dropdown styling for the settings icon */
+/* Dropdown styling for the refresh icon */
+.refresh-dropdown,
 .settings-dropdown {
     display: none;
     position: absolute;
@@ -187,65 +121,44 @@ header {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 10;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease;
 }
 
-/* Show dropdown on hover or focus on settings container */
 .settings-container:hover .settings-dropdown,
-.settings-dropdown.show {
+.settings-dropdown.show,
+.refresh-container:hover .refresh-dropdown,
+.refresh-dropdown.show {
     display: block;
     opacity: 1;
 }
 
-.theme-option {
-    padding: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    color: #333;
-    font-weight: bold;
-    background-color: white;
-    transition: background-color 0.2s ease-in-out;
-}
-
-.theme-option i {
-    margin-right: 8px;
-    color: #666;
-}
-
-.theme-option:hover {
-    background-color: #e0e0e0;
-}
-
-/* Dark Theme Styles */
+/* Dark Theme Styles - Centralized */
 body.dark-theme {
     background-color: #333;
     color: #f4f4f9;
 }
 
-header.dark-theme {
-    background-color: #444;
-}
-
-.company-banner.dark-theme {
+body.dark-theme header,
+body.dark-theme .company-banner {
     background-color: #555;
     color: #f4f4f9;
 }
 
-.tagline.dark-theme {
+body.dark-theme .tagline {
     color: #ccc;
 }
 
-.settings-dropdown.dark-theme {
+body.dark-theme .settings-dropdown,
+body.dark-theme .refresh-dropdown {
     background: #555;
     color: #f4f4f9;
     border: 1px solid #444;
 }
 
-.theme-option.dark-theme {
+body.dark-theme .theme-option {
     color: #f4f4f9;
 }
 
-.theme-option.dark-theme:hover {
+body.dark-theme .theme-option:hover {
     background-color: #666;
 }

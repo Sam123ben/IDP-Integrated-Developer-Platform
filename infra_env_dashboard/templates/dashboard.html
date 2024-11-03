@@ -2,14 +2,19 @@
 <div class="dashboard">
     <h2>Environment Overview</h2>
     <div id="env-data">
+        <!-- Loading and Error Indicators -->
+        <p id="loading-message" style="display: none;">Loading data...</p>
+        <p id="error-message" style="display: none; color: red;">An error occurred while loading data. Please try again later.</p>
+        
+        <!-- Environment List -->
         {{ if .Environments }}
-            <ul>
+            <ul class="env-list">
                 {{ range .Environments }}
-                    <li><strong>{{ .Name }}</strong>: {{ .Description }}</li>
+                    <li class="env-item"><strong>{{ .Name }}</strong>: {{ .Description }}</li>
                 {{ end }}
             </ul>
         {{ else }}
-            <p>No environments found in the database. Please add environments to see detailed metrics.</p>
+            <p class="no-data-message">No environments found in the database. Please add environments to see detailed metrics.</p>
         {{ end }}
     </div>
 </div>

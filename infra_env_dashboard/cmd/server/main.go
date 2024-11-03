@@ -3,84 +3,105 @@ package main
 import (
     "database/sql"
     "fmt"
-    "infra_env_dashboard/configs" // Importing the configs package correctly
+    "infra_env_dashboard/configs"
     "infra_env_dashboard/pkg/database"
     "log"
     "net/http"
     "html/template"
     "encoding/json"
-    _ "github.com/lib/pq" // PostgreSQL driver
+    _ "github.com/lib/pq"
 )
 
 var templates *template.Template
 
 func main() {
-    // Load configuration from configs/config.yaml
+    if err := initializeServer(); err != nil {
+        log.Fatalf("Server initialization failed: %s", err)
+    }
+}
+
+// initializeServer initializes configurations, database, templates, and starts the server
+func initializeServer() error {
+    // Load configuration
     cfg, err := configs.LoadConfig("./configs")
     if err != nil {
-        log.Fatalf("Failed to load configuration: %s", err)
+        return fmt.Errorf("failed to load configuration: %w", err)
     }
 
-    // Connect to PostgreSQL using config values
-    dbInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-        cfg.Database.Host, cfg.Database.Port, cfg.Database.User, cfg.Database.Password, cfg.Database.DBName)
-
-    database.DB, err = sql.Open("postgres", dbInfo)
-    if err != nil {
-        log.Fatalf("Failed to connect to the database: %s", err)
+    // Set up database
+    if err := setupDatabase(cfg); err != nil {
+        return fmt.Errorf("database setup failed: %w", err)
     }
-
-    // Verify the database connection
-    if err = database.DB.Ping(); err != nil {
-        log.Fatalf("Failed to ping the database: %s", err)
-    }
-
-    log.Println("Connected to the database successfully")
+    log.Println("Database connected successfully")
 
     // Load templates
-    templates = template.Must(template.ParseFiles(
-        "templates/layout.html",
-        "templates/dashboard.html",
-    ))
+    if err := loadTemplates(); err != nil {
+        return fmt.Errorf("failed to load templates: %w", err)
+    }
 
-    // Run database migrations
+    // Run migrations
     migrationsPath := "internal/db/migrations"
-    database.RunMigrations(migrationsPath)
+    if err := database.RunMigrations(migrationsPath); err != nil {
+        return fmt.Errorf("migration failed: %w", err)
+    }
 
-    // Static file server for CSS, JS
+    // Set up routes
+    setupRoutes()
+
+    // Start server
+    log.Println("Starting server on :8080...")
+    if err := http.ListenAndServe(":8080", nil); err != nil {
+        return fmt.Errorf("could not start server: %w", err)
+    }
+    return nil
+}
+
+// setupDatabase establishes a connection to the database
+func setupDatabase(cfg *configs.Config) error {
+    dbInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+        cfg.Database.Host, cfg.Database.Port, cfg.Database.User, cfg.Database.Password, cfg.Database.DBName)
+    var err error
+    database.DB, err = sql.Open("postgres", dbInfo)
+    if err != nil {
+        return err
+    }
+    return database.DB.Ping()
+}
+
+// loadTemplates loads HTML templates
+func loadTemplates() error {
+    var err error
+    templates, err = template.ParseFiles("templates/layout.html", "templates/dashboard.html")
+    return err
+}
+
+// setupRoutes defines HTTP routes
+func setupRoutes() {
     fs := http.FileServer(http.Dir("static"))
     http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-    // Routes for dashboard and API
     http.HandleFunc("/", dashboardHandler)
-    http.HandleFunc("/api/latest-data", getLatestDataHandler) // API endpoint for refreshing data
-
-    // Start the server
-    log.Println("Starting server on :8080...")
-    if err := http.ListenAndServe(":8080", nil); err != nil {
-        log.Fatalf("Could not start server: %s", err.Error())
-    }
+    http.HandleFunc("/api/latest-data", getLatestDataHandler)
 }
 
 // dashboardHandler renders the main dashboard page
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "text/html")
 
-    // Fetch environment data from the database
     environments, err := fetchEnvironments()
     if err != nil {
+        log.Printf("Error fetching environment data: %s", err)
         http.Error(w, "Error fetching environment data", http.StatusInternalServerError)
         return
     }
 
-    // Fetch the company name from the database
     companyName, err := fetchCompanyName()
     if err != nil {
+        log.Printf("Error fetching company name: %s", err)
         http.Error(w, "Error fetching company name", http.StatusInternalServerError)
         return
     }
 
-    // Passing data to the template
     data := struct {
         CompanyName  string
         Environments []Environment
@@ -90,7 +111,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     if err := templates.ExecuteTemplate(w, "layout.html", data); err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
+        log.Printf("Template execution error: %s", err)
+        http.Error(w, "Failed to render template", http.StatusInternalServerError)
     }
 }
 
@@ -98,15 +120,15 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 func getLatestDataHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
 
-    // Fetch the latest environment data from the database
     environments, err := fetchEnvironments()
     if err != nil {
+        log.Printf("Error fetching latest data: %s", err)
         http.Error(w, "Error fetching latest data", http.StatusInternalServerError)
         return
     }
 
-    // Encode the data as JSON and send it as the response
     if err := json.NewEncoder(w).Encode(environments); err != nil {
+        log.Printf("Error encoding response data: %s", err)
         http.Error(w, "Error encoding response data", http.StatusInternalServerError)
     }
 }
@@ -127,7 +149,6 @@ func fetchEnvironments() ([]Environment, error) {
         }
         environments = append(environments, env)
     }
-
     return environments, nil
 }
 
@@ -138,11 +159,10 @@ func fetchCompanyName() (string, error) {
     if err := row.Scan(&companyName); err != nil {
         return "", err
     }
-
     return companyName, nil
 }
 
-// Environment struct to hold information about each environment
+// Environment represents an environment record
 type Environment struct {
     Name        string
     Description string
