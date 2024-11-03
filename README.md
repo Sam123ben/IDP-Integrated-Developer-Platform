@@ -1,6 +1,6 @@
 # Infrastructure & Environment Dashboard
 
-[![Infra Dashboard - CI Docker Build and Push](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci-infra-dashboard.yml/badge.svg)](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci-infra-dashboard.yml)
+[![Infra Dashboard - CI Docker Build and Push](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci-infra-dashboard.yml/badge.svg?branch=main)](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci-infra-dashboard.yml)
 
 Welcome to the **Infrastructure & Environment Dashboard**! This lightweight, performant web-based dashboard allows users to **monitor, manage, and optimize their infrastructure**. The application follows a **microservice architecture** and adopts a 3-tier approach comprising a **UI**, **middleware**, and **database**. The system is fully customizable and driven entirely by its database schema, making it adaptable for various infrastructure needs.
 
