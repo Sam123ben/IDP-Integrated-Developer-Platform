@@ -1,5 +1,7 @@
 # Infrastructure & Environment Dashboard
 
+![Build Status](https://github.com/sam123ben/infra_env_dashboard/actions/workflows/ci-infra-dashboard.yml/badge.svg)
+
 Welcome to the **Infrastructure & Environment Dashboard**! This lightweight, performant web-based dashboard allows users to **monitor, manage, and optimize their infrastructure**. The application follows a **microservice architecture** and adopts a 3-tier approach comprising a **UI**, **middleware**, and **database**. The system is fully customizable and driven entirely by its database schema, making it adaptable for various infrastructure needs.
 
 ## Project Overview
