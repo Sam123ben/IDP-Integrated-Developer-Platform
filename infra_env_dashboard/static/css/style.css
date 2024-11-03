@@ -22,6 +22,9 @@ header {
     max-width: 90%;
     margin: 20px auto;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .company-banner h1 {
@@ -43,6 +46,64 @@ header {
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+/* Navigation Menu within Company Banner */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0; /* Adjusted padding to reduce height */
+    margin-top: 8px; /* Center the nav-menu between the line and bottom border */
+    margin-bottom: 8px; /* Balanced margins to center vertically */
+    border-top: 1px solid #e0f7fa;
+    width: 100%;
+    text-align: center;
+}
+
+.nav-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav-menu ul li {
+    display: inline;
+}
+
+.nav-menu ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 6px 12px; /* Reduced padding to make nav block more compact */
+    transition: background-color 0.2s ease-in-out;
+    line-height: 1.4; /* Adjusted line-height to reduce space below text */
+}
+
+.nav-menu ul li a:hover,
+.nav-menu ul li a.active {
+    background-color: #0097a7; /* Darker teal for hover and active state */
+    color: white;
+    border-radius: 5px;
+}
+
+/* Content Sections */
+.content-section {
+    display: none; /* Hidden by default */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+.content-section.active {
+    display: block; /* Show only the active section */
 }
 
 /* Refresh Icon Styling */
@@ -70,7 +131,7 @@ header {
     background: white;
     border: 1px solid #ddd;
     border-radius: 5px;
-    width: 80px; /* Adjusted width for shorter labels */
+    width: 80px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 10;
     opacity: 0;
@@ -83,11 +144,11 @@ header {
 }
 
 .refresh-dropdown div {
-    padding: 8px 12px; /* Compact padding */
+    padding: 8px 12px;
     cursor: pointer;
     color: #333;
     font-weight: bold;
-    text-align: center; /* Center-align shorter labels */
+    text-align: center;
     transition: background-color 0.2s ease-in-out;
 }
 
@@ -112,11 +173,10 @@ header {
 }
 
 /* Dropdown styling for the settings icon */
-.refresh-dropdown,
 .settings-dropdown {
-    display: none;
+    display: none; /* Hidden by default */
     position: absolute;
-    top: 35px;
+    top: 35px; /* Position below the settings icon */
     right: 0;
     background: white;
     border: 1px solid #ddd;
@@ -128,7 +188,8 @@ header {
     transition: opacity 0.3s ease-in-out;
 }
 
-.refresh-dropdown.show,
+/* Show dropdown on hover or focus on settings container */
+.settings-container:hover .settings-dropdown,
 .settings-dropdown.show {
     display: block;
     opacity: 1;

@@ -38,16 +38,42 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Navigation Menu within the banner -->
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="#" data-section="home">Home</a></li>
+                    <li><a href="#" data-section="environments">Environments/Infra</a></li>
+                    <li><a href="#" data-section="build-pipeline">Build Pipeline</a></li>
+                    <li><a href="#" data-section="deployment-pipeline">Deployment Pipeline</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
+
     <main class="main-content">
-        <section class="environment-overview">
+        <!-- Sections -->
+        <section id="home" class="content-section active">
+            <h2>Welcome to the Dashboard</h2>
+            <p>Select a section to view detailed information.</p>
+        </section>
+        <section id="environments" class="content-section">
             <h2>Environment Overview</h2>
             <ul id="env-data">
                 <!-- Environment data will be dynamically inserted here -->
+                <p>No environments found in the database. Please add environments to see detailed metrics.</p>
             </ul>
         </section>
+        <section id="build-pipeline" class="content-section">
+            <h2>Build Pipeline</h2>
+            <p>Build pipeline metrics and status will be shown here.</p>
+        </section>
+        <section id="deployment-pipeline" class="content-section">
+            <h2>Deployment Pipeline</h2>
+            <p>Deployment pipeline metrics and status will be shown here.</p>
+        </section>
     </main>
+
     <script src="/static/js/script.js"></script>
 </body>
 </html>
