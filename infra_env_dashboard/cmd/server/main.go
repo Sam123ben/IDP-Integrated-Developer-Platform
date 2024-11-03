@@ -135,7 +135,7 @@ func getLatestDataHandler(w http.ResponseWriter, r *http.Request) {
 
 // fetchEnvironments queries the database for environment information
 func fetchEnvironments() ([]Environment, error) {
-    rows, err := database.DB.Query("SELECT name, description FROM environments ORDER BY updated_at DESC LIMIT 10")
+    rows, err := database.DB.Query("SELECT environment_name, description FROM environments ORDER BY updated_at DESC LIMIT 10")
     if err != nil {
         return nil, err
     }
@@ -144,7 +144,7 @@ func fetchEnvironments() ([]Environment, error) {
     var environments []Environment
     for rows.Next() {
         var env Environment
-        if err := rows.Scan(&env.Name, &env.Description); err != nil {
+        if err := rows.Scan(&env.EnvironmentName, &env.Description); err != nil {
             return nil, err
         }
         environments = append(environments, env)
@@ -164,6 +164,6 @@ func fetchCompanyName() (string, error) {
 
 // Environment represents an environment record
 type Environment struct {
-    Name        string
+    EnvironmentName string
     Description string
 }
