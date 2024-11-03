@@ -13,15 +13,22 @@
             <h1>{{.CompanyName}}</h1>
             <p class="tagline">Monitor, Manage, and Optimize Your Infrastructure from a Single View</p>
             <div class="icons-container">
-                <!-- Refresh Icon with standalone styling -->
+                
+                <!-- Refresh Icon with Dropdown for Auto-Refresh Options -->
                 <div id="refresh-container" class="refresh-container" title="Refresh">
                     <i class="fas fa-sync-alt refresh-icon"></i>
+                    <div id="refresh-dropdown" class="refresh-dropdown">
+                        <div id="auto-refresh-10sec">10s</div>
+                        <div id="auto-refresh-1min">1m</div>
+                        <div id="auto-refresh-5min">5m</div>
+                        <div id="auto-refresh-off">Off</div>
+                    </div>
                 </div>
 
-                <!-- Settings Icon with dropdown functionality and standalone styling -->
+                <!-- Settings Icon with Theme Selection Dropdown -->
                 <div id="settings-container" class="settings-container">
                     <i class="fas fa-cog settings-icon" title="Settings"></i>
-                    <div id="settings-dropdown" class="settings-dropdown hidden">
+                    <div id="settings-dropdown" class="settings-dropdown">
                         <div class="theme-option" id="light-theme-option">
                             <i class="fas fa-sun"></i> Light Theme
                         </div>
@@ -36,7 +43,9 @@
     <main class="main-content">
         <section class="environment-overview">
             <h2>Environment Overview</h2>
-            <p>No environments found in the database. Please add environments to see detailed metrics.</p>
+            <ul id="env-data">
+                <!-- Environment data will be dynamically inserted here -->
+            </ul>
         </section>
     </main>
     <script src="/static/js/script.js"></script>

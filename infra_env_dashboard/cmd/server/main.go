@@ -8,6 +8,7 @@ import (
     "log"
     "net/http"
     "html/template"
+    "encoding/json"
     _ "github.com/lib/pq" // PostgreSQL driver
 )
 
@@ -15,7 +16,7 @@ var templates *template.Template
 
 func main() {
     // Load configuration from configs/config.yaml
-    cfg, err := configs.LoadConfig("./configs") // Use "configs" to reference the correct package
+    cfg, err := configs.LoadConfig("./configs")
     if err != nil {
         log.Fatalf("Failed to load configuration: %s", err)
     }
@@ -50,8 +51,9 @@ func main() {
     fs := http.FileServer(http.Dir("static"))
     http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-    // Route for dashboard
+    // Routes for dashboard and API
     http.HandleFunc("/", dashboardHandler)
+    http.HandleFunc("/api/latest-data", getLatestDataHandler) // API endpoint for refreshing data
 
     // Start the server
     log.Println("Starting server on :8080...")
@@ -92,9 +94,26 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
     }
 }
 
+// getLatestDataHandler handles the API request to fetch the latest data
+func getLatestDataHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+
+    // Fetch the latest environment data from the database
+    environments, err := fetchEnvironments()
+    if err != nil {
+        http.Error(w, "Error fetching latest data", http.StatusInternalServerError)
+        return
+    }
+
+    // Encode the data as JSON and send it as the response
+    if err := json.NewEncoder(w).Encode(environments); err != nil {
+        http.Error(w, "Error encoding response data", http.StatusInternalServerError)
+    }
+}
+
 // fetchEnvironments queries the database for environment information
 func fetchEnvironments() ([]Environment, error) {
-    rows, err := database.DB.Query("SELECT name, description FROM environments")
+    rows, err := database.DB.Query("SELECT name, description FROM environments ORDER BY updated_at DESC LIMIT 10")
     if err != nil {
         return nil, err
     }

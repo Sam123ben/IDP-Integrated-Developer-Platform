@@ -4,7 +4,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f4f4f9;
-    transition: background-color 0.3s, color 0.3s; /* Smooth transition between themes */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 header {
@@ -15,7 +15,7 @@ header {
 
 .company-banner {
     position: relative;
-    background-color: #00bcd4; /* Light teal background */
+    background-color: #00bcd4;
     color: white;
     padding: 30px 20px;
     border-radius: 5px;
@@ -42,22 +42,57 @@ header {
     right: 20px;
     display: flex;
     align-items: center;
-    gap: 20px; /* Separate spacing between icons */
+    gap: 20px;
 }
 
 /* Refresh Icon Styling */
 .refresh-container {
+    position: relative;
     cursor: pointer;
 }
 
 .refresh-icon {
     font-size: 24px;
     color: black;
-    transition: transform 0.5s ease-in-out; /* Rotate animation */
+    transition: transform 0.5s ease-in-out;
 }
 
 .refresh-icon:hover {
-    transform: rotate(180deg); /* Rotate icon by 180 degrees on hover */
+    transform: rotate(180deg);
+}
+
+/* Dropdown styling for the refresh icon */
+.refresh-dropdown {
+    display: none;
+    position: absolute;
+    top: 35px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 80px; /* Adjusted width for shorter labels */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.refresh-container:hover .refresh-dropdown {
+    display: block;
+    opacity: 1;
+}
+
+.refresh-dropdown div {
+    padding: 8px 12px; /* Compact padding */
+    cursor: pointer;
+    color: #333;
+    font-weight: bold;
+    text-align: center; /* Center-align shorter labels */
+    transition: background-color 0.2s ease-in-out;
+}
+
+.refresh-dropdown div:hover {
+    background-color: #e0e0e0;
 }
 
 /* Settings Icon Styling */
@@ -69,18 +104,19 @@ header {
 .settings-icon {
     font-size: 24px;
     color: black;
-    transition: transform 0.5s ease-in-out; /* Rotate animation */
+    transition: transform 0.5s ease-in-out;
 }
 
 .settings-icon:hover {
-    transform: rotate(90deg); /* Rotate icon by 90 degrees on hover */
+    transform: rotate(90deg);
 }
 
-/* Dropdown visibility and absolute positioning for settings only */
+/* Dropdown styling for the settings icon */
+.refresh-dropdown,
 .settings-dropdown {
-    display: none; /* Hidden by default */
+    display: none;
     position: absolute;
-    top: 35px; /* Position below the settings icon */
+    top: 35px;
     right: 0;
     background: white;
     border: 1px solid #ddd;
@@ -88,23 +124,22 @@ header {
     width: 150px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 10;
-    opacity: 0; /* Initially hidden */
-    transition: opacity 0.3s ease-in-out; /* Smooth fade in/out */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
 }
 
-/* Show dropdown on hover or focus on settings container */
+.refresh-dropdown.show,
 .settings-dropdown.show {
     display: block;
     opacity: 1;
 }
 
-/* Theme option styling */
 .theme-option {
-    padding: 12px; /* More padding for a better click area */
+    padding: 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    color: #333; /* Darker text for contrast */
+    color: #333;
     font-weight: bold;
     background-color: white;
     transition: background-color 0.2s ease-in-out;
@@ -112,11 +147,11 @@ header {
 
 .theme-option i {
     margin-right: 8px;
-    color: #666; /* Icon color adjusted to ensure visibility */
+    color: #666;
 }
 
 .theme-option:hover {
-    background-color: #e0e0e0; /* Light gray for better hover visibility */
+    background-color: #e0e0e0;
 }
 
 /* Dark Theme Styles */
@@ -145,9 +180,9 @@ header.dark-theme {
 }
 
 .theme-option.dark-theme {
-    color: #f4f4f9; /* Lighter text for dark mode */
+    color: #f4f4f9;
 }
 
 .theme-option.dark-theme:hover {
-    background-color: #666; /* Darker hover effect for dark theme */
+    background-color: #666;
 }
