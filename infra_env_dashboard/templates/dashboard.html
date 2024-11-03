@@ -1,0 +1,16 @@
+{{ define "content" }}
+<div class="dashboard">
+    <h2>Environment Overview</h2>
+    <div id="env-data">
+        {{ if .Environments }}
+            <ul>
+                {{ range .Environments }}
+                    <li><strong>{{ .Name }}</strong>: {{ .Description }}</li>
+                {{ end }}
+            </ul>
+        {{ else }}
+            <p>No environments found in the database. Please add environments to see detailed metrics.</p>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

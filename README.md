@@ -1,199 +1,222 @@
-# IDP-Integrated-Developer-Platform
+# Infrastructure & Environment Dashboard
 
-## Unified Developer Hub
+Welcome to the **Infrastructure & Environment Dashboard** project! This is a lightweight and performant web-based dashboard that allows users to **monitor, manage, and optimize their infrastructure**. The application is designed with a **microservice architecture** and follows a 3-tier approach, comprising a **UI**, **middleware**, and **database**.
 
-## Overview
+&#x20;
 
-Welcome to the **IDP - Integrated Developer Platform** project! This project is a microservice-based application with **React** as the frontend, **Go** for backend microservices, **Kubernetes** as the orchestrator, and **PostgreSQL** as the primary database. The IDP platform acts as a unified layer on top of cloud providers, enabling development teams to deploy and manage multiple environments effortlessly. With **Crossplane** for infrastructure-as-code (IaC) automation, this platform allows for both **persistent** and **ephemeral** feature environments.
+## Project Overview
 
-## Project Goals
+This dashboard provides real-time insights into various environments such as Development, Staging, and Production. Instead of full monitoring, it focuses on providing release and deployment statistics, version checks, and details like URLs, skipping deployments, and adding comments for a real-time understanding of the environment test cycles.
 
-The main objectives of the IDP are:
 
-1. **Simplify Environment Creation**: Developers can spin up production-like and feature-specific environments with minimal friction.
-2. **Automate Infrastructure Management**: With Crossplane, infrastructure resources are provisioned and managed automatically, ensuring consistency and reliability.
-3. **Enhance Deployment Flexibility**: By leveraging Kubernetes and Crossplane, developers can deploy across different cloud providers in a consistent manner.
-4. **Optimize for CI/CD Workflows**: The IDP supports ephemeral environments, making it easy to test features in isolation within CI/CD pipelines.
 
-## Key Features
+The UI and middleware are written in Golang, while PostgreSQL is used as the backend database. The app is designed to be highly modular and easy to extend with more features, such as tracking release statuses, adding or updating comments, managing deployment skips, and capturing details to better understand environment test cycles.Features
 
-- **Environment Management**: Provision both true (persistent) and ephemeral environments.
-- **Cloud-Agnostic Orchestration**: Kubernetes and Crossplane facilitate a consistent cloud-agnostic experience.
-- **Self-Service Interface**: A React-based UI that allows teams to manage their environments, deploy services, and oversee infrastructure resources.
-- **Automated IaC**: Crossplane is integrated to provide IaC automation, reducing the need for manual resource creation.
-
-## Architecture
-
-The IDP follows a microservices architecture with the following primary components:
-
-1. **Frontend (React)**: A React-based UI that developers use to interact with the platform, view environment statuses, and trigger deployments.
-2. **Backend (Go)**: Multiple Go microservices handle core functionalities, such as environment provisioning, resource management, and API interactions.
-3. **Database (PostgreSQL)**: Stores data about environments, configurations, deployments, and other metadata.
-4. **Orchestration (Kubernetes)**: Kubernetes manages the deployment, scaling, and networking of services across the platform.
-5. **Infrastructure Automation (Crossplane)**: Crossplane is configured to manage IaC workflows, automatically provisioning and deprovisioning infrastructure resources based on platform requirements.
-
-## Folder Structure
-
-To maintain a clean and modular project, here’s a recommended folder structure:
-
-```
-IDP-Integrated-Developer-Platform/
-├── backend/                     # Backend services and microservices in Go
-│   ├── api/                     # API endpoints and handlers
-│   ├── models/                  # Database models and ORM structures
-│   ├── services/                # Business logic and service layer
-│   ├── rbac/                    # Role-based access control code
-│   ├── config/                  # Configuration files (e.g., DB, environment)
-│   └── main.go                  # Main entry point for the backend application
-│
-├── frontend/                    # React-based frontend for the platform
-│   ├── src/
-│       ├── components/          # Reusable UI components
-│       ├── pages/               # Main pages and views
-│       ├── services/            # Frontend services to interact with backend APIs
-│       ├── hooks/               # Custom React hooks
-│       └── App.js               # Main entry file for the React app
-│
-├── infra/                       # Infrastructure as code resources
-│   ├── kubernetes/              # Kubernetes configuration and manifests
-│   ├── crossplane/              # Crossplane configuration for cloud infrastructure
-│   ├── terraform/               # Terraform modules for additional IaC needs
-│   └── secrets/                 # Encrypted secrets management (e.g., using Vault)
-│
-├── workflows/                   # CI/CD and GitHub Actions workflows
-│   ├── deploy.yaml              # Deployment workflow file
-│   ├── test.yaml                # Testing workflow file
-│   └── build.yaml               # Build workflow file
-│
-├── docs/                        # Documentation for the platform
-│   ├── architecture.md          # Detailed architecture document
-│   ├── api-reference.md         # API reference for backend services
-│   ├── rbac.md                  # Documentation on RBAC configurations
-│   └── contributing.md          # Contribution guidelines
-│
-├── README.md                    # Project overview and setup guide
-├── LICENSE                      # License for the project
-└── .gitignore                   # Git ignore file
-```
-
-### Folder Descriptions
-
-- **\`backend/\`**: Contains Go microservices, API endpoints, and RBAC implementation.
-- **\`frontend/\`**: Holds the React application with UI components, pages, and services.
-- **\`infra/\`**: Infrastructure code, split into Kubernetes manifests, Crossplane configurations, and Terraform modules.
-- **\`workflows/\`**: CI/CD workflows, including files for testing, building, and deploying the project.
-- **\`docs/\`**: Project documentation, architecture notes, API references, and contribution guidelines.
+- **Real-time Environment Monitoring**: Monitor the status of different environments, including server health and performance metrics.
+- **Multi-theme Support**: Easily toggle between **light** and **dark** themes to suit user preferences.
+- **Lightweight and Efficient**: Designed using Golang, which makes it highly **efficient** and **scalable**.
+- **Microservice Architecture**: Built with scalability in mind, using a microservices approach for easy future expansion.
+- **Deployment Management**: The dashboard can be extended to skip deployments, update comments, and trigger rollbacks.
 
 ## Technology Stack
 
-| Component                | Technology    |
-|--------------------------|---------------|
-| Frontend                 | React         |
-| Backend                  | Go (Golang)   |
-| Database                 | PostgreSQL    |
-| Orchestrator             | Kubernetes    |
-| IaC Automation           | Crossplane, Terraform |
-| Containerization         | Docker        |
+- **Frontend & Middleware**: [Golang](https://golang.org/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/)
+- **Containerization**: [Docker](https://www.docker.com/)
+- **UI Templates**: HTML5, CSS3
+- **Styling & UI Libraries**: Font Awesome for icons
+- **Deployment**: Multistage Docker builds for small, production-ready images.
 
-## Getting Started
+## Project Intentions
 
-### Prerequisites
+The primary intention of this dashboard is to provide a **centralized platform** where DevOps teams and infrastructure engineers can monitor and manage their infrastructure environments efficiently. The project is built to be lightweight, **easily customizable**, and highly **scalable**.
 
-To set up and run the IDP locally or in a development environment, you’ll need the following:
+Future plans include integrating more deployment capabilities, advanced analytics, and other environment management features.
 
-- **Docker**: For containerization
-- **Kubernetes Cluster**: Can be a local Kubernetes (e.g., Minikube or Kind) or a cloud-managed cluster
-- **Crossplane**: For IaC automation (install and configure in the Kubernetes cluster)
-- **PostgreSQL**: Database instance, either local or cloud-hosted
-- **Go** (1.16 or newer): Required for backend development
-- **Node.js** (14.x or newer): Required for frontend development
-- **kubectl**: Kubernetes CLI for deployment management
-- **Cloud Provider Credentials**: Set up as needed for Crossplane to manage infrastructure on specific cloud providers
+## Prerequisites
 
-### Installation
+Before you can run the application, ensure that the following prerequisites are installed:
+
+- [Golang (v1.21 or later)](https://golang.org/doc/install)
+- [Docker](https://docs.docker.com/get-docker/)
+- [PostgreSQL (Running on a local or remote instance)](https://www.postgresql.org/download/)
+- A modern web browser (Chrome, Firefox, Safari)
+
+### Database Setup
+
+To run a PostgreSQL container locally (for testing purposes), you can use the following command:
+
+```bash
+docker run --name my_postgres \
+  -e POSTGRES_USER=myuser \
+  -e POSTGRES_PASSWORD=mypassword \
+  -e POSTGRES_DB=mydatabase \
+  -p 5432:5432 \
+  -v /path/to/local/db/data:/var/lib/postgresql/data \
+  -d postgres
+```
+
+Ensure that the `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB` are properly updated in the application code to match these values.
+
+## Running the Application
+
+You can run the application locally in two ways: **directly using Go** or **using Docker**.
+
+### Running Locally (Without Docker)
 
 1. **Clone the Repository**:
+
    ```bash
-   git clone https://github.com/Sam123ben/IDP-Integrated-Developer-Platform.git
-   cd IDP-Integrated-Developer-Platform
+   git clone https://github.com/your-username/infra-env-dashboard.git
+   cd infra-env-dashboard
    ```
 
-2. **Setup Kubernetes and Crossplane**:
-   - Ensure your Kubernetes cluster is running.
-   - Install Crossplane in your Kubernetes cluster:
-     ```bash
-     kubectl apply -f https://raw.githubusercontent.com/crossplane/crossplane/release-1.0/install.yaml
-     ```
-   - Configure Crossplane with the necessary provider (e.g., AWS, GCP, Azure).
+2. **Install Dependencies**:
 
-3. **Database Setup (PostgreSQL)**:
-   - Install and start PostgreSQL, or use a managed instance.
-   - Create a database for the IDP:
-     ```sql
-     CREATE DATABASE idp_db;
-     ```
-   - Add a user with access to this database and update the backend configuration with the database credentials.
+   Ensure you have Go modules enabled.
 
-4. **Frontend Setup**:
-   - Navigate to the frontend directory:
-     ```bash
-     cd frontend
-     npm install
-     npm start
-     ```
-   - This will start the React application on \`http://localhost:3000\`.
+   ```bash
+   go mod tidy
+   ```
 
-5. **Backend Setup**:
-   - Navigate to the backend directory:
-     ```bash
-     cd ../backend
-     go mod download
-     ```
-   - Configure the backend with the PostgreSQL connection string:
-     ```bash
-     export DATABASE_URL="postgres://username:password@localhost:5432/idp_db"
-     ```
-   - Run the backend:
-     ```bash
-     go run main.go
-     ```
+3. **Run the Application**:
 
-6. **Deploy to Kubernetes**:
-   - Once both services are ready, deploy them to Kubernetes using the manifests provided in the \`/infra/kubernetes\` directory.
-   - Apply the configuration:
-     ```bash
-     kubectl apply -f infra/kubernetes/
-     ```
+   ```bash
+   go run cmd/server/main.go
+   ```
 
-## Usage
+4. **Access the Dashboard**:
 
-- **True Environments**: Developers can create persistent environments via the IDP, intended for long-term or production-like deployments.
-- **Ephemeral Feature Environments**: Triggered for each feature branch, allowing developers to test features in isolated, short-lived environments.
-- **Infrastructure as Code**: Through Crossplane, manage infrastructure resources across cloud providers, facilitating a consistent multi-cloud environment.
+   Open your web browser and navigate to: [http://localhost:8080](http://localhost:8080)
+
+### Running with Docker
+
+This project includes a **multistage Dockerfile** for easier building and deployment.
+
+1. **Build the Docker Image**:
+
+   ```bash
+   docker build -t infra-env-dashboard .
+   ```
+
+2. **Run the Docker Container**:
+
+   ```bash
+   docker run -p 8080:8080 infra-env-dashboard
+   ```
+
+3. **Access the Dashboard**:
+
+   Open your web browser and navigate to: [http://localhost:8080](http://localhost:8080)
+
+## Directory Structure
+
+Below is an overview of the project's directory structure:
+
+```
+infra_env_dashboard/
+├── cmd/
+│   ├── server/
+│   │   └── main.go                # Entry point for running the service
+├── configs/
+│   └── config.yaml                # Configuration files (e.g., database, ports, etc.)
+├── internal/
+│   ├── db/
+│   │   ├── migrations/            # Database migration files
+│   │   ├── postgres.go            # PostgreSQL connection and helper methods
+│   ├── environments/
+│   │   ├── handler.go             # Handlers for environment-related endpoints
+│   │   ├── service.go             # Business logic for environment features
+│   │   └── repository.go          # Database queries for environments
+│   ├── middlewares/
+│   │   └── auth.go                # Middleware for authentication and authorization
+│   ├── common/
+│   │   ├── utils.go               # Utility functions used across the application
+│   │   ├── responses.go           # Common response helpers (e.g., JSON serialization)
+│   └── models/
+│       └── environment.go         # Models for environment objects
+├── pkg/
+│   ├── database/
+│   │   ├── db.go                  # Database connection pool and configuration
+│   └── logger/
+│       └── logger.go              # Logging implementation for reuse across services
+├── static/
+│   ├── css/
+│   │   └── style.css              # CSS files
+│   └── js/
+│       └── script.js              # JavaScript files
+├── templates/
+│   ├── layout.html                # HTML layout for the entire UI
+│   └── dashboard.html             # Dashboard HTML template
+├── test/
+│   ├── environments_test.go       # Unit tests for environment features
+│   └── integration_test.go        # Integration tests for full system testing
+├── go.mod                         # Go module file
+└── go.sum                         # Go dependencies
+```
+
+## Environment Variables
+
+To configure the application, the following **environment variables** are used:
+
+- **`PORT`**: Defines the port on which the server runs (default is `8080`).
+- **Database Variables**: Update the credentials in the main application code or via environment variables for the database.
+
+## Docker Deployment
+
+### Docker Multi-Stage Build
+
+This project utilizes a **multi-stage Docker build** to keep the final image lightweight.
+
+1. **Build Stage**: Uses `golang:1.21` to build the Go application and compile the binary.
+2. **Run Stage**: Uses `alpine:latest` to run the application, minimizing the image size.
+
+**Commands Used**:
+
+- **Build**: `docker build -t infra-env-dashboard .`
+- **Run**: `docker run -p 8080:8080 infra-env-dashboard`
+
+## Using Themes
+
+The dashboard provides a **light theme** and **dark theme** toggle. To change themes:
+
+1. Click on the **gear icon** in the top-right corner of the header.
+2. Select either **Light Theme** or **Dark Theme** from the dropdown menu.
+
+The theme toggle will immediately update the dashboard's appearance.
+
+## Known Issues & Future Improvements
+
+- **Database Connection**: Ensure that the database connection credentials are set correctly.
+- **Docker Networking**: When running PostgreSQL in a separate container, ensure Docker networking is set up so that the Go application can communicate with the database.
+
+### Future Improvements
+
+- **User Authentication**: Add user roles and authentication for dashboard access.
+- **Custom Widgets**: Allow users to add or remove widgets on the dashboard based on their needs.
+- **Notifications**: Integrate real-time notifications for deployment or environment alerts.
+- **Metrics**: Add more detailed and customizable metrics with historical views.
 
 ## Contributing
 
-Contributions are welcome! To contribute:
+Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
 
-1. Fork the repository.
-2. Create a feature branch (\`git checkout -b feature-name\`).
-3. Commit your changes (\`git commit -m 'Add feature'\`).
-4. Push to the branch (\`git push origin feature-name\`).
-5. Open a pull request.
+### Steps to Contribute:
 
-Please refer to our [CONTRIBUTING.md](CONTRIBUTING.md) file for more details.
+1. **Fork the Repository**.
+2. **Create a Feature Branch**: `git checkout -b feature/new-feature`
+3. **Commit Changes**: `git commit -m 'Add new feature'`
+4. **Push to Branch**: `git push origin feature/new-feature`
+5. **Open a Pull Request**.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-
----
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
-For any questions, please feel free to reach out to the project maintainer:
-
-- **Email**: [your-email@example.com](mailto:your-email@example.com)
-- **Slack**: IDP Development Channel (link to Slack workspace if applicable)
+For more information, please reach out to **[learntogrowmore@gmail.com](mailto\:learntogrowmore@gmail.com)**.
 
 ---
+
+Thank you for using the **Infrastructure & Environment Dashboard**. We hope this tool helps you efficiently monitor and manage your infrastructure. If you have any suggestions or issues, feel free to open an issue on our GitHub repository!

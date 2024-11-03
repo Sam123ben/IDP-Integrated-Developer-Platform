@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.CompanyName}} Infrastructure & Env Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome for icons -->
+</head>
+<body class="light-theme" id="theme">
+    <header>
+        <div class="company-banner">
+            <h1>{{.CompanyName}}</h1>
+            <p class="tagline">Monitor, Manage, and Optimize Your Infrastructure from a Single View</p>
+            <div id="settings" class="settings">
+                <div id="settings-icon" class="settings-icon"><i class="fas fa-cog"></i></div> <!-- Gear Icon -->
+                <div id="settings-dropdown" class="settings-dropdown hidden">
+                    <div class="theme-option" id="light-theme-option">
+                        <i class="fas fa-sun"></i> Light Theme
+                    </div>
+                    <div class="theme-option" id="dark-theme-option">
+                        <i class="fas fa-moon"></i> Dark Theme
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="main-content">
+        <section class="environment-overview">
+            <h2>Environment Overview</h2>
+            <p>No environments found in the database. Please add environments to see detailed metrics.</p>
+        </section>
+    </main>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

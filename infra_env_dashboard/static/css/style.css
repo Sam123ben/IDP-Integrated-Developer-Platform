@@ -1,0 +1,156 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition between themes */
+}
+
+header {
+    padding: 0;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.company-banner {
+    position: relative;
+    background-color: #00bcd4; /* Light teal background */
+    color: white;
+    padding: 30px 20px;
+    border-radius: 5px;
+    max-width: 90%;
+    margin: 20px auto;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.company-banner h1 {
+    margin: 0;
+    font-size: 2.8em;
+    font-weight: bold;
+}
+
+.company-banner .tagline {
+    font-size: 1.2em;
+    color: #e0f7fa;
+    margin-top: 10px;
+}
+
+.settings {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.settings-icon {
+    font-size: 24px;
+    color: black;
+    transition: color 0.3s;
+}
+
+.settings-dropdown {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 150px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.settings-dropdown.show {
+    display: block; /* Show dropdown when triggered */
+}
+
+.theme-option {
+    padding: 12px; /* More padding for a better click area */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #333; /* Darker text for contrast */
+    font-weight: bold;
+}
+
+.theme-option i {
+    margin-right: 8px;
+    color: #666; /* Icon color adjusted to ensure visibility */
+}
+
+.theme-option:hover {
+    background-color: #e0e0e0; /* Light gray for better hover visibility */
+}
+
+.main-content {
+    padding: 0 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.environment-overview {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.environment-overview h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: black; /* Always keep the Environment Overview heading in black */
+}
+
+.environment-overview p {
+    font-size: 1.1em;
+    color: black; /* Always keep the text in the Environment Overview section black */
+}
+
+/* Dark Theme Styles */
+body.dark-theme {
+    background-color: #333;
+    color: #f4f4f9;
+}
+
+header.dark-theme {
+    background-color: #444;
+}
+
+.company-banner.dark-theme {
+    background-color: #555;
+    color: #f4f4f9;
+}
+
+.tagline.dark-theme {
+    color: #ccc;
+}
+
+.settings-dropdown.dark-theme {
+    background: #555;
+    color: #f4f4f9;
+    border: 1px solid #444;
+}
+
+.theme-option.dark-theme {
+    color: #f4f4f9; /* Lighter text for dark mode */
+}
+
+.theme-option.dark-theme:hover {
+    background-color: #666; /* Darker hover effect for dark theme */
+}
+
+.environment-overview.dark-theme {
+    background: #444;
+    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+/* Ensure Environment Overview always remains black */
+.environment-overview.dark-theme h2 {
+    color: black; /* Override default dark theme color to ensure heading stays black */
+}
+
+.environment-overview.dark-theme p {
+    color: black; /* Override default dark theme color to ensure text stays black */
+}
