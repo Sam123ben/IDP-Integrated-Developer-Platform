@@ -133,6 +133,7 @@ infra_env_dashboard/
 │   │   └── main.go                # Entry point for running the service
 ├── configs/
 │   └── config.yaml                # Configuration files (e.g., database, ports, etc.)
+│   ├── config.go                  # Go code to load config
 ├── internal/
 │   ├── db/
 │   │   ├── migrations/            # Database migration files
