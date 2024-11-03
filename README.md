@@ -38,7 +38,7 @@ The dashboard content is entirely driven by the **database**. The structure and 
 
 Before running the application, ensure the following prerequisites are met:
 
-- [Golang (v1.21 or later)](https://golang.org/doc/install)
+- [Golang (v1.23 or later)](https://golang.org/doc/install)
 - [Docker](https://docs.docker.com/get-docker/)
 - [PostgreSQL](https://www.postgresql.org/download/) (Local or remote instance)
 - A modern web browser (Chrome, Firefox, Safari)
