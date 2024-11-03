@@ -53,9 +53,9 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px 0; /* Adjusted padding to reduce height */
-    margin-top: 8px; /* Center the nav-menu between the line and bottom border */
-    margin-bottom: 8px; /* Balanced margins to center vertically */
+    padding: 5px 0;
+    margin-top: 8px;
+    margin-bottom: 8px;
     border-top: 1px solid #e0f7fa;
     width: 100%;
     text-align: center;
@@ -78,14 +78,14 @@ header {
     text-decoration: none;
     color: white;
     font-weight: bold;
-    padding: 6px 12px; /* Reduced padding to make nav block more compact */
+    padding: 6px 12px;
     transition: background-color 0.2s ease-in-out;
-    line-height: 1.4; /* Adjusted line-height to reduce space below text */
+    line-height: 1.4;
 }
 
 .nav-menu ul li a:hover,
 .nav-menu ul li a.active {
-    background-color: #0097a7; /* Darker teal for hover and active state */
+    background-color: #0097a7;
     color: white;
     border-radius: 5px;
 }
@@ -95,6 +95,7 @@ header {
     display: none; /* Hidden by default */
     padding: 20px;
     background-color: #fff;
+    color: black; /* Ensure text is black */
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
     margin-top: 20px;
@@ -138,7 +139,8 @@ header {
     transition: opacity 0.3s ease-in-out;
 }
 
-.refresh-container:hover .refresh-dropdown {
+.refresh-container:hover .refresh-dropdown,
+.refresh-dropdown.show {
     display: block;
     opacity: 1;
 }
@@ -174,9 +176,9 @@ header {
 
 /* Dropdown styling for the settings icon */
 .settings-dropdown {
-    display: none; /* Hidden by default */
+    display: none;
     position: absolute;
-    top: 35px; /* Position below the settings icon */
+    top: 35px;
     right: 0;
     background: white;
     border: 1px solid #ddd;

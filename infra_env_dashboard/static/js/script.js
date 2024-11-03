@@ -4,9 +4,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const refreshContainer = document.getElementById("refresh-container");
     const refreshDropdown = document.getElementById("refresh-dropdown");
     const body = document.body;
-    let settingsHideTimeout;
-    let refreshHideTimeout;
     let autoRefreshInterval = null;
+    let settingsHideTimeout, refreshHideTimeout;
 
     // Function to show dropdown
     function showDropdown(dropdown) {
@@ -18,32 +17,42 @@ document.addEventListener("DOMContentLoaded", function() {
         clearTimeout(hideTimeoutVar);
         return setTimeout(() => {
             dropdown.classList.remove("show");
-        }, 800); // Delay of 800ms
+        }, 1000); // Delay of 1000ms to give user ample time
     }
 
-    // Settings dropdown logic
-    settingsContainer.addEventListener("mouseenter", () => {
-        clearTimeout(settingsHideTimeout);
-        showDropdown(settingsDropdown);
-    });
-    settingsDropdown.addEventListener("mouseenter", () => {
-        clearTimeout(settingsHideTimeout);
-        showDropdown(settingsDropdown);
-    });
+    // Unified dropdown handling for both settings and refresh dropdowns
+    function setupDropdownLogic(container, dropdown) {
+        let hideTimeout;
 
-    settingsContainer.addEventListener("mouseleave", () => {
-        settingsHideTimeout = hideDropdownWithDelay(settingsDropdown, settingsHideTimeout);
-    });
-    settingsDropdown.addEventListener("mouseleave", () => {
-        settingsHideTimeout = hideDropdownWithDelay(settingsDropdown, settingsHideTimeout);
-    });
+        container.addEventListener("mouseenter", () => {
+            clearTimeout(hideTimeout);
+            showDropdown(dropdown);
+        });
 
-    // Close the settings dropdown if clicking outside
-    document.addEventListener("click", function(event) {
-        if (!settingsContainer.contains(event.target) && !settingsDropdown.contains(event.target)) {
-            settingsDropdown.classList.remove("show");
-        }
-    });
+        dropdown.addEventListener("mouseenter", () => {
+            clearTimeout(hideTimeout);
+            showDropdown(dropdown);
+        });
+
+        container.addEventListener("mouseleave", () => {
+            hideTimeout = hideDropdownWithDelay(dropdown, hideTimeout);
+        });
+
+        dropdown.addEventListener("mouseleave", () => {
+            hideTimeout = hideDropdownWithDelay(dropdown, hideTimeout);
+        });
+
+        // Close dropdown if clicking outside both container and dropdown
+        document.addEventListener("click", function(event) {
+            if (!container.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove("show");
+            }
+        });
+    }
+
+    // Apply unified dropdown logic to both settings and refresh containers
+    setupDropdownLogic(settingsContainer, settingsDropdown);
+    setupDropdownLogic(refreshContainer, refreshDropdown);
 
     // Theme switching functionality
     const lightThemeOption = document.getElementById("light-theme-option");
@@ -129,30 +138,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Manual refresh on click
     refreshContainer.addEventListener("click", fetchLatestData);
 
-    // Refresh dropdown logic
-    refreshContainer.addEventListener("mouseenter", () => {
-        clearTimeout(refreshHideTimeout);
-        showDropdown(refreshDropdown);
-    });
-    refreshDropdown.addEventListener("mouseenter", () => {
-        clearTimeout(refreshHideTimeout);
-        showDropdown(refreshDropdown);
-    });
-
-    refreshContainer.addEventListener("mouseleave", () => {
-        refreshHideTimeout = hideDropdownWithDelay(refreshDropdown, refreshHideTimeout);
-    });
-    refreshDropdown.addEventListener("mouseleave", () => {
-        refreshHideTimeout = hideDropdownWithDelay(refreshDropdown, refreshHideTimeout);
-    });
-
-    // Close the refresh dropdown if clicking outside
-    document.addEventListener("click", function(event) {
-        if (!refreshContainer.contains(event.target) && !refreshDropdown.contains(event.target)) {
-            refreshDropdown.classList.remove("show");
-        }
-    });
-
     // Auto-refresh dropdown options
     document.getElementById("auto-refresh-10sec").addEventListener("click", () => {
         setAutoRefresh(10000);
@@ -179,4 +164,27 @@ document.addEventListener("DOMContentLoaded", function() {
         // Set default auto-refresh interval to 5 minutes if no preference is stored
         setAutoRefresh(300000); // 5 minutes in milliseconds
     }
+
+    // Navigation handling
+    const navLinks = document.querySelectorAll(".nav-menu ul li a");
+    const contentSections = document.querySelectorAll(".content-section");
+
+    navLinks.forEach(link => {
+        link.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            // Remove active class from all sections and nav links
+            navLinks.forEach(nav => nav.classList.remove("active"));
+            contentSections.forEach(section => section.classList.remove("active"));
+
+            // Add active class to clicked link and corresponding section
+            link.classList.add("active");
+            const sectionId = link.getAttribute("data-section");
+            document.getElementById(sectionId).classList.add("active");
+        });
+    });
+
+    // Ensure the "Home" section is displayed by default
+    document.querySelector(".nav-menu ul li a[data-section='home']").classList.add("active");
+    document.getElementById("home").classList.add("active");
 });
