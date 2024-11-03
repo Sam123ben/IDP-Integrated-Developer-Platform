@@ -1,30 +1,46 @@
 package main
 
 import (
+    "database/sql"
+    "fmt"
+    "infra_env_dashboard/configs" // Importing the configs package correctly
     "infra_env_dashboard/pkg/database"
     "log"
     "net/http"
     "html/template"
-    _ "github.com/lib/pq"
+    _ "github.com/lib/pq" // PostgreSQL driver
 )
 
 var templates *template.Template
 
 func main() {
+    // Load configuration from configs/config.yaml
+    cfg, err := configs.LoadConfig("./configs") // Use "configs" to reference the correct package
+    if err != nil {
+        log.Fatalf("Failed to load configuration: %s", err)
+    }
+
+    // Connect to PostgreSQL using config values
+    dbInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+        cfg.Database.Host, cfg.Database.Port, cfg.Database.User, cfg.Database.Password, cfg.Database.DBName)
+
+    database.DB, err = sql.Open("postgres", dbInfo)
+    if err != nil {
+        log.Fatalf("Failed to connect to the database: %s", err)
+    }
+
+    // Verify the database connection
+    if err = database.DB.Ping(); err != nil {
+        log.Fatalf("Failed to ping the database: %s", err)
+    }
+
+    log.Println("Connected to the database successfully")
+
     // Load templates
     templates = template.Must(template.ParseFiles(
         "templates/layout.html",
         "templates/dashboard.html",
     ))
-
-    // Connect to PostgreSQL
-    dbUser := "myuser"
-    dbPassword := "mypassword"
-    dbName := "mydatabase"
-    dbHost := "localhost"
-    dbPort := 5432
-
-    database.Connect(dbUser, dbPassword, dbName, dbHost, dbPort)
 
     // Run database migrations
     migrationsPath := "internal/db/migrations"
@@ -107,7 +123,7 @@ func fetchCompanyName() (string, error) {
     return companyName, nil
 }
 
-// Environment struct
+// Environment struct to hold information about each environment
 type Environment struct {
     Name        string
     Description string
