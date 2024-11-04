@@ -1,5 +1,5 @@
 # Ignore node_modules directory
-**/node_modules/
+**/**/node_modules/
 
 # Ignore log files
 *.log
@@ -20,3 +20,6 @@ build/
 
 # Ignore dependency directories
 vendor/
+
+# Ignore package-lock.json
+**/package-lock.json

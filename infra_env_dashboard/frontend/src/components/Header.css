@@ -3,7 +3,10 @@
 .header {
     background-color: #00bcd4;
     color: white;
-    padding: 20px;
+    padding: 20px 0;
+    border-radius: 0;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100vw;
     position: relative;
     text-align: center;
 }
@@ -13,25 +16,28 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 0 5%;
 }
 
 .header-title h1 {
     font-size: 2.5em;
     margin: 0;
+    font-weight: bold;
+    text-align: center;
 }
 
 .header-title p {
     font-size: 1em;
-    margin: 5px 0 0;
+    margin: 8px 0 0;
+    text-align: center;
 }
 
-/* Icons positioned to the top-right corner */
 .header-icons {
+    display: flex;
+    gap: 15px;
     position: absolute;
     top: 20px;
     right: 20px;
-    display: flex;
-    gap: 15px;
 }
 
 .icon {
@@ -42,50 +48,8 @@
 }
 
 .icon:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
     color: #333;
-}
-
-/* Dropdown styling */
-.theme-dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 30px;
-    right: 0;
-    background-color: white;
-    color: black;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
-    padding: 10px 0;
-    min-width: 150px;
-    z-index: 10;
-}
-
-/* Show dropdown when theme-dropdown is active */
-.theme-dropdown:hover .dropdown-menu,
-.theme-dropdown:focus-within .dropdown-menu,
-.theme-dropdown:active .dropdown-menu {
-    display: block;
-}
-
-.dropdown-item {
-    padding: 8px 16px;
-    cursor: pointer;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.2s ease;
-}
-
-.dropdown-item:hover {
-    background-color: #f0f0f0;
 }
 
 .header-nav {
@@ -107,16 +71,17 @@
     display: inline;
 }
 
-.header-nav a {
+.nav-link {
     color: white;
     text-decoration: none;
     font-weight: bold;
     padding: 8px 12px;
     transition: background-color 0.3s;
+    border-radius: 5px;
 }
 
-.header-nav a:hover,
-.header-nav a.active {
-    background-color: rgba(0, 0, 0, 0.1);
+/* Styling for the active nav link */
+.nav-link.active {
+    background-color: rgba(0, 0, 0, 0.1); /* Darker background to indicate active */
     border-radius: 5px;
 }

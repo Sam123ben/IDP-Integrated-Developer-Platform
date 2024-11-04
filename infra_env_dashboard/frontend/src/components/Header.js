@@ -1,30 +1,20 @@
 // src/components/Header.js
 
-import React, { useState, useEffect } from 'react';
-import './Header.css';
-import Icon from './Icon';
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import "./Header.css";
 
 const Header = () => {
-    const [theme, setTheme] = useState('light');
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
-    useEffect(() => {
-        // Check session storage for a saved theme on component mount
-        const savedTheme = sessionStorage.getItem('theme');
-        if (savedTheme) {
-            setTheme(savedTheme);
-            document.body.className = savedTheme;
-        }
-    }, []);
+    const toggleDropdown = () => {
+        setDropdownVisible(!dropdownVisible);
+    };
 
-    const toggleTheme = (selectedTheme) => {
-        setTheme(selectedTheme);
-        document.body.className = selectedTheme;
-
-        // Save the selected theme in session storage
-        sessionStorage.setItem('theme', selectedTheme);
-
-        setDropdownVisible(false); // Hide the dropdown after selecting
+    const setTheme = (theme) => {
+        document.body.className = theme;
+        sessionStorage.setItem("theme", theme);
+        setDropdownVisible(false);
     };
 
     return (
@@ -35,24 +25,15 @@ const Header = () => {
                     <p>Monitor, Manage, and Optimize Your Infrastructure from a Single View</p>
                 </div>
                 <div className="header-icons">
-                    <Icon icon="refresh" onClick={() => window.location.reload()} />
-
+                    <span className="icon" onClick={() => window.location.reload()}>🔄</span>
+                    
                     {/* Theme icon with dropdown */}
-                    <div 
-                        className="theme-dropdown" 
-                        onMouseEnter={() => setDropdownVisible(true)}
-                        onMouseLeave={() => setDropdownVisible(false)}
-                        onClick={() => setDropdownVisible(!dropdownVisible)}
-                    >
-                        <Icon icon="settings" />
+                    <div className="theme-dropdown">
+                        <span className="icon" onClick={toggleDropdown}>⚙️</span>
                         {dropdownVisible && (
                             <div className="dropdown-menu">
-                                <div className="dropdown-item" onClick={() => toggleTheme('light')}>
-                                    🌞 Light Theme
-                                </div>
-                                <div className="dropdown-item" onClick={() => toggleTheme('dark')}>
-                                    🌙 Dark Theme
-                                </div>
+                                <div className="dropdown-item" onClick={() => setTheme("light")}>🌞 Light Theme</div>
+                                <div className="dropdown-item" onClick={() => setTheme("dark")}>🌙 Dark Theme</div>
                             </div>
                         )}
                     </div>
@@ -60,10 +41,10 @@ const Header = () => {
             </div>
             <nav className="header-nav">
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/environments">Environments/Infra</a></li>
-                    <li><a href="/build">Build Pipeline</a></li>
-                    <li><a href="/deploy" className="active">Deployment Pipeline</a></li>
+                    <li><NavLink exact="true" to="/" className="nav-link" activeclassname="active">Home</NavLink></li>
+                    <li><NavLink to="/environments" className="nav-link" activeclassname="active">Environments/Infra</NavLink></li>
+                    <li><NavLink to="/build" className="nav-link" activeclassname="active">Build Pipeline</NavLink></li>
+                    <li><NavLink to="/deploy" className="nav-link" activeclassname="active">Deployment Pipeline</NavLink></li>
                 </ul>
             </nav>
         </header>
