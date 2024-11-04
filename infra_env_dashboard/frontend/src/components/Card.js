@@ -1,7 +1,8 @@
 // src/components/Card.js
 
 import React from "react";
-import "../styles/Card.css";
+import "../styles/TileContainer.css"; // Import container-specific styles
+import "../styles/Card.css"; // Import card-specific styles
 
 function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, statusClass }) {
     return (

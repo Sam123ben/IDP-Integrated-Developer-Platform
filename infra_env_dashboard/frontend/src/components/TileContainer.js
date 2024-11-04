@@ -40,8 +40,8 @@ function TileContainer() {
     ];
 
     return (
-        <div className="card-layout"> {/* New distinct name */}
-            <div className="tile-container">
+        <div className="card-layout"> {/* Wrapper for the main card layout */}
+            <div className="tile-container"> {/* Container for grid layout */}
                 <div className="card-grid">
                     {environments.map((env, index) => (
                         <Card
