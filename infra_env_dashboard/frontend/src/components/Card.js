@@ -15,7 +15,7 @@ function Card({ title, status, statusColor, lastUpdated }) {
                 <p><strong>Contact:</strong> Taj</p>
                 <p><strong>App Version:</strong> 2021.07.27</p>
                 <p><strong>Database Version:</strong> 7.2.0555</p>
-                <p><strong>Comments:</strong> Update in progress</p>
+                <p><strong>Comments:</strong> Update in progress and run the pipeline and check</p>
             </div>
         </div>
     );

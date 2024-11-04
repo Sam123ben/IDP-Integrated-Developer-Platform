@@ -2,49 +2,31 @@
 
 import React from "react";
 import "../styles/TileContainer.css";
+import { FaExclamationTriangle } from "react-icons/fa"; // Import icon from react-icons
 
 function TileContainer() {
-    // Example data for each environment card
     const environments = [
         {
             name: "SMOKE",
             lastUpdated: "19/08/2021 21:30",
+            url: "https://smoke.example.com/",
             status: "Failed Deployment",
             contact: "Taj",
             appVersion: "2021.07.27",
             dbVersion: "7.2.0555",
-            comments: "Update in progress",
-            statusClass: "card-failed", // Assign class based on status
+            comments: "Upgrade in progress",
+            statusClass: "card-failed",
         },
         {
-            name: "MANUAL",
+            name: "DEV",
             lastUpdated: "19/08/2021 21:30",
-            status: "Deployment In Progress",
+            url: "https://dev.example.com/",
+            status: "Failed Deployment",
             contact: "Taj",
             appVersion: "2021.07.27",
             dbVersion: "7.2.0555",
-            comments: "Update in progress",
-            statusClass: "card-in-progress",
-        },
-        {
-            name: "MANUAL VIC",
-            lastUpdated: "19/08/2021 21:30",
-            status: "Online",
-            contact: "Taj",
-            appVersion: "2021.07.27",
-            dbVersion: "7.2.0555",
-            comments: "Update in progress",
-            statusClass: "card-online",
-        },
-        {
-            name: "PRE LAUNCH",
-            lastUpdated: "19/08/2021 21:30",
-            status: "Online",
-            contact: "Taj",
-            appVersion: "2021.07.27",
-            dbVersion: "7.2.0555",
-            comments: "Update in progress",
-            statusClass: "card-online",
+            comments: "Upgrade in progress",
+            statusClass: "card-failed",
         },
     ];
 
@@ -53,21 +35,22 @@ function TileContainer() {
             <div className="card-grid">
                 {environments.map((env, index) => (
                     <div key={index} className={`card ${env.statusClass}`}>
-                        <h3 className="card-title">{env.name}</h3>
-                        <div className="card-section">
-                            <p><strong>Last updated:</strong> {env.lastUpdated}</p>
-                            <p><strong>Status:</strong> {env.status}</p>
+                        <div className="card-header">
+                            <FaExclamationTriangle className="card-icon" /> {/* Icon */}
+                            <h3 className="card-title">{env.name}</h3>
+                            <div className="card-updated">
+                                <span>Last updated: {env.lastUpdated}</span>
+                                <span className="three-dots">⋮</span>
+                            </div>
                         </div>
-                        <div className="card-section">
-                            <p><strong>Contact:</strong> {env.contact}</p>
-                        </div>
-                        <div className="card-section">
-                            <p><strong>App Version:</strong> {env.appVersion}</p>
-                            <p><strong>Database Version:</strong> {env.dbVersion}</p>
-                        </div>
-                        <div className="card-section">
-                            <p><strong>Comments:</strong> {env.comments}</p>
-                        </div>
+                        <a href={env.url} target="_blank" rel="noopener noreferrer" className="card-link">
+                            {env.url}
+                        </a>
+                        <p><strong>Status:</strong> <span className="status-text">{env.status}</span></p>
+                        <p><strong>Contact:</strong> {env.contact}</p>
+                        <p><strong>App Version:</strong> {env.appVersion}</p>
+                        <p><strong>Database Version:</strong> {env.dbVersion}</p>
+                        <p><strong>Comments:</strong> {env.comments}</p>
                     </div>
                 ))}
             </div>

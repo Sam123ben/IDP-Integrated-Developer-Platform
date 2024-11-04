@@ -12,7 +12,7 @@ function MainContent() {
                 <p>Contact: Taj</p>
                 <p>App Version: 2021.07.27</p>
                 <p>Database Version: 7.2.0555</p>
-                <p>Comments: Update in progress</p>
+                <p>Comments: Update in progress and run the pipeline and check</p>
             </div>
             <div className="card manual">
                 <h4>MANUAL</h4>
@@ -20,7 +20,7 @@ function MainContent() {
                 <p>Contact: Taj</p>
                 <p>App Version: 2021.07.27</p>
                 <p>Database Version: 7.2.0555</p>
-                <p>Comments: Update in progress</p>
+                <p>Comments: Update in progress and run the pipeline and check</p>
             </div>
             {/* Add more cards as needed */}
         </div>
