@@ -1,47 +1,34 @@
 // src/components/TileContainer.js
 
 import React from "react";
-import Card from "./Card"; // Import the Card component
-import "../styles/TileContainer.css"; // Import container-specific styles
-import "../styles/Card.css"; // Import card-specific styles
+import Card from "./Card";
+import "../styles/TileContainer.css";
+import "../styles/Card.css";
 
 function TileContainer() {
     const environments = [
         {
             name: "SMOKE",
             lastUpdated: "19/08/2021 21:30",
-            status: "Failed Deployment",
-            contact: "Taj",
-            appVersion: "2021.07.27",
-            dbVersion: "7.2.0555",
-            comments: "Upgrade in progress",
-            statusClass: "card-failed",
-        },
-        {
-            name: "DEV",
-            lastUpdated: "19/08/2021 21:30",
-            status: "Deployment In Progress",
-            contact: "Taj",
-            appVersion: "2021.07.27",
-            dbVersion: "7.2.0555",
-            comments: "Upgrade in progress",
-            statusClass: "card-in-progress",
-        },
-        {
-            name: "QA",
-            lastUpdated: "19/08/2021 21:30",
             status: "Online",
-            contact: "Taj",
-            appVersion: "2021.07.27",
-            dbVersion: "7.2.0555",
-            comments: "Running smoothly",
+            contact: "Samyak",
+            appVersion: "Smoke Build",
+            dbVersion: "7.2.0876",
+            comments: "Testing this env so please check",
             statusClass: "card-online",
+            applications: [
+                { name: "awp", version: "develop-20240201", status: "green" },
+                { name: "idsrv", version: "develop-20231113", status: "orange" },
+                { name: "portal", version: "develop-20240429", status: "orange" },
+                { name: "webapi", version: "develop-20240415", status: "red" }
+            ]
         },
+        // Other environments here...
     ];
 
     return (
-        <div className="card-layout"> {/* Wrapper for the main card layout */}
-            <div className="tile-container"> {/* Container for grid layout */}
+        <div className="card-layout">
+            <div className="tile-container">
                 <div className="card-grid">
                     {environments.map((env, index) => (
                         <Card
@@ -54,6 +41,7 @@ function TileContainer() {
                             dbVersion={env.dbVersion}
                             comments={env.comments}
                             statusClass={env.statusClass}
+                            applications={env.applications} // Pass application data
                         />
                     ))}
                 </div>
