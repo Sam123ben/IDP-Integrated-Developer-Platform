@@ -1,16 +1,16 @@
 // src/components/Card.js
 
 import React, { useState } from "react";
-import AppVersionModal from "./AppVersionModal"; // Import the modal component
+import AppVersionModal from "./AppVersionModal";
 import "../styles/TileContainer.css";
 import "../styles/Card.css";
 
 function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, statusClass }) {
-    const [showModal, setShowModal] = useState(false); // Control modal visibility
+    const [showModal, setShowModal] = useState(false);
 
     const handleVersionClick = (event) => {
-        event.stopPropagation(); // Prevents propagation to other elements
-        setShowModal(true); // Show the modal
+        event.stopPropagation();
+        setShowModal(true); // Open the modal
     };
 
     const closeModal = () => {
@@ -35,7 +35,7 @@ function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comme
                     <span className="three-dots">⋮</span>
                 </div>
             </div>
-            {/* URL for the environment */}
+            {/* Environment URL */}
             <a href={`https://${name.toLowerCase()}.example.com`} className="card-link" target="_blank" rel="noopener noreferrer">
                 https://{name.toLowerCase()}.example.com
             </a>
@@ -54,8 +54,8 @@ function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comme
             <p><strong>Database Version:</strong> {dbVersion}</p>
             <p><strong>Comments:</strong> {comments}</p>
 
-            {/* Render the modal */}
-            {showModal && <AppVersionModal onClose={closeModal} />}
+            {/* Show modal if needed */}
+            {showModal && <AppVersionModal onClose={closeModal} envName={name} />}
         </div>
     );
 }

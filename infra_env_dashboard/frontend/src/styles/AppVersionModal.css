@@ -1,0 +1,86 @@
+/* src/styles/AppVersionModal.css */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1001;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #007B8F; /* Adjust color for banner */
+    color: white;
+    padding: 10px 20px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-weight: bold;
+}
+
+.env-name {
+    font-size: 0.9em;
+    font-weight: normal;
+    opacity: 0.8;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    color: white;
+    cursor: pointer;
+}
+
+.modal-body ul {
+    list-style: none;
+    padding: 0;
+}
+
+.modal-body li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    align-items: center;
+}
+
+.status-icon {
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+.status-icon.success {
+    color: green;
+}
+
+.status-icon.in-progress {
+    color: orange;
+}
+
+.status-icon.failed {
+    color: red;
+}
+
+.version {
+    margin-left: auto; /* Move version to the far right */
+    font-weight: normal;
+    color: #333;
+}
