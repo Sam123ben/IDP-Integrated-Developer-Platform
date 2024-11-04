@@ -87,10 +87,11 @@
 }
 
 .three-dots {
-    font-size: 1.2em; /* Adjusted size for better alignment */
+    font-size: 2.0em; /* Increased size for bigger dots */
     cursor: pointer;
-    color: #333;
+    color: #000; /* Changed color to black for darker dots */
 }
+
 
 .card-link {
     color: #0066cc;
