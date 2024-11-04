@@ -4,6 +4,7 @@ import React from "react";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import TileContainer from "./components/TileContainer";
+import MainContent from "./components/MainContent"; // New component for cards
 import "./styles/App.css";
 
 function App() {

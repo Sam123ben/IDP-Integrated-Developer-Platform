@@ -21,3 +21,11 @@
     top: 20px; /* Sidebar stays in view when scrolling */
     align-self: start;
 }
+
+/* src/styles/App.css */
+
+.app-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
