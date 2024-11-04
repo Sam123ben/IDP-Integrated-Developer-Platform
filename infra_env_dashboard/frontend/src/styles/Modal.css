@@ -10,23 +10,27 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1000; /* Ensures it is on top of other elements */
+    overflow: hidden; /* Prevents scrolling when the modal is open */
 }
 
 .modal-content {
+    position: relative; /* Keeps it centered within modal-overlay */
     background: white;
     border-radius: 8px;
     width: 400px;
     max-width: 90%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.3s ease-in-out;
+    z-index: 1001; /* Ensures content appears on top of overlay */
+    overflow: hidden; /* Avoids overflow issues within modal */
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 3px 8px; /* Reduced padding for a smaller header */
+    padding: 8px 15px;
     background-color: #008cba;
     color: white;
     border-top-left-radius: 8px;
@@ -34,12 +38,12 @@
 }
 
 .modal-title {
-    font-size: 1em; /* Slightly smaller font size */
+    font-size: 1em;
     font-weight: bold;
 }
 
 .modal-subtitle {
-    font-size: 0.9em; /* Reduced font size */
+    font-size: 0.9em;
     margin-left: auto;
 }
 
@@ -47,12 +51,12 @@
     background: none;
     border: none;
     color: white;
-    font-size: 1em; /* Smaller close button */
+    font-size: 1em;
     cursor: pointer;
 }
 
 .modal-body {
-    padding: 15px 20px; /* Slightly reduced padding for content */
+    padding: 15px 20px;
 }
 
 .modal-list {

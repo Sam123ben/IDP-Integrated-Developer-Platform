@@ -287,6 +287,13 @@
     color: red;
 }
 
+.version-clickable {
+    color: #007BFF;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .card-grid {
