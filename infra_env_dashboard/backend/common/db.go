@@ -1,65 +1,39 @@
 package common
 
 import (
-	"context"
+	"database/sql"
 	"fmt"
 	"log"
 
-	"io/ioutil"
-
-	"github.com/jackc/pgx/v4"
-	"gopkg.in/yaml.v2"
+	_ "github.com/lib/pq" // PostgreSQL driver
+	"github.com/spf13/viper"
 )
 
-var DB *pgx.Conn
+var DB *sql.DB
 
-// Config struct to hold database configuration
-type Config struct {
-	Database struct {
-		User     string `yaml:"user"`
-		Password string `yaml:"password"`
-		DBName   string `yaml:"dbname"`
-		Host     string `yaml:"host"`
-		Port     string `yaml:"port"`
-	} `yaml:"database"`
-}
-
-// LoadConfig loads configuration from config.yaml
-func LoadConfig(configFile string) (*Config, error) {
-	config := &Config{}
-
-	// Read YAML file
-	data, err := ioutil.ReadFile(configFile)
-	if err != nil {
-		return nil, fmt.Errorf("error reading config file: %v", err)
+func InitDB() {
+	viper.SetConfigFile("common/config.yaml")
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Error reading config file, %s", err)
 	}
 
-	// Unmarshal YAML file into Config struct
-	err = yaml.Unmarshal(data, config)
-	if err != nil {
-		return nil, fmt.Errorf("error unmarshalling config file: %v", err)
-	}
-
-	return config, nil
-}
-
-// Connect initializes the database connection using config.yaml
-func Connect() {
-	config, err := LoadConfig("backend/common/config.yaml") // Path to your config.yaml
-	if err != nil {
-		log.Fatalf("Could not load config: %v", err)
-	}
-
-	connString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s",
-		config.Database.User,
-		config.Database.Password,
-		config.Database.Host,
-		config.Database.Port,
-		config.Database.DBName,
+	dbConfig := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		viper.GetString("database.host"),
+		viper.GetString("database.port"),
+		viper.GetString("database.user"),
+		viper.GetString("database.password"),
+		viper.GetString("database.name"),
+		viper.GetString("database.sslmode"),
 	)
 
-	DB, err = pgx.Connect(context.Background(), connString)
+	var err error
+	DB, err = sql.Open("postgres", dbConfig)
 	if err != nil {
-		log.Fatalf("Unable to connect to database: %v\n", err)
+		log.Fatalf("Error opening database: %s", err)
+	}
+
+	if err := DB.Ping(); err != nil {
+		log.Fatalf("Error connecting to the database: %s", err)
 	}
 }
