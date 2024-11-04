@@ -1,10 +1,64 @@
-/* src/styles/TileContainer.css */
-
 .tile-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    display: flex;
+    justify-content: center;
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 12px;
+    width: 100%;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns for two cards per row */
+    gap: 20px; /* Space between cards */
+    max-width: 1200px; /* Maximum width for the grid container */
+    width: 100%;
+    align-items: start;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: auto;
+    width: 100%; /* Full width of grid column */
+}
+
+.card-title {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.card-section {
+    margin-bottom: 15px; /* Space between sections */
+}
+
+.card-section p {
+    margin: 4px 0; /* Consistent spacing between lines */
+    font-size: 0.9em;
+    color: #555;
+}
+
+.card-failed {
+    border-left: 6px solid red;
+}
+
+.card-in-progress {
+    border-left: 6px solid orange;
+}
+
+.card-online {
+    border-left: 6px solid green;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 768px) {
+    .card-grid {
+        grid-template-columns: 1fr; /* Single column on smaller screens */
+    }
 }
