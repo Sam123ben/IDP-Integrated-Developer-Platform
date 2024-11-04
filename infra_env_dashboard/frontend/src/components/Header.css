@@ -4,11 +4,10 @@
     background-color: #00bcd4;
     color: white;
     padding: 20px 0;
-    border-radius: 0;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     width: 100vw;
     position: relative;
     text-align: center;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .header-content {
@@ -50,6 +49,53 @@
 .icon:hover {
     transform: scale(1.1);
     color: #333;
+}
+
+/* Dropdown styling */
+.theme-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 35px; /* Position below the icon */
+    right: 0;
+    background-color: white;
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 10px 0;
+    min-width: 150px;
+    z-index: 10;
+    text-align: left;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* Show dropdown when hovered or when the class 'dropdown-menu-visible' is added */
+.theme-dropdown:hover .dropdown-menu,
+.theme-dropdown .dropdown-menu-visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
 }
 
 .header-nav {
