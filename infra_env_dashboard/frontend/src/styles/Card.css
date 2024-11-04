@@ -59,29 +59,43 @@
 }
 
 .status-indicator {
-    width: 18px; /* Size of the ball */
-    height: 18px;
-    border-radius: 50%; /* Makes the icon round */
+    width: 20px; /* Adjusted size for a larger appearance */
+    height: 20px;
+    border-radius: 50%; /* Make it round */
     display: inline-block;
     margin-right: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0.2)); /* Glossy effect */
+    background-blend-mode: overlay;
     position: relative;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Adds a soft shadow */
+}
+
+.status-indicator::before {
+    content: "";
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    filter: blur(2px); /* Soft, shiny spot */
 }
 
 /* Green indicator for successful status */
 .status-indicator-green {
-    background: linear-gradient(145deg, #28a745, #66ff66); /* Green gradient for shiny effect */
+    background: linear-gradient(145deg, #084f19, #66ff66); /* Green gradient for shiny effect */
 }
 
 
 /* Red indicator for unsuccessful status */
 .status-indicator-red {
-    background: linear-gradient(145deg, #dc3545, #ff6666); /* Red gradient for shiny effect */
+    background: linear-gradient(145deg, #931522, #ff6666); /* Red gradient for shiny effect */
 }
 
 /* Orange indicator for in-progress status */
 .status-indicator-orange {
-    background: linear-gradient(145deg, #ff8c00, #ffb84d); /* Deep orange gradient for shiny effect */
+    background: linear-gradient(145deg, #c4791e, #d58917); /* Deep orange gradient for shiny effect */
 }
 
 /* Shiny overlay effect */

@@ -1,26 +1,22 @@
 // src/components/Card.js
 
 import React from "react";
-import "../styles/TileContainer.css"; // Import container-specific styles
-import "../styles/Card.css"; // Import card-specific styles
+import "../styles/TileContainer.css";
+import "../styles/Card.css";
 
 function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, statusClass }) {
-    // Determine the color of the status indicator based on the status
-    const statusColor = 
-        status === "Online" ? "green" : 
-        status === "Failed Deployment" ? "red" : 
-        status === "Deployment In Progress" ? "#FF8C00" : // Deep orange for better visibility
-        "gray"; // Default color
+    const statusIndicatorClass = 
+        status === "Online" ? "status-indicator-green" : 
+        status === "Failed Deployment" ? "status-indicator-red" : 
+        status === "Deployment In Progress" ? "status-indicator-orange" : 
+        "";
 
     return (
         <div className={`card ${statusClass} big-card`}>
             <div className="card-header">
                 <div className="card-title-section">
-                    {/* Apply conditional style for status color */}
-                    <span 
-                        className="status-indicator" 
-                        style={{ backgroundColor: statusColor }}
-                    ></span>
+                    {/* Use CSS class for color */}
+                    <span className={`status-indicator ${statusIndicatorClass}`}></span>
                     <span className="card-title">{name}</span>
                 </div>
                 <div className="card-updated-section">

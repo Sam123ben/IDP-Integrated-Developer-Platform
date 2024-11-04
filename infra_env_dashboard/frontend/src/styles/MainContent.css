@@ -1,43 +1,68 @@
 /* src/styles/MainContent.css */
 
 .main-content {
-    flex-grow: 1;
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 20px;
+    padding: 20px;
+    background-color: #f5f5f5; /* Light background for contrast */
+    min-height: 100vh;
 }
 
+/* Basic card styling */
 .card {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    width: 250px; /* Adjust card width as needed */
-    border-left: 5px solid transparent; /* Default border */
+    width: 300px;
+    max-width: 100%;
+    box-sizing: border-box;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card h4 {
-    margin: 0 0 10px;
-    font-size: 1.2em;
+/* Hover effect for cards */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+/* Specific styles for different card types based on status */
+.card.smoke {
+    border-left: 4px solid red; /* Indicator for failed deployment */
+}
+
+.card.manual {
+    border-left: 4px solid #FF8C00; /* Deep orange for deployment in progress */
+}
+
+/* Status text styling */
 .status-failed {
     color: red;
     font-weight: bold;
 }
 
 .status-progress {
-    color: orange;
+    color: #FF8C00; /* Deep orange for better visibility */
     font-weight: bold;
 }
 
-/* Border colors for different card statuses */
-.card.smoke {
-    border-left-color: red;
+.status-success {
+    color: green;
+    font-weight: bold;
 }
 
-.card.manual {
-    border-left-color: orange;
+/* Typography adjustments */
+.card h2 {
+    font-size: 1.5em;
+    margin: 0 0 10px;
+    color: #333;
 }
 
-/* Add other card-specific styles as needed */
+.card p {
+    margin: 5px 0;
+    font-size: 0.95em;
+    line-height: 1.4;
+    color: #555;
+}

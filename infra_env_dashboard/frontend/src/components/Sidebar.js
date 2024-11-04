@@ -35,16 +35,16 @@ function Sidebar() {
 
             {selectedSection === "INTERNAL" && (
                 <>
-                    {/* Altitude Section */}
+                    {/* Product 1 Section */}
                     <div className="sidebar-section">
                         <div
-                            className={`collapsible-header ${expandedSections["Altitude"] ? "active" : ""}`}
-                            onClick={() => toggleSection("Altitude")}
+                            className={`collapsible-header ${expandedSections["Product 1"] ? "active" : ""}`}
+                            onClick={() => toggleSection("Product 1")}
                         >
-                            Altitude
-                            <span className={`arrow ${expandedSections["Altitude"] ? "rotate" : ""}`}>▶</span>
+                            Product 1
+                            <span className={`arrow ${expandedSections["Product 1"] ? "rotate" : ""}`}>▶</span>
                         </div>
-                        <ul className={`collapsible-content ${expandedSections["Altitude"] ? "visible" : ""}`}>
+                        <ul className={`collapsible-content ${expandedSections["Product 1"] ? "visible" : ""}`}>
                             <li>DEV</li>
                             <li>QA</li>
                             <li>CONSULT</li>
@@ -52,16 +52,16 @@ function Sidebar() {
                         </ul>
                     </div>
 
-                    {/* Authority Section */}
+                    {/* Product 2 Section */}
                     <div className="sidebar-section">
                         <div
-                            className={`collapsible-header ${expandedSections["Authority"] ? "active" : ""}`}
-                            onClick={() => toggleSection("Authority")}
+                            className={`collapsible-header ${expandedSections["Product 2"] ? "active" : ""}`}
+                            onClick={() => toggleSection("Product 2")}
                         >
-                            Authority
-                            <span className={`arrow ${expandedSections["Authority"] ? "rotate" : ""}`}>▶</span>
+                            Product 2
+                            <span className={`arrow ${expandedSections["Product 2"] ? "rotate" : ""}`}>▶</span>
                         </div>
-                        <ul className={`collapsible-content ${expandedSections["Authority"] ? "visible" : ""}`}>
+                        <ul className={`collapsible-content ${expandedSections["Product 2"] ? "visible" : ""}`}>
                             <li>DEV</li>
                             <li>QA</li>
                             <li>STAGING</li>

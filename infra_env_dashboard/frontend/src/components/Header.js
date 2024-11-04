@@ -53,14 +53,16 @@ const Header = () => {
                     <p>Monitor, Manage, and Optimize Your Infrastructure from a Single View</p>
                 </div>
                 <div className="header-icons">
-                    <span className="icon" onClick={() => window.location.reload()}>🔄</span>
+                    <span className="icon" onClick={() => window.location.reload()} title="Refresh">
+                        🔄
+                    </span>
                     
                     {/* Theme icon with dropdown */}
                     <div 
                         className="theme-dropdown" 
                         onClick={toggleDropdown}
                     >
-                        <span className="icon">⚙️</span>
+                        <span className="icon" title="Settings">⚙️</span>
                         <div className={`dropdown-menu ${dropdownVisible ? 'dropdown-menu-visible' : ''}`}>
                             <div className="dropdown-item" onClick={() => handleThemeChange("light")}>🌞 Light Theme</div>
                             <div className="dropdown-item" onClick={() => handleThemeChange("dark")}>🌙 Dark Theme</div>
