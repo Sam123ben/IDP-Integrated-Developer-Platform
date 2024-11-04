@@ -49,11 +49,11 @@ function Sidebar() {
                         <div className="collapsible-item">
                             <div
                                 className="item-header"
-                                onClick={() => toggleProductExpand("altitude")}
+                                onClick={() => toggleProductExpand("Product 1")}
                             >
-                                Altitude
+                                Product 1
                             </div>
-                            {expandedProducts["altitude"] && (
+                            {expandedProducts["Product 1"] && (
                                 <ul className="environment-list">
                                     <li>DEV</li>
                                     <li>QA</li>
@@ -65,11 +65,11 @@ function Sidebar() {
                         <div className="collapsible-item">
                             <div
                                 className="item-header"
-                                onClick={() => toggleProductExpand("authority")}
+                                onClick={() => toggleProductExpand("Product 2")}
                             >
-                                Authority
+                                Product 2
                             </div>
-                            {expandedProducts["authority"] && (
+                            {expandedProducts["Product 2"] && (
                                 <ul className="environment-list">
                                     <li>DEV</li>
                                     <li>QA</li>
