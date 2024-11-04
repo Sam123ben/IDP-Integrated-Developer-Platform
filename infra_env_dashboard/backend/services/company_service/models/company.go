@@ -1,8 +1,9 @@
 package models
 
 import (
-	"company_service/common"
 	"log"
+
+	"github.com/Sam123ben/IDP-Integrated-Developer-Platform/infra_env_dashboard/backend/common"
 )
 
 type Company struct {

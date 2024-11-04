@@ -1,11 +1,12 @@
 package main
 
 import (
-	"common"
 	"company_service/routes"
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/Sam123ben/IDP-Integrated-Developer-Platform/infra_env_dashboard/backend/common"
 )
 
 func main() {
