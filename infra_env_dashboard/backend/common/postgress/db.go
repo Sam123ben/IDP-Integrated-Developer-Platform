@@ -1,22 +1,27 @@
-package common
+package postgress
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 
-	_ "github.com/lib/pq" // PostgreSQL driver
 	"github.com/spf13/viper"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-var DB *sql.DB
+// InitDB initializes the PostgreSQL database connection using GORM
+func InitDB() (*gorm.DB, error) {
+	// Set up the configuration file
+	viper.SetConfigName("config")           // Name of the config file (without extension)
+	viper.SetConfigType("yaml")             // Type of the config file
+	viper.AddConfigPath("./common/configs") // Path to look for the config file
 
-func InitDB() {
-	viper.SetConfigFile("../../common/configs/config.yaml")
+	// Read the config file
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err)
+		return nil, fmt.Errorf("error reading config file: %w", err)
 	}
 
+	// Construct the database connection string
 	dbConfig := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		viper.GetString("database.host"),
@@ -27,13 +32,12 @@ func InitDB() {
 		viper.GetString("database.sslmode"),
 	)
 
-	var err error
-	DB, err = sql.Open("postgres", dbConfig)
+	// Open a GORM database connection
+	db, err := gorm.Open(postgres.Open(dbConfig), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("Error opening database: %s", err)
+		return nil, fmt.Errorf("error opening database: %w", err)
 	}
 
-	if err := DB.Ping(); err != nil {
-		log.Fatalf("Error connecting to the database: %s", err)
-	}
+	log.Println("Successfully connected to the database")
+	return db, nil
 }
