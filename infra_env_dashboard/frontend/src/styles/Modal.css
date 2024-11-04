@@ -26,7 +26,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 20px; /* Reduced padding for a smaller banner */
+    padding: 3px 8px; /* Reduced padding for a smaller header */
     background-color: #008cba;
     color: white;
     border-top-left-radius: 8px;
@@ -34,12 +34,12 @@
 }
 
 .modal-title {
-    font-size: 1.1em;
+    font-size: 1em; /* Slightly smaller font size */
     font-weight: bold;
 }
 
 .modal-subtitle {
-    font-size: 1em;
+    font-size: 0.9em; /* Reduced font size */
     margin-left: auto;
 }
 
@@ -47,12 +47,12 @@
     background: none;
     border: none;
     color: white;
-    font-size: 1.2em;
+    font-size: 1em; /* Smaller close button */
     cursor: pointer;
 }
 
 .modal-body {
-    padding: 20px;
+    padding: 15px 20px; /* Slightly reduced padding for content */
 }
 
 .modal-list {
@@ -73,14 +73,14 @@
 }
 
 .app-name {
-    flex: 1; /* Fills remaining space, aligning to the left */
+    flex: 1;
 }
 
 .version-detail {
     font-weight: normal;
     text-align: right;
     color: #333;
-    margin-left: auto; /* Aligns the version details to the right */
+    margin-left: auto;
 }
 
 .status-icon.green {
