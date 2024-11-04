@@ -1,0 +1,304 @@
+/* src/styles/Card.css */
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns on larger screens */
+    gap: 40px; /* Space between cards */
+    max-width: 1200px;
+    width: 100%;
+    align-items: start; /* Align items to the start for consistent vertical alignment */
+    justify-content: center; /* Center the grid */
+    margin: 0 auto; /* Center align grid container */
+    padding: 20px; /* Padding around grid */
+}
+
+.card.big-card {
+    background-color: #ffffff;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%; /* Full width within the grid */
+    max-width: 600px; /* Control max width for readability */
+    min-height: 300px; /* Minimum height for large cards */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    margin: auto; /* Center card */
+}
+
+.card {
+    margin: 15px;
+    background-color: #ffffff;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 15px 20px; /* Adjusted padding for a tighter layout */
+    border-left: 4px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box; /* Include padding and border in total width/height */
+    align-items: stretch;
+    overflow: auto; /* Enable vertical scrolling */
+
+    /* Hover and interaction styles */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px; /* Reduced gap for tighter layout */
+    margin-bottom: 8px; /* Adjusted spacing below header */
+}
+
+.status-indicator {
+    width: 20px; /* Adjusted size for a larger appearance */
+    height: 20px;
+    border-radius: 50%; /* Make it round */
+    display: inline-block;
+    margin-right: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0.2)); /* Glossy effect */
+    background-blend-mode: overlay;
+    position: relative;
+}
+
+.status-indicator::before {
+    content: "";
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    filter: blur(2px); /* Soft, shiny spot */
+}
+
+/* Green indicator for successful status */
+.status-indicator-green {
+    background: linear-gradient(145deg, #084f19, #66ff66); /* Green gradient for shiny effect */
+}
+
+
+/* Red indicator for unsuccessful status */
+.status-indicator-red {
+    background: linear-gradient(145deg, #931522, #ff6666); /* Red gradient for shiny effect */
+}
+
+/* Orange indicator for in-progress status */
+.status-indicator-orange {
+    background: linear-gradient(145deg, #c4791e, #d58917); /* Deep orange gradient for shiny effect */
+}
+
+/* Shiny overlay effect */
+.status-indicator::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 8px; /* Adjust for a smaller highlight */
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(130, 111, 111, 0.7); /* White overlay for shine */
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5); /* Soft glow */
+}
+
+.card-title-section {
+    display: flex;
+    align-items: center;
+}
+
+.card-icon {
+    color: red;
+    margin-right: 6px; /* Adjusted for less space */
+}
+
+.card-title {
+    font-size: 1.1em; /* Slightly smaller font size */
+    font-weight: normal;
+    color: #333;
+}
+
+.card-updated-section {
+    display: flex;
+    align-items: center;
+    font-size: 0.85em;
+    color: #666;
+    gap: 6px; /* Reduced space for a more compact look */
+}
+
+.card-updated {
+    white-space: nowrap;
+}
+
+.three-dots {
+    font-size: 2.0em; /* Increased size for bigger dots */
+    cursor: pointer;
+    color: #000; /* Changed color to black for darker dots */
+}
+
+
+.card-link {
+    color: #0066cc;
+    margin: 4px 0; /* Reduced margin for a tighter look */
+    text-decoration: underline;
+    font-size: 0.9em;
+    display: inline-block;
+}
+
+.card-link:hover {
+    color: darkblue;
+}
+
+.status-text {
+    color: inherit;
+}
+
+/* Status-specific styles */
+.card-failed {
+    border-left: 4px solid red;
+    background-color: #fff5f5;
+}
+
+.card-in-progress {
+    border-left: 4px solid rgb(137, 92, 7);
+    background-color: #895c07;
+}
+
+.card-online {
+    border-left: 4px solid green;
+    background-color: #165828;
+}
+
+/* Paragraph styling within card */
+.card p {
+    margin: 3px 0; /* Reduced margin for closer lines */
+    font-size: 0.9em;
+    line-height: 1.2; /* Adjusted line-height for compact spacing */
+}
+
+.card-layout {
+    display: block;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin: 0 auto;
+    max-width: 100%;
+    width: calc(100% - 40px);
+    box-sizing: content-box;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 2.5;
+    color: #333;
+    overflow: hidden;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+    transition: box-shadow 0.6s ease, transform 0.6s ease;
+    align-items: stretch;
+}
+
+.app-version-link {
+    color: #0066cc;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.dialog-box {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.dialog-header h3 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #0066cc;
+}
+
+.close-button {
+    cursor: pointer;
+    font-size: 1.5em;
+}
+
+.dialog-content {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.app-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.app-list li {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.status-icon {
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+.status-icon.green {
+    color: green;
+}
+
+.status-icon.orange {
+    color: #FF8C00;
+}
+
+.status-icon.red {
+    color: red;
+}
+
+.version-clickable {
+    color: #007BFF;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-grid {
+        grid-template-columns: 1fr; /* Switch to one column on smaller screens */
+        gap: 20px;
+        padding: 15px;
+    }
+}

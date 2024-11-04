@@ -1,0 +1,11 @@
+/* src/styles/TileContainer.css */
+
+.tile-container {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px; /* Increased padding for more spacing around the container */
+    width: 100%;
+    flex-wrap: wrap; /* Wrap tiles to next line if they overflow */
+    gap: 20px; /* Space between tiles */
+    align-items: start; /* Align items to the top */
+}

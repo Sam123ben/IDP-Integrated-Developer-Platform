@@ -1,0 +1,96 @@
+/* src/styles/Sidebar.css */
+
+/* Main sidebar container */
+.sidebar-container {
+    width: 250px; /* Fixed width for sidebar */
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: inherit;
+    justify-content: flex-start;
+    height: 100%; /* Full height within the flex container */
+}
+
+/* Header for the sections like INTERNAL and EXTERNAL */
+.sidebar-header {
+    display: flex;
+    justify-content: space-around;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.sidebar-header h3 {
+    cursor: pointer;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.sidebar-header h3.active {
+    color: #00897b;
+    font-weight: bold;
+    border-bottom: 3px solid #00897b; /* Underline active section */
+}
+
+/* Styling for each collapsible product header */
+.collapsible-header {
+    background-color: #f2f2f2;
+    padding: 12px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+.collapsible-header:hover {
+    background-color: #e8e8e8;
+}
+
+.collapsible-header.active {
+    background-color: #e0e0e0; /* Darker shade when active */
+}
+
+/* Arrow icon for collapsible header */
+.collapsible-header .arrow {
+    transition: transform 0.3s;
+}
+
+.collapsible-header.active .arrow {
+    transform: rotate(90deg); /* Rotate arrow when expanded */
+}
+
+/* Collapsible content list (hidden by default) */
+.collapsible-content {
+    display: none;
+    list-style: none;
+    padding: 0 15px; /* Indent content */
+    margin: 0;
+}
+
+.collapsible-content li {
+    padding: 8px 0;
+    font-size: 0.9em;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.collapsible-content li:hover {
+    color: #00897b; /* Highlight on hover */
+}
+
+/* Active styles for expanded content */
+.collapsible-content.visible {
+    display: block;
+}
+
+/* Additional spacing for each section */
+.sidebar-section {
+    margin-bottom: 15px;
+}

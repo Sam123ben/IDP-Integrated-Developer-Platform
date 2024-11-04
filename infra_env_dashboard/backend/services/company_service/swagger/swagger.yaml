@@ -1,0 +1,25 @@
+openapi: 3.0.0
+info:
+  title: Company Service API
+  version: "1.0"
+paths:
+  /api/company:
+    get:
+      summary: Get Company Name
+      description: Returns the company name from the database.
+      responses:
+        "200":
+          description: A JSON object with the company details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: "My Company"
+        "500":
+          description: Internal server error
