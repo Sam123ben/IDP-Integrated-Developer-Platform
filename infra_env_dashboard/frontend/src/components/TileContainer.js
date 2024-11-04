@@ -3,6 +3,7 @@
 import React from "react";
 import Card from "./Card"; // Import the Card component
 import "../styles/TileContainer.css"; // Import container-specific styles
+import "../styles/Card.css"; // Import card-specific styles
 
 function TileContainer() {
     const environments = [

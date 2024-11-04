@@ -1,9 +1,29 @@
 /* src/styles/Card.css */
 
-/* .card {
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive columns */
+    grid-template-rows: auto;
+    grid-template-areas:
+        "header header"
+        "sidebar main"
+        "footer footer";
+    grid-auto-rows: minmax(150px, auto); /* Default row size */
+    gap: 50px; /* Space between cards */
+    max-width: 2500px;
+    width: 100%;
+    align-items: stretch; /* Align items to the top */
+    justify-content: center; /* Center the grid */
+    margin: 0 auto; /* Center align grid container */
+    padding: 20px; /* Padding around grid */
+    margin-left: auto;
+}
+
+.card {
     background-color: #ffffff;
+    border: 2px solid #ddd;
     border-radius: 8px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-left: 4px solid transparent;
     display: flex;
@@ -11,31 +31,28 @@
     justify-content: space-between;
     height: 100%;
     box-sizing: inherit;
-} */
+    align-items: stretch; /* Align items to the top */
 
-.card {
-    /* Core styling */
-    background-color: #ffffff;              /* Card background color */
-    border-radius: 8px;                     /* Rounded corners */
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);  /* Soft shadow */
-    padding: 20px;                          /* Internal padding */
-    border-left: 4px solid transparent;     /* Left border, customizable color */
-    display: flex;                          /* Flex layout for children */
-    flex-direction: column;                 /* Stack children vertically */
-    justify-content: space-between;         /* Space out children */
-    height: 100%;                           /* Take up full height of parent */
-    box-sizing: inherit;                    /* Inherit box-sizing from parent */
-    
     /* Hover and interaction styles */
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transition */
-    cursor: pointer;                        /* Pointer cursor for interactivity */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Slight hover effect for visual feedback */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .card-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+    flex-direction: row;             /* Horizontal layout */
+    justify-content: space-between;  /* Spread items evenly */
+    align-items: center;             /* Center items vertically */
+    flex-wrap: nowrap;               /* No wrapping */
+    gap: 10px;                       /* Space between items */
+    margin-bottom: 10px;             /* Space below header */
+    padding: 10px 15px;              /* Padding around header */
+    border-bottom: 1px solid #ddd;   /* Divider line at bottom */
 }
 
 .card-title-section {
@@ -84,6 +101,7 @@
     color: inherit;
 }
 
+/* Status-specific styles */
 .card-failed {
     border-left: 4px solid red;
     background-color: #fff5f5;
@@ -99,8 +117,55 @@
     background-color: #f0fff4;
 }
 
+/* Paragraph styling within card */
 .card p {
     margin: 5px 0;
     font-size: 0.9em;
     line-height: 1.4;
+}
+
+.card-layout {
+    display: block;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin: 0 auto;
+    max-width: 100%;
+    width: calc(100% - 40px);
+    box-sizing: content-box;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 2.5;
+    color: #333;
+    overflow: hidden;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+    transition: box-shadow 0.6s ease, transform 0.6s ease;
+    align-items: stretch; /* Align items to the top */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .card-grid {
+        grid-template-columns: 1fr; /* Switch to one column on smaller screens */
+        gap: 20px; /* Reduce gap for smaller screens */
+        padding: 15px; /* Adjust padding */
+    }
+}
+
+@media (min-width: 1200px) {
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr); /* Three columns for larger screens */
+    }
+}
+
+
+@media (max-width: 768px) {
+    .card-layout {
+        max-width: 100%;
+        width: 100%;
+        padding: 15px;
+    }
 }

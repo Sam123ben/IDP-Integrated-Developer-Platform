@@ -7,7 +7,7 @@ function MainContent() {
     return (
         <div className="main-content">
             <div className="card smoke">
-                <h4>SMOKE</h4>
+                <h2>SMOKE</h2>
                 <p>Status: <span className="status-failed">Failed Deployment</span></p>
                 <p>Contact: Taj</p>
                 <p>App Version: 2021.07.27</p>
@@ -15,7 +15,7 @@ function MainContent() {
                 <p>Comments: Update in progress and run the pipeline and check</p>
             </div>
             <div className="card manual">
-                <h4>MANUAL</h4>
+                <h2>MANUAL</h2>
                 <p>Status: <span className="status-progress">Deployment In Progress</span></p>
                 <p>Contact: Taj</p>
                 <p>App Version: 2021.07.27</p>
