@@ -35,13 +35,11 @@
     border: 2px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 15px 20px; /* Adjusted padding for a tighter layout */
     border-left: 4px solid transparent;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%;
-    min-height: 300px; /* Set a minimum height for vertical length */
     box-sizing: border-box; /* Include padding and border in total width/height */
     align-items: stretch;
     overflow: auto; /* Enable vertical scrolling */
@@ -51,18 +49,13 @@
     cursor: pointer;
 }
 
-.card:hover {
-    transform: translateY(-5px); /* Slight hover effect for visual feedback */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
 .card-header {
     display: flex;
-    flex-direction: row;             /* Horizontal layout */
-    justify-content: space-between;  /* Spread items evenly */
-    align-items: center;             /* Center items vertically */
-    gap: 10px;
-    margin-bottom: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px; /* Reduced gap for tighter layout */
+    margin-bottom: 8px; /* Adjusted spacing below header */
 }
 
 .card-title-section {
@@ -72,11 +65,11 @@
 
 .card-icon {
     color: red;
-    margin-right: 8px;
+    margin-right: 6px; /* Adjusted for less space */
 }
 
 .card-title {
-    font-size: 1.2em;
+    font-size: 1.1em; /* Slightly smaller font size */
     font-weight: normal;
     color: #333;
 }
@@ -86,7 +79,7 @@
     align-items: center;
     font-size: 0.85em;
     color: #666;
-    gap: 8px;
+    gap: 6px; /* Reduced space for a more compact look */
 }
 
 .card-updated {
@@ -94,15 +87,14 @@
 }
 
 .three-dots {
-    font-size: 1.5em;
+    font-size: 1.2em; /* Adjusted size for better alignment */
     cursor: pointer;
     color: #333;
-    font-weight: bold;
 }
 
 .card-link {
     color: #0066cc;
-    margin: 5px 0;
+    margin: 4px 0; /* Reduced margin for a tighter look */
     text-decoration: underline;
     font-size: 0.9em;
     display: inline-block;
@@ -130,9 +122,9 @@
 
 /* Paragraph styling within card */
 .card p {
-    margin: 5px 0;
+    margin: 3px 0; /* Reduced margin for closer lines */
     font-size: 0.9em;
-    line-height: 1.4;
+    line-height: 1.2; /* Adjusted line-height for compact spacing */
 }
 
 .card-layout {
@@ -149,14 +141,12 @@
     font-family: Arial, sans-serif;
     font-size: 16px;
     line-height: 2.5;
-    overflow:hidden; /* Hide any overflowing content */
-    overflow-x:scroll; /* Enable horizontal scrolling */
     color: #333;
     overflow: hidden;
     text-align: left;
     border: 1px solid #e0e0e0;
     transition: box-shadow 0.6s ease, transform 0.6s ease;
-    align-items: stretch; /* Align items to the top */
+    align-items: stretch;
 }
 
 /* Responsive adjustments */
