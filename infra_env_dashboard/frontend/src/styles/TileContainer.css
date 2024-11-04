@@ -74,19 +74,6 @@
 }
 
 /* New card-layout container for the main content area with cards */
-/* .card-layout {
-    display: block;
-    justify-content: center;
-    padding: 20px;
-    background-color: #f8f8f8;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    margin: 0px;
-    max-width: 1200px;
-    width: calc(100% - 40px);
-    box-sizing: border-box;
-} */
-
 .card-layout {
     display: block;
     justify-content: center;
@@ -97,10 +84,10 @@
     margin: 0 auto;
     max-width: 100%;
     width: calc(100% - 40px);
-    box-sizing: border-box;
+    box-sizing: content-box;
     font-family: Arial, sans-serif;
     font-size: 16px;
-    line-height: 1.5;
+    line-height: 2.5;
     color: #333;
     overflow: hidden;
     text-align: left;
