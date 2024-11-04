@@ -1,11 +1,12 @@
 // src/components/Header.js
 
 import React, { useState, useEffect } from "react";
-import "./Header.css";
+import "../styles/Header.css";
 
 const Header = () => {
     const [theme, setTheme] = useState("light"); // Default theme is "light"
     const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [activeLink, setActiveLink] = useState("Home"); // Default active link
 
     useEffect(() => {
         // Load saved theme from localStorage on initial load
@@ -25,6 +26,10 @@ const Header = () => {
         document.body.className = selectedTheme; // Apply the theme to body
         localStorage.setItem("theme", selectedTheme); // Save theme preference
         setDropdownVisible(false); // Close the dropdown after selection
+    };
+
+    const handleNavClick = (link) => {
+        setActiveLink(link); // Update the active link state
     };
 
     // Hide the dropdown when clicking outside
@@ -65,10 +70,42 @@ const Header = () => {
             </div>
             <nav className="header-nav">
                 <ul>
-                    <li><a href="/" className="nav-link">Home</a></li>
-                    <li><a href="/environments" className="nav-link">Environments/Infra</a></li>
-                    <li><a href="/build" className="nav-link">Build Pipeline</a></li>
-                    <li><a href="/deploy" className="nav-link active">Deployment Pipeline</a></li>
+                    <li>
+                        <a 
+                            href="/" 
+                            className={`nav-link ${activeLink === "Home" ? "active" : ""}`}
+                            onClick={() => handleNavClick("Home")}
+                        >
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a 
+                            href="/environments" 
+                            className={`nav-link ${activeLink === "Environments/Infra" ? "active" : ""}`}
+                            onClick={() => handleNavClick("Environments/Infra")}
+                        >
+                            Environments/Infra
+                        </a>
+                    </li>
+                    <li>
+                        <a 
+                            href="/build" 
+                            className={`nav-link ${activeLink === "Build Pipeline" ? "active" : ""}`}
+                            onClick={() => handleNavClick("Build Pipeline")}
+                        >
+                            Build Pipeline
+                        </a>
+                    </li>
+                    <li>
+                        <a 
+                            href="/deploy" 
+                            className={`nav-link ${activeLink === "Deployment Pipeline" ? "active" : ""}`}
+                            onClick={() => handleNavClick("Deployment Pipeline")}
+                        >
+                            Deployment Pipeline
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </header>

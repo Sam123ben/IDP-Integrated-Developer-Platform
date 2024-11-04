@@ -1,0 +1,79 @@
+/* src/styles/Sidebar.css */
+
+.sidebar {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    max-width: 300px;
+}
+
+.sidebar-categories {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+}
+
+.category {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    padding: 10px 0;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.category.active {
+    color: #00796b;
+    border-bottom: 2px solid #00796b;
+}
+
+.sidebar-content {
+    margin-top: 10px;
+}
+
+.collapsible-item {
+    margin-bottom: 15px;
+}
+
+.item-header {
+    font-size: 1em;
+    font-weight: bold;
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #333;
+    transition: background-color 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item-header:hover {
+    background-color: #e0e0e0;
+}
+
+.environment-list,
+.product-list {
+    padding-left: 20px;
+    margin-top: 5px;
+    list-style-type: none;
+}
+
+.environment-list li,
+.product-list li {
+    font-size: 0.9em;
+    color: #666;
+    cursor: pointer;
+    padding: 5px 0;
+    transition: color 0.3s;
+}
+
+.environment-list li:hover,
+.product-list li:hover {
+    color: #00796b;
+    font-weight: bold;
+}

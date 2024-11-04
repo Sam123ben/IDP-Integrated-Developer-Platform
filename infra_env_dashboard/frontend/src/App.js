@@ -1,27 +1,21 @@
 // src/App.js
 
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
 import Header from "./components/Header";
-import "./App.css";
+import Sidebar from "./components/Sidebar";
+import TileContainer from "./components/TileContainer";
+import "./styles/App.css";
 
-const Home = () => <div className="main-content">Home Content</div>;
-const Environments = () => <div className="main-content">Environments/Infra Content</div>;
-const BuildPipeline = () => <div className="main-content">Build Pipeline Content</div>;
-const DeploymentPipeline = () => <div className="main-content">Deployment Pipeline Content</div>;
-
-const App = () => {
+function App() {
     return (
-        <Router>
+        <div className="app">
             <Header />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/environments" element={<Environments />} />
-                <Route path="/build" element={<BuildPipeline />} />
-                <Route path="/deploy" element={<DeploymentPipeline />} />
-            </Routes>
-        </Router>
+            <div className="main-layout">
+                <Sidebar />
+                <TileContainer />
+            </div>
+        </div>
     );
-};
+}
 
 export default App;
