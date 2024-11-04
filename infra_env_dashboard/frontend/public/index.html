@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Environment Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>My Company</h1>
+        <p>Monitor, Manage, and Optimize Your Infrastructure from a Single View</p>
+      </div>
+      <div class="header-icons">
+        <span class="icon" id="refresh-icon" onclick="location.reload()">🔄</span>
+        
+        <!-- Theme icon with dropdown menu -->
+        <div class="theme-dropdown" id="settings-dropdown">
+          <span class="icon" id="settings-icon" onclick="toggleDropdown()">⚙️</span>
+          
+          <!-- Dropdown menu -->
+          <div class="dropdown-menu" id="dropdown-menu">
+            <div class="dropdown-item" onclick="setTheme('light')">🌞 Light Theme</div>
+            <div class="dropdown-item" onclick="setTheme('dark')">🌙 Dark Theme</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/environments">Environments/Infra</a></li>
+        <li><a href="/build">Build Pipeline</a></li>
+        <li><a href="/deploy" class="active">Deployment Pipeline</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <script>
+    // Function to toggle the dropdown visibility
+    function toggleDropdown() {
+      const dropdown = document.getElementById("dropdown-menu");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    // Function to set the theme
+    function setTheme(theme) {
+      document.body.className = theme; // Apply the theme to the body
+      sessionStorage.setItem("theme", theme); // Save the selected theme in session storage
+      toggleDropdown(); // Hide the dropdown after selecting
+    }
+
+    // On page load, set the theme from session storage if available
+    window.onload = function() {
+      const savedTheme = sessionStorage.getItem("theme");
+      if (savedTheme) {
+        document.body.className = savedTheme;
+      }
+    };
+
+    // Close the dropdown if clicked outside
+    window.onclick = function(event) {
+      if (!event.target.matches('#settings-icon')) {
+        const dropdown = document.getElementById("dropdown-menu");
+        if (dropdown.style.display === "block") {
+          dropdown.style.display = "none";
+        }
+      }
+    };
+  </script>
+</body>
+</html>

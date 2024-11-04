@@ -1,0 +1,48 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: environment_dashboard
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend_network
+
+  company_service:
+    build: ./backend/services/company_service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    networks:
+      - backend_network
+
+  environment_service:
+    build: ./backend/services/environment_service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - db
+    networks:
+      - backend_network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - company_service
+      - environment_service
+    networks:
+      - backend_network
+
+volumes:
+  db_data:
+
+networks:
+  backend_network:
