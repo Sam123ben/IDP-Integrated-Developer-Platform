@@ -6,10 +6,10 @@ import "../styles/Card.css"; // Import card-specific styles
 
 function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, statusClass }) {
     return (
-        <div className={`card ${statusClass}`}>
+        <div className={`card ${statusClass} big-card`}>
             <div className="card-header">
                 <div className="card-title-section">
-                    <span className="card-icon">🚨</span>
+                    <span className="card-icon">🔴</span>
                     <span className="card-title">{name}</span>
                 </div>
                 <div className="card-updated-section">

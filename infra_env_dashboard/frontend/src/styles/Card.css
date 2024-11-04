@@ -12,6 +12,23 @@
     padding: 20px; /* Padding around grid */
 }
 
+.card.big-card {
+    background-color: #ffffff;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%; /* Full width within the grid */
+    max-width: 600px; /* Control max width for readability */
+    min-height: 300px; /* Minimum height for large cards */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    margin: auto; /* Center card */
+}
+
 .card {
     margin: 15px;
     background-color: #ffffff;
