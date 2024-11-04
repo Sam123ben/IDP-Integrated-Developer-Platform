@@ -12,7 +12,7 @@ import (
 var DB *sql.DB
 
 func InitDB() {
-	viper.SetConfigFile("common/config.yaml")
+	viper.SetConfigFile("../configs/config.yaml")
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Error reading config file, %s", err)
 	}
