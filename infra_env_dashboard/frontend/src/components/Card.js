@@ -3,12 +3,11 @@
 import React, { useState } from "react";
 import "../styles/TileContainer.css";
 import "../styles/Card.css";
-import Modal from "./Modal"; // Import a modal component
+import Modal from "./Modal";
 
 function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, statusClass }) {
     const [isModalOpen, setModalOpen] = useState(false);
 
-    // Determine the color of the status indicator based on the status
     const statusColor = 
         status === "Online" ? "green" : 
         status === "Failed Deployment" ? "red" : 
@@ -51,10 +50,10 @@ function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comme
             {isModalOpen && (
                 <Modal title="App Version Detail" subtitle="Smoke Build" onClose={closeModal}>
                     <ul className="modal-list">
-                        <li><span className="status-icon green">✔️</span> awp: develop-20240201</li>
-                        <li><span className="status-icon orange">⏳</span> idsrv: develop-20231113</li>
-                        <li><span className="status-icon orange">⏳</span> portal: develop-20240429</li>
-                        <li><span className="status-icon red">❌</span> webapi: develop-20240415</li>
+                        <li><span className="status-icon green">✔️</span><span className="app-name">awp</span><span className="version-detail">develop-20240201</span></li>
+                        <li><span className="status-icon orange">⏳</span><span className="app-name">idsrv</span><span className="version-detail">develop-20231113</span></li>
+                        <li><span className="status-icon orange">⏳</span><span className="app-name">portal</span><span className="version-detail">develop-20240429</span></li>
+                        <li><span className="status-icon red">❌</span><span className="app-name">webapi</span><span className="version-detail">develop-20240415</span></li>
                     </ul>
                 </Modal>
             )}

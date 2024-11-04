@@ -6,7 +6,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Dark overlay background */
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -26,8 +26,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #008cba; /* Teal color for header */
+    padding: 8px 20px; /* Reduced padding for a smaller banner */
+    background-color: #008cba;
     color: white;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
@@ -40,7 +40,6 @@
 
 .modal-subtitle {
     font-size: 1em;
-    font-weight: normal;
     margin-left: auto;
 }
 
@@ -66,12 +65,22 @@
     display: flex;
     align-items: center;
     margin: 8px 0;
-    font-size: 1em;
 }
 
 .status-icon {
     font-size: 1.2em;
     margin-right: 10px;
+}
+
+.app-name {
+    flex: 1; /* Fills remaining space, aligning to the left */
+}
+
+.version-detail {
+    font-weight: normal;
+    text-align: right;
+    color: #333;
+    margin-left: auto; /* Aligns the version details to the right */
 }
 
 .status-icon.green {
