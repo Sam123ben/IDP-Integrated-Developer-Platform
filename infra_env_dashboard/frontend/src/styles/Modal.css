@@ -33,8 +33,15 @@
     border-top-right-radius: 8px;
 }
 
-.modal-body {
-    padding: 20px;
+.modal-title {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.modal-subtitle {
+    font-size: 1em;
+    font-weight: normal;
+    margin-left: auto;
 }
 
 .modal-close {
@@ -45,24 +52,38 @@
     cursor: pointer;
 }
 
+.modal-body {
+    padding: 20px;
+}
+
+.modal-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modal-list li {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    font-size: 1em;
+}
+
 .status-icon {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
+    font-size: 1.2em;
+    margin-right: 10px;
 }
 
 .status-icon.green {
-    background-color: green;
+    color: green;
 }
 
 .status-icon.orange {
-    background-color: orange;
+    color: #FF8C00;
 }
 
 .status-icon.red {
-    background-color: red;
+    color: red;
 }
 
 @keyframes fadeIn {
