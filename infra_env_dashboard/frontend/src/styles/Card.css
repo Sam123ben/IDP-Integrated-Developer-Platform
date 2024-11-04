@@ -1,36 +1,88 @@
 /* src/styles/Card.css */
 
-.card-container {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    padding: 20px;
-}
-
-/* src/styles/Card.css */
-
 .card {
-    width: 300px; /* Fixed width for cards */
-    padding: 20px;
+    background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd;
-    background-color: #fff;
+    padding: 20px;
+    border-left: 4px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    box-sizing: border-box;
 }
 
-.card h4 {
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.card-title-section {
+    display: flex;
+    align-items: center;
+}
+
+.card-icon {
+    color: red;
+    margin-right: 8px;
+}
+
+.card-title {
     font-size: 1.2em;
-    margin: 0 0 10px 0;
+    font-weight: bold;
+    color: #333;
+}
+
+.card-updated-section {
+    display: flex;
+    align-items: center;
+    font-size: 0.85em;
+    color: #666;
+    gap: 8px; /* Space between "Last updated" and dots */
+}
+
+.card-updated {
+    white-space: nowrap; /* Prevents line breaks */
+}
+
+.three-dots {
+    font-size: 1.2em; /* Makes the dots a bit more prominent */
+    cursor: pointer;
+    color: #888; /* Slightly darker shade for prominence */
+}
+
+.card-link {
+    color: #0066cc;
+    margin: 5px 0;
+    text-decoration: underline;
+    font-size: 0.9em;
+    display: inline-block;
+}
+
+.status-text {
+    color: inherit;
+}
+
+.card-failed {
+    border-left: 4px solid red;
+    background-color: #fff5f5;
+}
+
+.card-in-progress {
+    border-left: 4px solid orange;
+    background-color: #fffaf0;
+}
+
+.card-online {
+    border-left: 4px solid green;
+    background-color: #f0fff4;
 }
 
 .card p {
-    font-size: 0.9em;
     margin: 5px 0;
+    font-size: 0.9em;
     line-height: 1.4;
-}
-
-.card-status {
-    font-weight: bold;
-    color: #333;
 }

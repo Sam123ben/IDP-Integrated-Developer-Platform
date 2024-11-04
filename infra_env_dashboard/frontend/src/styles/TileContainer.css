@@ -1,35 +1,49 @@
+/* src/styles/TileContainer.css */
+
 .tile-container {
     display: flex;
     justify-content: center;
-    padding: 20px;
+    padding: 40px 20px; /* Increased padding for more spacing around the container */
     width: 100%;
 }
 
 .card-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Two columns */
-    gap: 20px; /* Space between cards */
+    gap: 40px; /* Increased gap between cards */
     max-width: 1200px;
     width: 100%;
+    align-items: start; /* Align items to the start for consistent vertical alignment */
 }
 
 .card {
-    background-color: #fff5f5; /* Light red/pink background */
-    border: 2px solid red;
+    background-color: #ffffff;
+    border: 2px solid #ddd;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 20px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Slight hover effect for better visual feedback */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .card-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
+}
+
+.card-title-section {
+    display: flex;
+    align-items: center;
 }
 
 .card-icon {
@@ -43,39 +57,68 @@
     color: #333;
 }
 
-.card-updated {
+.card-updated-section {
     display: flex;
     align-items: center;
     font-size: 0.85em;
     color: #666;
+    gap: 8px;
+    padding-left: 20px;
 }
 
 .three-dots {
-    margin-left: 8px;
+    font-size: 1.2em;
     cursor: pointer;
+    color: #888;
+    margin-left: 10px;
 }
 
-.card-link {
-    color: #0066cc;
-    margin: 5px 0;
-    text-decoration: underline;
-    font-size: 0.9em;
-    display: inline-block;
+/* New card-layout container for the main content area with cards */
+/* .card-layout {
+    display: block;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin: 0px;
+    max-width: 1200px;
+    width: calc(100% - 40px);
+    box-sizing: border-box;
+} */
+
+.card-layout {
+    display: block;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin: 0 auto;
+    max-width: 100%;
+    width: calc(100% - 40px);
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    overflow: hidden;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+    transition: box-shadow 0.6s ease, transform 0.6s ease;
 }
 
-.status-text {
-    color: red; /* Change this to green or orange based on status */
+.tile-container {
+    width: 100%;
 }
 
-.card p {
-    margin: 5px 0;
-    font-size: 0.9em;
-    line-height: 1.4;
-}
-
-/* Responsive layout */
 @media (max-width: 768px) {
     .card-grid {
         grid-template-columns: 1fr;
+    }
+    .card-layout {
+        max-width: 100%;
+        width: 100%;
+        padding: 15px;
     }
 }

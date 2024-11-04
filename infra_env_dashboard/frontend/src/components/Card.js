@@ -3,20 +3,25 @@
 import React from "react";
 import "../styles/Card.css";
 
-function Card({ title, status, statusColor, lastUpdated }) {
+function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, statusClass }) {
     return (
-        <div className="card" style={{ borderColor: statusColor }}>
+        <div className={`card ${statusClass}`}>
             <div className="card-header">
-                <h4>{title}</h4>
-                <span className="last-updated">Last updated: {lastUpdated}</span>
+                <div className="card-title-section">
+                    <span className="card-icon">🚨</span>
+                    <span className="card-title">{name}</span>
+                </div>
+                <div className="card-updated-section">
+                    <span className="card-updated">Last updated: {lastUpdated}</span>
+                    <span className="three-dots">⋮</span>
+                </div>
             </div>
-            <div className="card-body">
-                <p><strong>Status:</strong> <span style={{ color: statusColor }}>{status}</span></p>
-                <p><strong>Contact:</strong> Taj</p>
-                <p><strong>App Version:</strong> 2021.07.27</p>
-                <p><strong>Database Version:</strong> 7.2.0555</p>
-                <p><strong>Comments:</strong> Update in progress and run the pipeline and check</p>
-            </div>
+            <a href="#" className="card-link">{`https://${name.toLowerCase()}.example.com/`}</a>
+            <p><strong>Status:</strong> <span className="status-text">{status}</span></p>
+            <p><strong>Contact:</strong> {contact}</p>
+            <p><strong>App Version:</strong> {appVersion}</p>
+            <p><strong>Database Version:</strong> {dbVersion}</p>
+            <p><strong>Comments:</strong> {comments}</p>
         </div>
     );
 }
