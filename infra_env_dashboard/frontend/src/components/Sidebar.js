@@ -1,9 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Sidebar.css";
 
 function Sidebar() {
-    const [selectedSection, setSelectedSection] = useState("INTERNAL");
+    const [infraTypes, setInfraTypes] = useState([]); // Store fetched data
+    const [selectedSection, setSelectedSection] = useState(null); // Track which section is selected
     const [expandedSections, setExpandedSections] = useState({});
+
+    // Fetch infrastructure types data from the backend
+    useEffect(() => {
+        fetch("http://localhost:8081/api/infra-types")
+            .then((response) => response.json())
+            .then((data) => {
+                setInfraTypes(data.infraTypes);
+                if (data.infraTypes.length > 0) {
+                    setSelectedSection(data.infraTypes[0].name); // Default to the first section
+                }
+            })
+            .catch((error) => console.error("Error fetching infrastructure types:", error));
+    }, []);
 
     const toggleSection = (section) => {
         setExpandedSections((prev) => ({
@@ -12,97 +26,46 @@ function Sidebar() {
         }));
     };
 
-    const handleTabClick = (section) => {
-        setSelectedSection(section);
+    const handleTabClick = (sectionType) => {
+        setSelectedSection(sectionType);
     };
 
     return (
         <div className="sidebar-container">
+            {/* Sidebar header with dynamic sections */}
             <div className="sidebar-header">
-                <h3 
-                    className={selectedSection === "INTERNAL" ? "active" : ""}
-                    onClick={() => handleTabClick("INTERNAL")}
-                >
-                    INTERNAL
-                </h3>
-                <h3 
-                    className={selectedSection === "CUSTOMER" ? "active" : ""}
-                    onClick={() => handleTabClick("CUSTOMER")}
-                >
-                    CUSTOMER
-                </h3>
+                {infraTypes.map((infraType) => (
+                    <h3
+                        key={infraType.id}
+                        className={selectedSection === infraType.name ? "active" : ""}
+                        onClick={() => handleTabClick(infraType.name)}
+                    >
+                        {infraType.name}
+                    </h3>
+                ))}
             </div>
 
-            {selectedSection === "INTERNAL" && (
-                <>
-                    {/* Product 1 Section */}
-                    <div className="sidebar-section">
-                        <div
-                            className={`collapsible-header ${expandedSections["Product 1"] ? "active" : ""}`}
-                            onClick={() => toggleSection("Product 1")}
-                        >
-                            Product 1
-                            <span className={`arrow ${expandedSections["Product 1"] ? "rotate" : ""}`}>▶</span>
+            {/* Render sections based on the selected infrastructure type */}
+            {infraTypes
+                .filter((infraType) => infraType.name === selectedSection)
+                .map((infraType) =>
+                    infraType.sections.map((section) => (
+                        <div className="sidebar-section" key={section.name}>
+                            <div
+                                className={`collapsible-header ${expandedSections[section.name] ? "active" : ""}`}
+                                onClick={() => toggleSection(section.name)}
+                            >
+                                {section.name}
+                                <span className={`arrow ${expandedSections[section.name] ? "rotate" : ""}`}>▶</span>
+                            </div>
+                            <ul className={`collapsible-content ${expandedSections[section.name] ? "visible" : ""}`}>
+                                {(section.environments || []).map((environment, idx) => (
+                                    <li key={idx}>{environment}</li>
+                                ))}
+                            </ul>
                         </div>
-                        <ul className={`collapsible-content ${expandedSections["Product 1"] ? "visible" : ""}`}>
-                            <li>DEV</li>
-                            <li>QA</li>
-                            <li>CONSULT</li>
-                            <li>PRESALES</li>
-                        </ul>
-                    </div>
-
-                    {/* Product 2 Section */}
-                    <div className="sidebar-section">
-                        <div
-                            className={`collapsible-header ${expandedSections["Product 2"] ? "active" : ""}`}
-                            onClick={() => toggleSection("Product 2")}
-                        >
-                            Product 2
-                            <span className={`arrow ${expandedSections["Product 2"] ? "rotate" : ""}`}>▶</span>
-                        </div>
-                        <ul className={`collapsible-content ${expandedSections["Product 2"] ? "visible" : ""}`}>
-                            <li>DEV</li>
-                            <li>QA</li>
-                            <li>STAGING</li>
-                        </ul>
-                    </div>
-                </>
-            )}
-
-            {selectedSection === "CUSTOMER" && (
-                <>
-                    {/* Vendor A Section */}
-                    <div className="sidebar-section">
-                        <div
-                            className={`collapsible-header ${expandedSections["Vendor A"] ? "active" : ""}`}
-                            onClick={() => toggleSection("Vendor A")}
-                        >
-                            Vendor A
-                            <span className={`arrow ${expandedSections["Vendor A"] ? "rotate" : ""}`}>▶</span>
-                        </div>
-                        <ul className={`collapsible-content ${expandedSections["Vendor A"] ? "visible" : ""}`}>
-                            <li>Product 1</li>
-                            <li>Product 2</li>
-                        </ul>
-                    </div>
-
-                    {/* Vendor B Section */}
-                    <div className="sidebar-section">
-                        <div
-                            className={`collapsible-header ${expandedSections["Vendor B"] ? "active" : ""}`}
-                            onClick={() => toggleSection("Vendor B")}
-                        >
-                            Vendor B
-                            <span className={`arrow ${expandedSections["Vendor B"] ? "rotate" : ""}`}>▶</span>
-                        </div>
-                        <ul className={`collapsible-content ${expandedSections["Vendor B"] ? "visible" : ""}`}>
-                            <li>Product 1</li>
-                            <li>Product 2</li>
-                        </ul>
-                    </div>
-                </>
-            )}
+                    ))
+                )}
         </div>
     );
 }
