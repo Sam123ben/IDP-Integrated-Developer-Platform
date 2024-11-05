@@ -1,7 +1,7 @@
 version: '3'
 services:
   db:
-    image: postgres
+    image: postgres:13
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -14,25 +14,32 @@ services:
       - backend_network
 
   company_service:
-    build: ./backend/services/company_service
+    build:
+      context: ./backend/services/fetch_company_details
     ports:
       - "8081:8081"
     depends_on:
       - db
     networks:
       - backend_network
+    environment:
+      DATABASE_URL: postgres://user:password@db:5432/environment_dashboard
 
   environment_service:
-    build: ./backend/services/environment_service
+    build:
+      context: ./backend/services/fetch_infra_types
     ports:
       - "8082:8082"
     depends_on:
       - db
     networks:
       - backend_network
+    environment:
+      DATABASE_URL: postgres://user:password@db:5432/environment_dashboard
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
     ports:
       - "3000:3000"
     depends_on:
