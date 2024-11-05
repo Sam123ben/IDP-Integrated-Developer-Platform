@@ -2,7 +2,8 @@
 -- DROP TABLE IF EXISTS customer_environment_groups;
 -- DROP TABLE IF EXISTS product_environment_groups;
 -- DROP TABLE IF EXISTS infra_types;
--- DROP TABLE IF EXISTS environment_groups;
+-- DROP TABLE IF EXISTS sections;
+-- DROP TABLE IF EXISTS env_groups;
 -- DROP TABLE IF EXISTS customer_products;
 -- DROP TABLE IF EXISTS customers;
 -- DROP TABLE IF EXISTS applications;
@@ -37,17 +38,28 @@ CREATE TABLE IF NOT EXISTS products (
     infra_type_id INT REFERENCES infra_types(id) ON DELETE CASCADE
 );
 
--- 5. Create env_groups table to hold environment group names (e.g., DEV, QA, CONSULT)
-CREATE TABLE IF NOT EXISTS env_groups (
+-- 5. Create sections table to store sections under each infrastructure type
+-- Sections will hold either products for INTERNAL or customers for CUSTOMER
+CREATE TABLE IF NOT EXISTS sections (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE, -- Environment group name
-    product_id INT REFERENCES products(id) ON DELETE CASCADE -- Linked to specific product under infra type
+    infra_type_id INTEGER REFERENCES infra_types(id) ON DELETE CASCADE,
+    name VARCHAR(50) NOT NULL, -- e.g., Product 1, Vendor A, Vendor B
+    product_id INTEGER REFERENCES products(id) ON DELETE SET NULL, -- Product reference for INTERNAL infra type
+    customer_id INTEGER REFERENCES customers(id) ON DELETE SET NULL -- Customer reference for CUSTOMER infra type
 );
 
--- 6. Create environments table for detailed environments within each group
+-- 6. Create env_groups table to hold environment group names (e.g., DEV, QA, CONSULT)
+-- Each environment group will be linked to a section within INTERNAL or CUSTOMER
+CREATE TABLE IF NOT EXISTS env_groups (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL, -- Environment group name (e.g., DEV, QA, CONSULT, UAT, PROD)
+    section_id INT REFERENCES sections(id) ON DELETE CASCADE -- Linked to specific section (product or customer section)
+);
+
+-- 7. Create environments table for detailed environments within each group
 CREATE TABLE IF NOT EXISTS environments (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL, -- Environment name, e.g., SMOKE, STAGE, etc.
+    name VARCHAR(50) NOT NULL, -- Environment name, e.g., SMOKE, STAGE, UAT, PROD, etc.
     last_updated TIMESTAMP NOT NULL,
     status VARCHAR(50) NOT NULL,
     contact VARCHAR(50),
@@ -58,7 +70,7 @@ CREATE TABLE IF NOT EXISTS environments (
     env_group_id INT REFERENCES env_groups(id) ON DELETE SET NULL -- Linked to an env_group
 );
 
--- 7. Create applications table for applications within each environment
+-- 8. Create applications table for applications within each environment
 CREATE TABLE IF NOT EXISTS applications (
     id SERIAL PRIMARY KEY,
     environment_id INT REFERENCES environments(id) ON DELETE CASCADE,
@@ -67,24 +79,17 @@ CREATE TABLE IF NOT EXISTS applications (
     status VARCHAR(20) -- e.g., 'green', 'orange', 'red'
 );
 
--- 8. Create customers table to hold customer names
+-- 9. Create customers table to hold customer names
 CREATE TABLE IF NOT EXISTS customers (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
 
--- 9. Create customer_products table to link customers to products
+-- 10. Create customer_products table to link customers to products under CUSTOMER infra type
 CREATE TABLE IF NOT EXISTS customer_products (
     id SERIAL PRIMARY KEY,
     customer_id INT REFERENCES customers(id) ON DELETE CASCADE,
     product_id INT REFERENCES products(id) ON DELETE CASCADE
-);
-
--- 10. Create customer_environment_groups table for CUSTOMER environments per product and customer
-CREATE TABLE IF NOT EXISTS customer_environment_groups (
-    id SERIAL PRIMARY KEY,
-    customer_product_id INT REFERENCES customer_products(id) ON DELETE CASCADE,
-    environment_id INT REFERENCES environments(id) ON DELETE CASCADE
 );
 
 -- 11. Insert data into infra_types for INTERNAL and CUSTOMER types
@@ -106,81 +111,68 @@ BEGIN
     END IF;
 END $$;
 
--- 13. Insert env_groups for INTERNAL products (DEV, QA, CONSULT)
+-- 13. Insert sections for INTERNAL products and CUSTOMER vendors
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM env_groups WHERE name = 'DEV') THEN
-        INSERT INTO env_groups (name, product_id)
+    IF NOT EXISTS (SELECT 1 FROM sections WHERE name = 'Product 1' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'INTERNAL')) THEN
+        INSERT INTO sections (name, infra_type_id, product_id)
         VALUES
-            ('DEV', (SELECT id FROM products WHERE name = 'Product 1')),
-            ('QA', (SELECT id FROM products WHERE name = 'Product 1')),
-            ('CONSULT', (SELECT id FROM products WHERE name = 'Product 1')),
-            ('DEV', (SELECT id FROM products WHERE name = 'Product 2')),
-            ('QA', (SELECT id FROM products WHERE name = 'Product 2')),
-            ('CONSULT', (SELECT id FROM products WHERE name = 'Product 2'));
+            ('Product 1', (SELECT id FROM infra_types WHERE name = 'INTERNAL'), (SELECT id FROM products WHERE name = 'Product 1')),
+            ('Product 2', (SELECT id FROM infra_types WHERE name = 'INTERNAL'), (SELECT id FROM products WHERE name = 'Product 2'));
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM sections WHERE name = 'Vendor A' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'CUSTOMER')) THEN
+        INSERT INTO sections (name, infra_type_id, customer_id)
+        VALUES
+            ('Vendor A', (SELECT id FROM infra_types WHERE name = 'CUSTOMER'), (SELECT id FROM customers WHERE name = 'Vendor A')),
+            ('Vendor B', (SELECT id FROM infra_types WHERE name = 'CUSTOMER'), (SELECT id FROM customers WHERE name = 'Vendor B'));
     END IF;
 END $$;
 
--- 14. Insert environments under each env_group
+-- 14. Insert env_groups for INTERNAL product sections (e.g., DEV, QA, CONSULT)
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM env_groups WHERE name = 'DEV') THEN
+        INSERT INTO env_groups (name, section_id)
+        VALUES
+            ('DEV', (SELECT id FROM sections WHERE name = 'Product 1' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'INTERNAL'))),
+            ('QA', (SELECT id FROM sections WHERE name = 'Product 1' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'INTERNAL'))),
+            ('CONSULT', (SELECT id FROM sections WHERE name = 'Product 1' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'INTERNAL'))),
+            ('DEV', (SELECT id FROM sections WHERE name = 'Product 2' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'INTERNAL'))),
+            ('QA', (SELECT id FROM sections WHERE name = 'Product 2' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'INTERNAL'))),
+            ('CONSULT', (SELECT id FROM sections WHERE name = 'Product 2' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'INTERNAL')));
+    END IF;
+END $$;
+
+-- 15. Insert environments under each env_group for INTERNAL type
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM environments WHERE name = 'SMOKE') THEN
         INSERT INTO environments (name, last_updated, status, contact, app_version, db_version, comments, status_class, env_group_id)
         VALUES
-            -- DEV environments for Product 1
-            ('SMOKE', '2021-08-19 21:30:00', 'Failed Deployment', 'Taj', '2021.07.27', '7.2.0555', 'Upgrade in progress', 'card-failed', (SELECT id FROM env_groups WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))),
-            ('DEV', '2021-08-19 21:30:00', 'Deployment In Progress', 'Taj', '2021.07.27', '7.2.0555', 'Upgrade in progress', 'card-in-progress', (SELECT id FROM env_groups WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))),
-            ('STAGE', '2021-08-19 21:30:00', 'Online', 'Taj', '2021.07.27', '7.2.0555', 'Running smoothly', 'card-online', (SELECT id FROM env_groups WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))),
-            
-            -- QA environments for Product 1
-            ('AUTO', '2021-08-19 21:30:00', 'Online', 'Taj', '2021.07.27', '7.2.0555', 'Automated testing in progress', 'card-online', (SELECT id FROM env_groups WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))),
-            ('MANUAL', '2021-08-19 21:30:00', 'Online', 'Taj', '2021.07.27', '7.2.0555', 'Manual testing in progress', 'card-online', (SELECT id FROM env_groups WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))),
-            ('PRELAUNCH', '2021-08-19 21:30:00', 'Online', 'Taj', '2021.07.27', '7.2.0555', 'Prelaunch preparations', 'card-online', (SELECT id FROM env_groups WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')));
+            ('SMOKE', '2021-08-19 21:30:00', 'Failed Deployment', 'Taj', '2021.07.27', '7.2.0555', 'Upgrade in progress', 'card-failed', (SELECT id FROM env_groups WHERE name = 'DEV' AND section_id = (SELECT id FROM sections WHERE name = 'Product 1' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'INTERNAL')))),
+            ('STAGE', '2021-08-19 21:30:00', 'Online', 'Taj', '2021.07.27', '7.2.0555', 'Running smoothly', 'card-online', (SELECT id FROM env_groups WHERE name = 'DEV' AND section_id = (SELECT id FROM sections WHERE name = 'Product 1' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'INTERNAL'))));
     END IF;
 END $$;
 
--- 15. Insert customers and link them to products for CUSTOMER type
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM customers WHERE name = 'Vendor A') THEN
-        INSERT INTO customers (name) VALUES ('Vendor A');
-    END IF;
-
-    IF NOT EXISTS (SELECT 1 FROM customers WHERE name = 'Vendor B') THEN
-        INSERT INTO customers (name) VALUES ('Vendor B');
-    END IF;
-
-    -- Link each customer to products under CUSTOMER infra type
-    IF NOT EXISTS (SELECT 1 FROM customer_products WHERE customer_id = (SELECT id FROM customers WHERE name = 'Vendor A') AND product_id = (SELECT id FROM products WHERE name = 'Product 1')) THEN
-        INSERT INTO customer_products (customer_id, product_id)
-        VALUES
-            ((SELECT id FROM customers WHERE name = 'Vendor A'), (SELECT id FROM products WHERE name = 'Product 1')),
-            ((SELECT id FROM customers WHERE name = 'Vendor A'), (SELECT id FROM products WHERE name = 'Product 2')),
-            ((SELECT id FROM customers WHERE name = 'Vendor B'), (SELECT id FROM products WHERE name = 'Product 1')),
-            ((SELECT id FROM customers WHERE name = 'Vendor B'), (SELECT id FROM products WHERE name = 'Product 2'));
-    END IF;
-END $$;
-
--- 16. Insert environments for CUSTOMER type (e.g., UAT, TRAIN, SUPPORT, PROD)
+-- 16. Insert environments for CUSTOMER type (e.g., UAT, PROD) within Vendor sections
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM environments WHERE name = 'UAT Environment') THEN
-        INSERT INTO environments (name, last_updated, status, contact, app_version, db_version, comments, status_class)
+        INSERT INTO environments (name, last_updated, status, contact, app_version, db_version, comments, status_class, env_group_id)
         VALUES
-            ('UAT Environment', '2021-08-19 21:30:00', 'Online', 'Taj', '2021.07.27', '7.2.0555', 'User Acceptance Testing in progress', 'card-online'),
-            ('TRAIN Environment', '2021-08-19 21:30:00', 'Online', 'Taj', '2021.07.27', '7.2.0555', 'Training environment', 'card-online'),
-            ('SUPPORT Environment', '2021-08-19 21:30:00', 'Online', 'Taj', '2021.07.27', '7.2.0555', 'Support environment', 'card-online'),
-            ('PROD Environment', '2021-08-19 21:30:00', 'Online', 'Taj', '2021.07.27', '7.2.0555', 'Production environment', 'card-online');
+            ('UAT Environment', '2021-08-19 21:30:00', 'User Acceptance Testing', 'Taj', '2021.07.27', '7.2.0555', 'UAT phase ongoing', 'card-online', (SELECT id FROM env_groups WHERE name = 'UAT' AND section_id = (SELECT id FROM sections WHERE name = 'Vendor A' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'CUSTOMER')))),
+            ('PROD Environment', '2021-08-19 21:30:00', 'Production', 'Taj', '2021.07.27', '7.2.0555', 'Live environment', 'card-online', (SELECT id FROM env_groups WHERE name = 'PROD' AND section_id = (SELECT id FROM sections WHERE name = 'Vendor A' AND infra_type_id = (SELECT id FROM infra_types WHERE name = 'CUSTOMER'))));
     END IF;
 END $$;
 
--- 17. Link CUSTOMER environments to specific products and customers in customer_environment_groups
+-- 17. Insert applications into environments
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM customer_environment_groups WHERE customer_product_id = (SELECT id FROM customer_products WHERE customer_id = (SELECT id FROM customers WHERE name = 'Vendor A') AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))) THEN
-        INSERT INTO customer_environment_groups (customer_product_id, environment_id)
+    IF NOT EXISTS (SELECT 1 FROM applications WHERE name = 'Portal' AND environment_id = (SELECT id FROM environments WHERE name = 'SMOKE')) THEN
+        INSERT INTO applications (environment_id, name, version, status)
         VALUES
-            ((SELECT id FROM customer_products WHERE customer_id = (SELECT id FROM customers WHERE name = 'Vendor A') AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), (SELECT id FROM environments WHERE name = 'UAT Environment')),
-            ((SELECT id FROM customer_products WHERE customer_id = (SELECT id FROM customers WHERE name = 'Vendor A') AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), (SELECT id FROM environments WHERE name = 'PROD Environment'));
+            ((SELECT id FROM environments WHERE name = 'SMOKE'), 'Portal', 'develop-20240201', 'green'),
+            ((SELECT id FROM environments WHERE name = 'STAGE'), 'Portal', 'develop-20240201', 'green');
     END IF;
 END $$;
