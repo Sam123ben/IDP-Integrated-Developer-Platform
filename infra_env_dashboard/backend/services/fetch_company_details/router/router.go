@@ -1,6 +1,7 @@
 package router
 
 import (
+	_ "backend/services/fetch_company_details/docs" // Import the generated docs
 	"backend/services/fetch_company_details/handlers"
 
 	"github.com/gin-gonic/gin"
