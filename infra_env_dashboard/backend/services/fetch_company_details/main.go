@@ -1,10 +1,9 @@
 package main
 
 import (
-	"log"
-
+	"backend/common/logger"
 	"backend/common/postgress"
-	_ "backend/services/fetch_company_details/docs" // Import the generated docs
+
 	"backend/services/fetch_company_details/handlers"
 	"backend/services/fetch_company_details/repository"
 	"backend/services/fetch_company_details/router"
@@ -16,19 +15,22 @@ import (
 // @host localhost:8080
 // @BasePath /api
 func main() {
-	// Initialize PostgreSQL database
+	// Initialize the database
 	db, err := postgress.InitDB()
 	if err != nil {
-		log.Fatalf("Failed to connect to the database: %v", err)
+		logger.Logger.Fatalf("Database connection failed: %v", err)
 	}
 
 	// Initialize repository and handler
 	companyRepo := repository.NewCompanyRepository(db)
 	companyHandler := handlers.NewCompanyHandler(companyRepo)
 
-	// Set up router and add Swagger route
+	// Set up the router with CORS and routes
 	r := router.SetupRouter(companyHandler)
 
 	// Start the server
-	r.Run(":8080")
+	logger.Logger.Info("Server is running on port 8080")
+	if err := r.Run(":8080"); err != nil {
+		logger.Logger.Fatalf("Failed to run server: %s", err)
+	}
 }

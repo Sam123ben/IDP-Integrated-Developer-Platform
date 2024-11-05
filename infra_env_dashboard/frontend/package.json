@@ -1,7 +1,9 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "description": "Environment Dashboard Frontend",
+  "description": "Environment Dashboard",
+  "private": true,
+  "proxy": "http://localhost:8080",
   "main": "index.js",
   "scripts": {
     "start": "webpack serve --mode development",
@@ -12,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "css-loader": "^7.1.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

@@ -2,12 +2,8 @@ basePath: /api
 definitions:
   models.Company:
     properties:
-      description:
-        type: string
       id:
         type: integer
-      location:
-        type: string
       name:
         type: string
     type: object

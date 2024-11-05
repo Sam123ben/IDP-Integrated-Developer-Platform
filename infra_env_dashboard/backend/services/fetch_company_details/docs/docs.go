@@ -93,14 +93,8 @@ const docTemplate = `{
         "models.Company": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
-                },
-                "location": {
-                    "type": "string"
                 },
                 "name": {
                     "type": "string"
