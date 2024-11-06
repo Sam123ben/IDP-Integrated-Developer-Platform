@@ -5,46 +5,32 @@ import Card from "./Card";
 import "../styles/TileContainer.css";
 import "../styles/Card.css";
 
-function TileContainer() {
-    const environments = [
-        {
-            name: "SMOKE",
-            lastUpdated: "19/08/2021 21:30",
-            status: "Online",
-            contact: "Samyak",
-            appVersion: "Smoke Build",
-            dbVersion: "7.2.0876",
-            comments: "Testing this env so please check",
-            statusClass: "card-online",
-            applications: [
-                { name: "awp", version: "develop-20240201", status: "green" },
-                { name: "idsrv", version: "develop-20231113", status: "orange" },
-                { name: "portal", version: "develop-20240429", status: "orange" },
-                { name: "webapi", version: "develop-20240415", status: "red" }
-            ]
-        },
-        // Other environments here...
-    ];
-
+function TileContainer({ environments }) { // Accept environments as a prop
     return (
         <div className="card-layout">
             <div className="tile-container">
-                <div className="card-grid">
-                    {environments.map((env, index) => (
-                        <Card
-                            key={index}
-                            name={env.name}
-                            lastUpdated={env.lastUpdated}
-                            status={env.status}
-                            contact={env.contact}
-                            appVersion={env.appVersion}
-                            dbVersion={env.dbVersion}
-                            comments={env.comments}
-                            statusClass={env.statusClass}
-                            applications={env.applications} // Pass application data
-                        />
-                    ))}
-                </div>
+                {environments && environments.length > 0 ? ( // Check if environments exist
+                    <div className="card-grid">
+                        {environments.map((env, index) => (
+                            <Card
+                                key={index}
+                                name={env.name}
+                                lastUpdated={env.lastUpdated}
+                                status={env.status}
+                                contact={env.contact}
+                                appVersion={env.appVersion}
+                                dbVersion={env.dbVersion}
+                                comments={env.comments}
+                                statusClass={env.statusClass}
+                                applications={env.applications} // Pass application data
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="empty-state">
+                        <p>Select an environment to view details.</p>
+                    </div>
+                )}
             </div>
         </div>
     );

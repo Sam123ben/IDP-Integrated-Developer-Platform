@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Sidebar.css";
 
-function Sidebar() {
+function Sidebar({ onSectionSelect, onEnvironmentSelect }) { // Add props for parent communication
     const [infraTypes, setInfraTypes] = useState([]); // Store fetched data
     const [selectedSection, setSelectedSection] = useState(null); // Track which section is selected
     const [expandedSections, setExpandedSections] = useState({});
@@ -15,11 +15,13 @@ function Sidebar() {
                 setInfraTypes(data.infraTypes || []);
                 if (data.infraTypes && data.infraTypes.length > 0) {
                     setSelectedSection(data.infraTypes[0].name); // Default to the first section if available
+                    onSectionSelect(data.infraTypes[0].name); // Notify parent of the initial selection
                 }
             })
             .catch((error) => console.error("Error fetching infrastructure types:", error));
-    }, []);
+    }, [onSectionSelect]);
 
+    // Toggle section visibility
     const toggleSection = (section) => {
         setExpandedSections((prev) => ({
             ...prev,
@@ -27,8 +29,15 @@ function Sidebar() {
         }));
     };
 
+    // Handle section tab click
     const handleTabClick = (sectionType) => {
         setSelectedSection(sectionType);
+        onSectionSelect(sectionType); // Notify parent of section selection
+    };
+
+    // Handle environment click
+    const handleEnvironmentClick = (environment) => {
+        onEnvironmentSelect(environment); // Notify parent of environment selection
     };
 
     return (
@@ -50,7 +59,6 @@ function Sidebar() {
             {infraTypes
                 .filter((infraType) => infraType.name === selectedSection)
                 .flatMap((infraType) =>
-                    // Safely access infraType.sections and map over them if they exist
                     (infraType.sections || []).map((section) => (
                         <div className="sidebar-section" key={section.name}>
                             <div
@@ -61,9 +69,10 @@ function Sidebar() {
                                 <span className={`arrow ${expandedSections[section.name] ? "rotate" : ""}`}>▶</span>
                             </div>
                             <ul className={`collapsible-content ${expandedSections[section.name] ? "visible" : ""}`}>
-                                {/* Render environments if they exist within the section */}
                                 {(section.environments || []).map((environment, idx) => (
-                                    <li key={idx}>{environment}</li>
+                                    <li key={idx} onClick={() => handleEnvironmentClick(environment)}>
+                                        {environment}
+                                    </li>
                                 ))}
                             </ul>
                         </div>
