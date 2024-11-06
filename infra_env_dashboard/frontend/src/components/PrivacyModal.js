@@ -1,15 +1,21 @@
 // src/components/PrivacyModal.js
 
 import React from "react";
-import "../styles/Modal.css"; // Assuming you have modal styles or create specific styles for PrivacyModal
+import "../styles/PrivacyModal.css";
 
-function PrivacyModal({ onClose }) {
+function PrivacyModal({ isOpen, onClose }) {
+    if (!isOpen) return null;
+
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <button className="modal-close" onClick={onClose}>✖</button>
-                <h2>Privacy Policy</h2>
-                <p>This dashboard is open-source under the MIT License...</p> {/* Add full license details */}
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h3>Privacy Policy</h3>
+                    <button className="modal-close" onClick={onClose}>✖</button>
+                </div>
+                <div className="modal-body">
+                    <p>This dashboard is open-source under the MIT License...</p>
+                </div>
             </div>
         </div>
     );

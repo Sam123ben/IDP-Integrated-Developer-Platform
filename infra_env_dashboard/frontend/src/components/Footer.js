@@ -1,38 +1,24 @@
 // src/components/Footer.js
 
 import React, { useState } from "react";
+import PrivacyModal from "./PrivacyModal"; // Import the new PrivacyModal component
 import "../styles/Footer.css";
 
 function Footer() {
-    const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const openPrivacyDialog = () => {
-        setShowPrivacyDialog(true);
-    };
-
-    const closePrivacyDialog = () => {
-        setShowPrivacyDialog(false);
-    };
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     return (
         <div className="footer">
             <p>
                 © 2024 DevopsEnv-Dashboard -{" "}
-                <span className="privacy-link" onClick={openPrivacyDialog}>
+                <span className="privacy-link" onClick={openModal}>
                     Privacy
                 </span>
             </p>
-            {showPrivacyDialog && (
-                <div className="privacy-dialog-overlay">
-                    <div className="privacy-dialog">
-                        <div className="privacy-header">
-                            <h3>Privacy Policy</h3>
-                            <button className="close-button" onClick={closePrivacyDialog}>✖</button>
-                        </div>
-                        <p>This dashboard is open-source under the MIT License...</p>
-                    </div>
-                </div>
-            )}
+            <PrivacyModal isOpen={isModalOpen} onClose={closeModal} />
         </div>
     );
 }

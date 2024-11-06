@@ -7,26 +7,23 @@
     color: #333;
     text-align: center;
     font-size: 0.9em;
+    position: fixed;
+    bottom: 0;
+    left: 0;
     border-top: 1px solid #ddd;
-}
-
-.footer-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
 }
 
 .footer p {
     margin: 0;
 }
 
-.footer .footer-link {
-    color: #007BFF;
+.footer .privacy-link {
+    color: #007BFF; /* Blue color */
     cursor: pointer;
-    font-weight: bold;
-    text-decoration: none;
+    text-decoration: underline; /* Underlined to look like a link */
 }
 
-.footer .footer-link:hover {
+.footer .privacy-link:hover {
+    color: #0056b3; /* Darker blue on hover */
     text-decoration: underline;
 }
