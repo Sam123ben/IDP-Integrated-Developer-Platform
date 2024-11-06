@@ -9,7 +9,20 @@ import TileContainer from "./components/TileContainer";
 import "./styles/App.css";
 
 function App() {
+    const [selectedSection, setSelectedSection] = useState(null);
     const [selectedEnvironment, setSelectedEnvironment] = useState(null);
+
+    // Function to handle section selection from Sidebar
+    const handleSectionSelect = (section) => {
+        console.log("Selected section:", section);
+        setSelectedSection(section);
+    };
+
+    // Function to handle environment selection from Sidebar
+    const handleEnvironmentSelect = (environment) => {
+        console.log("Selected environment:", environment);
+        setSelectedEnvironment(environment);
+    };
 
     // Sample environments based on selection (replace with actual fetching logic)
     const environments = selectedEnvironment
@@ -33,15 +46,11 @@ function App() {
           ]
         : []; // Empty array when no environment is selected
 
-    const handleEnvironmentSelect = (environment) => {
-        setSelectedEnvironment(environment); // Update selected environment
-    };
-
     return (
         <div className="app">
             <Header />
             <div className="main-layout">
-                <Sidebar onEnvironmentSelect={handleEnvironmentSelect} />
+                <Sidebar onSectionSelect={handleSectionSelect} onEnvironmentSelect={handleEnvironmentSelect} />
                 <TileContainer environments={environments} /> {/* Pass environments prop */}
             </div>
             <Footer />

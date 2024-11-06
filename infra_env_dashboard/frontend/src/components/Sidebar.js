@@ -1,25 +1,31 @@
+// src/components/Sidebar.js
+
 import React, { useState, useEffect } from "react";
 import "../styles/Sidebar.css";
 
-function Sidebar({ onSectionSelect, onEnvironmentSelect }) { // Add props for parent communication
+function Sidebar({ onSectionSelect, onEnvironmentSelect }) {
     const [infraTypes, setInfraTypes] = useState([]); // Store fetched data
     const [selectedSection, setSelectedSection] = useState(null); // Track which section is selected
-    const [expandedSections, setExpandedSections] = useState({});
+    const [expandedSections, setExpandedSections] = useState({}); // Track expanded sections for toggling
 
     // Fetch infrastructure types data from the backend
     useEffect(() => {
         fetch("http://localhost:8081/api/infra-types")
             .then((response) => response.json())
             .then((data) => {
-                console.log("Fetched infraTypes:", data); // Debug log
-                setInfraTypes(data.infraTypes || []);
-                if (data.infraTypes && data.infraTypes.length > 0) {
-                    setSelectedSection(data.infraTypes[0].name); // Default to the first section if available
-                    onSectionSelect(data.infraTypes[0].name); // Notify parent of the initial selection
+                console.log("Fetched infraTypes:", data); // Debug log for fetched data
+                const infraTypesData = data.infraTypes || [];
+                setInfraTypes(infraTypesData);
+
+                // Only set default selection if no section is currently selected
+                if (infraTypesData.length > 0 && !selectedSection) {
+                    const defaultSection = infraTypesData[0].name;
+                    setSelectedSection(defaultSection);
+                    onSectionSelect(defaultSection); // Notify App.js about the initial section
                 }
             })
             .catch((error) => console.error("Error fetching infrastructure types:", error));
-    }, [onSectionSelect]);
+    }, [selectedSection, onSectionSelect]);
 
     // Toggle section visibility
     const toggleSection = (section) => {
@@ -31,13 +37,13 @@ function Sidebar({ onSectionSelect, onEnvironmentSelect }) { // Add props for pa
 
     // Handle section tab click
     const handleTabClick = (sectionType) => {
-        setSelectedSection(sectionType);
-        onSectionSelect(sectionType); // Notify parent of section selection
+        setSelectedSection(sectionType); // Update local state to selected section
+        onSectionSelect(sectionType); // Notify App.js of the section selection
     };
 
     // Handle environment click
     const handleEnvironmentClick = (environment) => {
-        onEnvironmentSelect(environment); // Notify parent of environment selection
+        onEnvironmentSelect(environment); // Notify App.js of environment selection
     };
 
     return (
