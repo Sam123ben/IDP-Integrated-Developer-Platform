@@ -143,3 +143,55 @@ BEGIN
             ((SELECT id FROM customers WHERE name = 'Vendor B'), 'Product 2');
     END IF;
 END $$;
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
+
+-- 1. Create the products table
+CREATE TABLE IF NOT EXISTS products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+-- 2. Create the environments table, linked to products
+CREATE TABLE IF NOT EXISTS environments (
+    id SERIAL PRIMARY KEY,
+    product_id INT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    name VARCHAR(50) NOT NULL
+);
+
+-- 3. Create the environment_details table, linked to environments
+CREATE TABLE IF NOT EXISTS environment_details (
+    id SERIAL PRIMARY KEY,
+    environment_id INT NOT NULL REFERENCES environments(id) ON DELETE CASCADE,
+    name VARCHAR(50) NOT NULL,
+    url VARCHAR(100),
+    last_updated TIMESTAMP,
+    status VARCHAR(20),
+    contact VARCHAR(50),
+    app_version VARCHAR(50),
+    db_version VARCHAR(50),
+    comments TEXT
+);
+
+-- Insert dummy data
+
+-- Insert into products
+INSERT INTO products (name) VALUES ('Product 1') ON CONFLICT DO NOTHING;
+
+-- Insert into environments
+INSERT INTO environments (product_id, name)
+VALUES
+    ((SELECT id FROM products WHERE name = 'Product 1'), 'DEV')
+ON CONFLICT DO NOTHING;
+
+-- Insert into environment_details
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Dev', 'dev.example.com', '2021-08-19 21:30:00', 'Online', 'Samyak', 'develop-20240821.1', '7.2.0876', 'Testing this env so please check'),
+    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Smoke', 'smoke.example.com', '2021-08-19 21:30:00', 'Online', 'Samyak', 'develop-20240920.3', '7.2.0876', 'Testing this env so please check'),
+    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Stage', 'stage.example.com', '2021-08-19 21:30:00', 'Online', 'Samyak', 'develop-20240512.1', '7.2.0876', 'Testing this env so please check')
+ON CONFLICT DO NOTHING;
