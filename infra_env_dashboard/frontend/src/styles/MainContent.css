@@ -10,6 +10,27 @@
     min-height: 100vh;
 }
 
+/* Placeholder text for empty states */
+/* .placeholder-text {
+    font-size: 1.2em;
+    color: #666;
+    text-align: center;
+    margin-top: 20px;
+} */
+
+
+.empty-layout {
+    width: 100%;
+    height: 100%;
+    border: 2px dashed #ccc; /* Dashed border to indicate empty space */
+    border-radius: 8px;
+    background-color: #ffffff; /* White background for empty area */
+    min-height: 300px; /* Match height of typical card container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Basic card styling */
 .card {
     background-color: #ffffff;
