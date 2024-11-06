@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:16
+FROM node:16 AS builder
 
 # Set working directory
 WORKDIR /app
@@ -16,8 +16,17 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Start the app directly (remove nginx stage)
-# Assuming the app runs on port 3000; adjust as needed
-EXPOSE 3000
+# Stage 2: Serve with nginx
+FROM nginx:alpine
 
-CMD ["npm", "start"]
+# Copy the build files from the builder stage to the nginx html directory
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80 to the outside world
+EXPOSE 80
+
+# Start nginx server
+CMD ["nginx", "-g", "daemon off;"]
