@@ -3,13 +3,13 @@
 .app {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    background-color: #f3f4f6;
+    min-height: 100vh; /* Full height for the viewport */
 }
 
 .main-layout {
+    flex: 1; /* Take up available space between header and footer */
     display: grid;
-    grid-template-columns: 300px 1fr; /* Sidebar takes 300px, rest is for content */
+    grid-template-columns: 300px 1fr;
     gap: 20px;
     padding: 20px;
     width: 100%;

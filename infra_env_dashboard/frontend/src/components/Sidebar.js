@@ -11,9 +11,10 @@ function Sidebar() {
         fetch("http://localhost:8081/api/infra-types")
             .then((response) => response.json())
             .then((data) => {
-                setInfraTypes(data.infraTypes);
-                if (data.infraTypes.length > 0) {
-                    setSelectedSection(data.infraTypes[0].name); // Default to the first section
+                console.log("Fetched infraTypes:", data); // Debug log
+                setInfraTypes(data.infraTypes || []);
+                if (data.infraTypes && data.infraTypes.length > 0) {
+                    setSelectedSection(data.infraTypes[0].name); // Default to the first section if available
                 }
             })
             .catch((error) => console.error("Error fetching infrastructure types:", error));
@@ -48,8 +49,9 @@ function Sidebar() {
             {/* Render sections based on the selected infrastructure type */}
             {infraTypes
                 .filter((infraType) => infraType.name === selectedSection)
-                .map((infraType) =>
-                    infraType.sections.map((section) => (
+                .flatMap((infraType) =>
+                    // Safely access infraType.sections and map over them if they exist
+                    (infraType.sections || []).map((section) => (
                         <div className="sidebar-section" key={section.name}>
                             <div
                                 className={`collapsible-header ${expandedSections[section.name] ? "active" : ""}`}
@@ -59,6 +61,7 @@ function Sidebar() {
                                 <span className={`arrow ${expandedSections[section.name] ? "rotate" : ""}`}>▶</span>
                             </div>
                             <ul className={`collapsible-content ${expandedSections[section.name] ? "visible" : ""}`}>
+                                {/* Render environments if they exist within the section */}
                                 {(section.environments || []).map((environment, idx) => (
                                     <li key={idx}>{environment}</li>
                                 ))}

@@ -3,26 +3,28 @@
 import React, { useState } from "react";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
-import TileContainer from "./components/TileContainer";
-import MainContent from "./components/MainContent";
+import MainContent from "./components/MainContent"; // Make sure this is correctly imported
+import Footer from "./components/Footer";
 import "./styles/App.css";
 
 function App() {
-    // State to store the selected sidebar item data
-    const [selectedSection, setSelectedSection] = useState(null);
+    // Initialize the state for selected section
+    const [selectedSection, setSelectedSection] = useState(null); // Initially null, meaning no section selected
 
-    // Function to update selected section from sidebar
-    const handleSectionSelect = (sectionData) => {
-        setSelectedSection(sectionData);
+    // Handler to update selectedSection when a section is selected in Sidebar
+    const handleSectionSelect = (section) => {
+        console.log("Selected section:", section); // Debug log
+        setSelectedSection(section);
     };
 
     return (
         <div className="app">
             <Header />
             <div className="main-layout">
-                <Sidebar onSectionSelect={handleSectionSelect} />
-                <MainContent selectedSection={selectedSection} />
+                <Sidebar onSectionSelect={handleSectionSelect} /> {/* Pass handler to Sidebar */}
+                <MainContent selectedSection={selectedSection} /> {/* Pass selectedSection to MainContent */}
             </div>
+            <Footer />
         </div>
     );
 }
