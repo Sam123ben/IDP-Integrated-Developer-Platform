@@ -199,11 +199,6 @@ ON CONFLICT DO NOTHING;
 
 
 
-
-
-
-
-
 -- Insert into products
 INSERT INTO products (name) VALUES ('Product 2') ON CONFLICT DO NOTHING;
 
