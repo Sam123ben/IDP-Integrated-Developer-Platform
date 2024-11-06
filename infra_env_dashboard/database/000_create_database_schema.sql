@@ -195,3 +195,28 @@ VALUES
     ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Smoke', 'smoke.example.com', '2021-08-19 21:30:00', 'Online', 'Samyak', 'develop-20240920.3', '7.2.0876', 'Testing this env so please check'),
     ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Stage', 'stage.example.com', '2021-08-19 21:30:00', 'Online', 'Samyak', 'develop-20240512.1', '7.2.0876', 'Testing this env so please check')
 ON CONFLICT DO NOTHING;
+
+
+
+
+
+
+
+
+
+-- Insert into products
+INSERT INTO products (name) VALUES ('Product 2') ON CONFLICT DO NOTHING;
+
+-- Insert into environments
+INSERT INTO environments (product_id, name)
+VALUES
+    ((SELECT id FROM products WHERE name = 'Product 2'), 'DEV')
+ON CONFLICT DO NOTHING;
+
+-- Insert into environment_details
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Dev', 'dev.example.com', '2021-08-20 18:45:00', 'Online', 'Samyak', 'develop-20240822.1', '7.2.0876', 'Testing this Product 2 Dev env'),
+    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Smoke', 'smoke.example.com', '2021-08-21 10:00:00', 'Online', 'Samyak', 'develop-20240921.3', '7.2.0877', 'Testing this Product 2 Smoke env'),
+    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Stage', 'stage.example.com', '2021-08-22 11:00:00', 'Online', 'Samyak', 'develop-20240513.1', '7.2.0878', 'Testing this Product 2 Stage env')
+ON CONFLICT DO NOTHING;
