@@ -4,7 +4,7 @@ Infra Environment Dashboard is a web application that helps teams manage and vis
 
 ## Features
 
-![Infra Environment Dashboard Screenshot](./docs/images/dashboard.png)
+![Infra Environment Dashboard Screenshot](./docs/images/Devops-Dashboard.png)
 
 - **Company Service**: Provides company information.
 - **Environment Service**: Lists environment types, sections, and groups under INTERNAL and CUSTOMER infra types.
