@@ -40,6 +40,17 @@
     padding-top: 10px;
 }
 
+/* Light sky blue background for selected environment/group */
+.environment-item.selected, .product-name.selected {
+    background-color: #e0f7ff; /* Light sky blue */
+    color: #007acc; /* Adjust text color if needed */
+}
+
+/* Hover effect for better visual feedback */
+.environment-item:hover, .product-name:hover {
+    background-color: #cceeff; /* Slightly darker blue on hover */
+}
+
 /* Product section with gray background */
 .product-section {
     margin-top: 10px;

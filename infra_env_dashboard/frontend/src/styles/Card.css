@@ -109,6 +109,17 @@
     font-weight: bold;
 }
 
+/* App version link color to match other clickable links */
+.version-clickable {
+    color: #0066cc; /* Same blue color as other links */
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.version-clickable:hover {
+    color: darkblue; /* Darker blue on hover */
+}
+
 /* Card title and updated section styling */
 .card-title-section {
     display: flex;
