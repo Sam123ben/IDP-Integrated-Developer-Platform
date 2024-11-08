@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import "../styles/Sidebar.css";
-import { fetchInfraTypes } from "../services/api";
+import { fetchInfraTypes } from "../services/api"; // Replace with your actual data-fetching logic
 
 function Sidebar({ onEnvironmentSelect }) {
     const [infraTypes, setInfraTypes] = useState([]);
     const [selectedSection, setSelectedSection] = useState("INTERNAL");
     const [expandedProducts, setExpandedProducts] = useState({});
+    const [selectedEnv, setSelectedEnv] = useState(null); // Track selected environment
+    const [selectedProduct, setSelectedProduct] = useState(null); // Track selected product
 
     // Fetch infrastructure types on load
     useEffect(() => {
@@ -22,9 +24,18 @@ function Sidebar({ onEnvironmentSelect }) {
             ...prev,
             [productName]: !prev[productName],
         }));
+        setSelectedProduct(productName); // Set selected product
+        setSelectedEnv(null); // Clear selected environment when selecting a new product
     };
 
-    // Filter the infraTypes to show only selected section (INTERNAL or CUSTOMER)
+    // Handle environment selection
+    const handleEnvironmentSelect = (env) => {
+        setSelectedEnv(env);
+        setSelectedProduct(null); // Clear selected product when selecting a new environment
+        onEnvironmentSelect(selectedSection, selectedProduct, env);
+    };
+
+    // Filter the infraTypes to show only the selected section (INTERNAL or CUSTOMER)
     const filteredInfraTypes = infraTypes.filter(
         (infraType) => infraType.name.toUpperCase() === selectedSection
     );
@@ -54,7 +65,7 @@ function Sidebar({ onEnvironmentSelect }) {
                         <div key={section.name} className="product-section">
                             {/* Product header with toggle button */}
                             <div
-                                className="product-name"
+                                className={`product-name ${selectedProduct === section.name ? "selected" : ""}`}
                                 onClick={() => toggleProduct(section.name)}
                             >
                                 {section.name}
@@ -69,8 +80,8 @@ function Sidebar({ onEnvironmentSelect }) {
                                     {section.environments.map((env) => (
                                         <li
                                             key={env}
-                                            className="environment-item"
-                                            onClick={() => onEnvironmentSelect(selectedSection, section.name, env)}
+                                            className={`environment-item ${selectedEnv === env ? "selected" : ""}`}
+                                            onClick={() => handleEnvironmentSelect(env)}
                                         >
                                             {env}
                                         </li>
