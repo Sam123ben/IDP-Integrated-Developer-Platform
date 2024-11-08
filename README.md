@@ -205,6 +205,75 @@ Check the API documentation (Swagger) for detailed endpoint information.
 - **backend/services**: Each service has its own folder with code, handlers, models, repository, and routing.
 - **frontend**: Contains the React code for the dashboard UI.
 
+## Future Enhancements
+
+To improve the quality and reliability of the application, the following enhancements are planned:
+
+### 1. Implement Unit Testing Frameworks
+
+#### Backend (Go):
+
+- **Framework**: Utilize Go's built-in `testing` package along with `testify` for assertions and mocking.
+- **Description**: Write unit tests for backend services to ensure individual components function as expected.
+- **Tasks**:
+  - Set up the testing environment in each backend service.
+  - Write unit tests for models, handlers, and repository functions.
+  - Integrate tests into the build pipeline.
+
+#### Frontend (React):
+
+- **Framework**: Implement `Jest` and `React Testing Library` for testing React components.
+- **Description**: Write unit tests for React components to verify rendering, user interaction, and state management.
+- **Tasks**:
+  - Configure Jest and React Testing Library in the frontend project.
+  - Write tests for critical components like `Header`, `Footer`, `MainContent`, etc.
+  - Ensure coverage for various user interaction scenarios.
+
+### 2. Introduce Integration Testing
+
+#### Backend Integration Tests:
+
+- **Framework**: Use tools like `GoConvey` or continue with Go's `testing` package for integration tests.
+- **Description**: Write tests that verify the interaction between different parts of the backend services and the database.
+- **Tasks**:
+  - Set up integration test suites that run against a test database.
+  - Write tests that cover API endpoints and database transactions.
+  - Mock external services if necessary.
+
+#### Frontend Integration Tests:
+
+- **Framework**: Utilize `Cypress` or `Selenium` for end-to-end testing.
+- **Description**: Write tests that simulate user interactions with the UI and verify the application flow.
+- **Tasks**:
+  - Configure Cypress in the frontend project.
+  - Write end-to-end tests that cover critical user journeys.
+  - Integrate these tests into the CI/CD pipeline.
+
+### 3. Continuous Integration and Continuous Deployment (CI/CD)
+
+- **Integrate Testing into CI/CD Pipeline**:
+  - **Description**: Ensure that all tests are automatically run during the build and deployment process.
+  - **Tasks**:
+    - Set up GitHub Actions, Jenkins, or another CI tool to run tests on every push and pull request.
+    - Fail builds if any tests fail.
+    - Generate and store test coverage reports.
+
+### 4. Documentation and Code Quality
+
+#### Improve Code Documentation:
+
+- **Description**: Add comments and documentation to the codebase for better maintainability.
+- **Tasks**:
+  - Add GoDoc comments to all public Go functions and types.
+  - Document React components and their props.
+
+#### Enforce Coding Standards:
+
+- **Backend**:
+  - Use `golint` and `go vet` to enforce coding standards.
+- **Frontend**:
+  - Implement `ESLint` and `Prettier` for consistent code formatting and linting.
+
 ### Contributing
 
 If you’d like to contribute:

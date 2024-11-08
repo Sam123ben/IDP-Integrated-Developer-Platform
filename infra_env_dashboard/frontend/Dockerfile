@@ -1,20 +1,27 @@
-# Use Node.js 16
-FROM node:16
+# Stage 1: Build
+FROM node:16 AS build
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
 COPY package.json package-lock.json ./
 
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the application code
 COPY . .
 
-# Expose port 3000
+RUN npm run build
+
+# Stage 2: Run
+FROM node:16-slim
+
+RUN npm install -g serve
+
+WORKDIR /app
+
+# Copy the build artifacts from the build stage
+COPY --from=build /app/dist ./dist
+
 EXPOSE 3000
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["serve", "-s", "dist", "-l", "3000"]
