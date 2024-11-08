@@ -1,5 +1,38 @@
 /* src/styles/Sidebar.css */
 
+/* Common styling for vendor and product headers */
+.vendor-name,
+.product-name {
+    background-color: #f0f0f0; /* Set consistent color here */
+    color: #333;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for vendor and product headers */
+.vendor-name:hover,
+.product-name:hover {
+    background-color: #e0e0e0; /* Slightly darker on hover */
+}
+
+/* Consistent background color when selected, so it doesn't change */
+.vendor-name.selected,
+.product-name.selected {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* Styling for selected environment item with light sky blue background */
+.environment-item.selected {
+    background-color: #e0f7ff; /* Light sky blue for selected environment */
+    color: #007acc; /* Adjusted color for selected environment text */
+}
+
 /* Main sidebar container */
 .sidebar-container {
     width: 250px;
@@ -35,48 +68,20 @@
     color: #008cba;
 }
 
-/* Sidebar content for products and environments */
+/* Sidebar content padding */
 .sidebar-content {
     padding-top: 10px;
 }
 
-/* Light sky blue background for selected environment/group */
-.environment-item.selected, .product-name.selected {
-    background-color: #e0f7ff; /* Light sky blue */
-    color: #007acc; /* Adjust text color if needed */
+/* Environment item hover effect and selected background */
+.environment-item.selected {
+    background-color: #e0f7ff; /* Light sky blue for selected environment */
+    color: #007acc;
 }
 
-/* Hover effect for better visual feedback */
-.environment-item:hover, .product-name:hover {
+/* Hover effect for environment items */
+.environment-item:hover {
     background-color: #cceeff; /* Slightly darker blue on hover */
-}
-
-/* Product section with gray background */
-.product-section {
-    margin-top: 10px;
-}
-
-.product-name {
-    font-size: 1em;
-    color: #333;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #f0f0f0; /* Consistent gray background */
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.product-name:hover {
-    background-color: #e0e0e0; /* Slightly darker on hover */
-}
-
-.toggle-icon {
-    font-size: 0.9em;
-    color: #333;
 }
 
 /* Environment list under each product */
@@ -96,4 +101,15 @@
 
 .environment-item:hover {
     color: #00897b;
+}
+
+/* Product section styling */
+.product-section {
+    margin-top: 10px;
+}
+
+/* Toggle icon styling */
+.toggle-icon {
+    font-size: 0.9em;
+    color: #333;
 }

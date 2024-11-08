@@ -26,13 +26,10 @@ function Sidebar({ onEnvironmentSelect }) {
         setSelectedEnv(null); // Clear selected environment when a new product is selected
     };
 
-    const handleEnvironmentSelect = (env) => {
-        if (selectedProduct) {
-            setSelectedEnv(env);
-            onEnvironmentSelect(selectedSection, selectedProduct, env); // Pass both product and environment
-        } else {
-            console.warn("Product not selected"); // Log a warning if product is missing
-        }
+    const handleEnvironmentSelect = (env, productName) => {
+        setSelectedEnv(env);
+        setSelectedProduct(productName); // Update selected product
+        onEnvironmentSelect(selectedSection, productName, env); // Pass both product and environment
     };
 
     const filteredInfraTypes = infraTypes.filter(
@@ -75,8 +72,12 @@ function Sidebar({ onEnvironmentSelect }) {
                                     {section.environments.map((env) => (
                                         <li
                                             key={env}
-                                            className={`environment-item ${selectedEnv === env ? "selected" : ""}`}
-                                            onClick={() => handleEnvironmentSelect(env)}
+                                            className={`environment-item ${
+                                                selectedEnv === env && selectedProduct === section.name
+                                                    ? "selected"
+                                                    : ""
+                                            }`}
+                                            onClick={() => handleEnvironmentSelect(env, section.name)}
                                         >
                                             {env}
                                         </li>
