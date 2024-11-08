@@ -26,6 +26,7 @@
     justify-content: flex-start;
     padding-top: 20px;
     box-sizing: border-box;
+    margin: 0 auto; /* Center the grid container */
 }
 
 /* Basic card styling with flexible width */
@@ -35,6 +36,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     flex: 1 1 calc(33.33% - 20px); /* Make cards responsive and fill each row */
+    min-width: 280px; /* Ensures cards don't get too narrow */
     max-width: 100%; /* Ensure they don’t exceed the row width */
     box-sizing: border-box;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
