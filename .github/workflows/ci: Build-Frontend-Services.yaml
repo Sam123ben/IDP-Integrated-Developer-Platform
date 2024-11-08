@@ -1,4 +1,4 @@
-name: CI Docker Build and Push
+name: CI Docker Build and Push for Frontend Services
 
 on:
   push:
