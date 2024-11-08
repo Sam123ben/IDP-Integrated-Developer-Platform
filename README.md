@@ -15,81 +15,126 @@ Infra Environment Dashboard is a web application that helps teams manage and vis
 The project is divided into multiple services and components:
 
 ```plaintext
-infra_env_dashboard
-├── backend               # Backend services and configurations
-│   ├── common            # Common utilities for config, logging, and DB connection
-│   │   ├── configs
-│   │   │   └── config.yaml          # Configuration file for database and service settings
-│   │   ├── httpservice
-│   │   │   └── http_service.go      # Common HTTP client or server utilities
-│   │   ├── logger
-│   │   │   └── logger.go            # Logger setup for consistent logging across services
-│   │   ├── postgress
-│   │   │   └── db.go                # PostgreSQL database connection setup
-│   │   └── utils
-│   │       └── error_handler.go     # Utility functions for error handling
-│   ├── services
-│   │   ├── fetch_company_details    # Service for company details
-│   │   │   ├── docs
-│   │   │   │   ├── docs.go          # Swagger documentation setup
-│   │   │   │   ├── swagger.json     # API specification in JSON format
-│   │   │   │   └── swagger.yaml     # API specification in YAML format
-│   │   │   ├── handlers
-│   │   │   │   └── company_handler.go # HTTP handlers for company-related requests
-│   │   │   ├── main.go              # Entry point for the service
-│   │   │   ├── models
-│   │   │   │   ├── company.go       # Data models for company-related entities
-│   │   │   │   └── response.go      # Models for API responses
-│   │   │   ├── repository
-│   │   │   │   └── company_repository.go # Database interaction for company details
-│   │   │   └── router
-│   │   │       └── router.go        # HTTP router setup for handling API routes
-│   │   └── fetch_infra_types        # Service for infra types and environment details
-│   │       ├── docs
-│   │       │   ├── docs.go          # Swagger documentation setup
-│   │       │   ├── swagger.json     # API specification in JSON format
-│   │       │   └── swagger.yaml     # API specification in YAML format
-│   │       ├── handlers
-│   │       │   └── infra_handler.go # HTTP handlers for infra-related requests
-│   │       ├── main.go              # Entry point for the service
-│   │       ├── models
-│   │       │   ├── infra_type.go    # Data models for infra type entities
-│   │       │   └── response.go      # Models for API responses
-│   │       ├── repository
-│   │       │   └── infra_repository.go # Database interaction for infra types
-│   │       └── router
-│   │           └── router.go        # HTTP router setup for handling API routes
-├── database              # Database initialization SQL files
-│   └── 000_create_database_schema.sql # SQL script to create the initial database schema
-├── frontend              # Frontend React application
-│   ├── assets            # Static assets like images, fonts, etc.
-│   ├── public
-│   │   └── config        # Public configurations, if any
-│   ├── src
-│   │   ├── App.js        # Main entry point of the React app
-│   │   ├── components    # Reusable UI components
-│   │   │   ├── AppVersionModal.js   # Component for displaying app version information
-│   │   │   ├── Card.js              # Card component for displaying environment details
-│   │   │   ├── Header.js            # Header component for the app
-│   │   │   ├── MainContent.js       # Main content display of the dashboard
-│   │   │   ├── Modal.js             # Generic modal component
-│   │   │   ├── SectionHeader.js     # Section header component
-│   │   │   ├── Sidebar.js           # Sidebar component for navigation
-│   │   │   └── TileContainer.js     # Container for tiles within each section
-│   │   ├── index.css     # Global CSS styles
-│   │   ├── index.html    # HTML template for the React app
-│   │   ├── index.js      # Entry point for rendering React components
-│   │   └── styles        # CSS styles for individual components
-│   │       ├── App.css              # Styles for the main App component
-│   │       ├── AppVersionModal.css  # Styles for the AppVersionModal component
-│   │       ├── Card.css             # Styles for the Card component
-│   │       ├── Header.css           # Styles for the Header component
-│   │       ├── MainContent.css      # Styles for the MainContent component
-│   │       ├── Modal.css            # Styles for the Modal component
-│   │       ├── SectionHeader.css    # Styles for the SectionHeader component
-│   │       ├── Sidebar.css          # Styles for the Sidebar component
-│   │       └── TileContainer.css    # Styles for the TileContainer component
-└── docker-compose.yml    # Docker Compose file to run the whole application
+# Project Folder Structure
+
+This document provides a detailed overview of the project's folder structure. Each directory and file is organized to enhance modularity, readability, and maintainability.
+
+```plaintext
+.
+├── README.md                     # Main project documentation
+├── docs                          # Documentation assets
+│   └── images                    # Images used in documentation
+│       ├── Deployment-Version.png
+│       ├── Devops-Dashboard.png
+│       └── dashboard.png
+├── infra_env_dashboard           # Primary application directory
+│   ├── README.md                 # README for infra_env_dashboard specifics
+│   ├── backend                   # Backend services and configurations
+│   │   ├── common                # Common utilities and services used across backend
+│   │   │   ├── configs           # Configuration files
+│   │   │   │   └── config.yaml   # Main configuration file
+│   │   │   ├── httpservice       # HTTP service handling
+│   │   │   │   └── http_service.go
+│   │   │   ├── logger            # Logger utility for backend services
+│   │   │   │   └── logger.go
+│   │   │   ├── postgress         # PostgreSQL database connection handler
+│   │   │   │   └── db.go
+│   │   │   └── utils             # Utility functions for error handling, etc.
+│   │   │       └── error_handler.go
+│   │   ├── go.mod                # Go module file
+│   │   ├── go.sum                # Go dependencies
+│   │   └── services              # Backend services for specific features
+│   │       ├── fetch_company_details # Service to fetch company details
+│   │       │   ├── Dockerfile    # Dockerfile for containerizing this service
+│   │       │   ├── docs          # Documentation for this service
+│   │       │   │   ├── docs.go
+│   │       │   │   ├── swagger.json
+│   │       │   │   └── swagger.yaml
+│   │       │   ├── handlers      # API endpoint handlers
+│   │       │   │   └── company_handler.go
+│   │       │   ├── main.go       # Entry point for the service
+│   │       │   ├── models        # Models related to company details
+│   │       │   │   ├── company.go
+│   │       │   │   └── response.go
+│   │       │   ├── repository    # Database operations
+│   │       │   │   └── company_repository.go
+│   │       │   └── router        # Router configuration
+│   │       │       └── router.go
+│   │       ├── fetch_infra_types # Service to fetch infrastructure types
+│   │       │   ├── Dockerfile
+│   │       │   ├── docs
+│   │       │   │   ├── docs.go
+│   │       │   │   ├── swagger.json
+│   │       │   │   └── swagger.yaml
+│   │       │   ├── handlers
+│   │       │   │   └── infra_handler.go
+│   │       │   ├── main.go
+│   │       │   ├── models
+│   │       │   │   ├── infra_type.go
+│   │       │   │   └── response.go
+│   │       │   ├── repository
+│   │       │   │   └── infra_repository.go
+│   │       │   └── router
+│   │       │       └── router.go
+│   │       └── fetch_internal_env_details # Service to fetch internal environment details
+│   │           ├── Dockerfile
+│   │           ├── handlers
+│   │           │   └── handler.go
+│   │           ├── main.go
+│   │           ├── models
+│   │           │   ├── models.go
+│   │           │   └── response.go
+│   │           ├── repository
+│   │           │   └── repository.go
+│   │           └── router
+│   │               └── router.go
+│   ├── database                   # Database setup scripts
+│   │   └── 000_create_database_schema.sql # SQL script to create initial schema
+│   ├── docker-compose.yml         # Docker Compose for the entire application stack
+│   └── frontend                   # Frontend application
+│       ├── Dockerfile             # Dockerfile for frontend containerization
+│       ├── assets                 # Static assets (images, fonts, etc.)
+│       ├── dist                   # Compiled frontend assets
+│       │   ├── bundle.js
+│       │   ├── bundle.js.LICENSE.txt
+│       │   └── index.html
+│       ├── package-lock.json      # Node package lock file
+│       ├── package.json           # Node package configuration
+│       ├── public                 # Public static files
+│       │   └── config
+│       ├── src                    # Source code for the frontend
+│       │   ├── App.js             # Main application component
+│       │   ├── components         # Reusable React components
+│       │   │   ├── AppVersionModal.js
+│       │   │   ├── Card.js
+│       │   │   ├── Footer.js
+│       │   │   ├── Header.js
+│       │   │   ├── MainContent.js
+│       │   │   ├── Modal.js
+│       │   │   ├── PrivacyModal.js
+│       │   │   ├── SectionHeader.js
+│       │   │   ├── Sidebar.js
+│       │   │   └── TileContainer.js
+│       │   ├── config.js          # Configuration file for frontend settings
+│       │   ├── index.css          # Main CSS file
+│       │   ├── index.html         # HTML template
+│       │   ├── index.js           # Entry point for React
+│       │   ├── services           # API services for frontend
+│       │   │   └── api.js
+│       │   └── styles             # CSS files for styling components
+│       │       ├── App.css
+│       │       ├── AppVersionModal.css
+│       │       ├── Card.css
+│       │       ├── Footer.css
+│       │       ├── Header.css
+│       │       ├── MainContent.css
+│       │       ├── Modal.css
+│       │       ├── PrivacyModal.css
+│       │       ├── SectionHeader.css
+│       │       ├── Sidebar.css
+│       │       └── TileContainer.css
+│       └── webpack.config.js      # Webpack configuration
+└── tree.txt                       # File listing of the project structure
 ```
 
 ## Getting Started
