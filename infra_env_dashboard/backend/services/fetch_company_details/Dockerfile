@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM golang:1.18 AS builder
+FROM golang:1.23.2 AS builder
 
 # Set the Current Working Directory inside the container
 WORKDIR /app
@@ -14,7 +14,8 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
+RUN cd services/fetch_company_details/ && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
 
 # Stage 2: Run
 FROM alpine:latest

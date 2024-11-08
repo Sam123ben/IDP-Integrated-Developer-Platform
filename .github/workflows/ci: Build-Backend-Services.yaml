@@ -1,0 +1,119 @@
+name: CI Docker Build and Push for Backend Services
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch: # Manual trigger
+    inputs:
+      release_version:
+        description: 'Release version (e.g., 1.0.0). The "v" prefix will be automatically added.'
+        required: false
+        default: ''
+
+jobs:
+  ci-build:
+    name: CI Docker Build
+    runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_dispatch'  # Only run on push or PR, skip manual dispatch
+
+    strategy:
+      matrix:
+        service: [fetch_company_details, fetch_infra_types, fetch_internal_env_details]
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Docker Image Tag
+      - name: Set up Docker Image Tag
+        id: tag_step
+        run: |
+          DATE_TAG="v$(date +'%Y.%m.%d')"
+          # Create a default tag for CI builds that isn't meant to be pushed
+          NEW_TAG="${DATE_TAG}-ci"
+          echo "Docker Tag: ${NEW_TAG}"
+          echo "::set-output name=tag::${NEW_TAG}"
+
+      # Step 3: Build Docker Image (without push)
+      - name: Build Docker Image (No Push)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./infra_env_dashboard/backend/${{ matrix.service }} # Correct context for Dockerfile location
+          push: false
+          tags: |
+            sam123ben/infra-dashboard-${{ matrix.service }}:${{ steps.tag_step.outputs.tag }}
+
+  manual-build-push:
+    name: Manual Docker Build and Push
+    runs-on: ubuntu-latest
+    needs: [ci-build] # Make sure manual build runs after a successful CI build
+    if: github.event_name == 'workflow_dispatch' # Only run on manual trigger
+
+    strategy:
+      matrix:
+        service: [fetch_company_details, fetch_infra_types, fetch_internal_env_details]
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Install jq (for parsing JSON)
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      # Step 3: Set up Docker Image Tag
+      - name: Set up Docker Image Tag
+        id: tag_step
+        run: |
+          DATE_TAG="v$(date +'%Y.%m.%d')"
+          # Fetch previous tags and determine the next build number for today
+          PREVIOUS_TAGS=$(curl -s -H "Authorization: Bearer ${{ secrets.DOCKER_HUB_PAT_TOKEN }}" "https://hub.docker.com/v2/repositories/sam123ben/infra-dashboard-${{ matrix.service }}/tags/?page_size=100")
+          COUNT=$(echo "$PREVIOUS_TAGS" | jq '.results | map(select(.name | startswith("'"$DATE_TAG"'"))) | length')
+          NEW_BUILD_NUMBER=$((COUNT + 1))
+          NEW_DATE_TAG="${DATE_TAG}.${NEW_BUILD_NUMBER}"
+          
+          # Handle release version from input
+          if [ -n "${{ github.event.inputs.release_version }}" ]; then
+            RELEASE_TAG="v${{ github.event.inputs.release_version }}"
+          else
+            RELEASE_TAG=""
+          fi
+          
+          echo "Docker Tag (Date Version): ${NEW_DATE_TAG}"
+          if [ -n "${RELEASE_TAG}" ]; then
+            echo "Docker Tag (Release Version): ${RELEASE_TAG}"
+          fi
+
+          # Set output variables
+          echo "::set-output name=date_tag::${NEW_DATE_TAG}"
+          echo "::set-output name=release_tag::${RELEASE_TAG}"
+
+      # Step 4: Log in to Docker Hub using the Access Token
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PAT_TOKEN }}
+
+      # Step 5: Build and Push Docker Image
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./infra_env_dashboard/backend/${{ matrix.service }} # Correct context for Dockerfile location
+          push: true
+          tags: |
+            sam123ben/infra-dashboard-${{ matrix.service }}:latest
+            sam123ben/infra-dashboard-${{ matrix.service }}:${{ steps.tag_step.outputs.date_tag }}
+            ${{ steps.tag_step.outputs.release_tag }}
+
+      # Optional Step: Verify Docker Image
+      - name: Verify Docker Image
+        run: docker images sam123ben/infra-dashboard-${{ matrix.service }}:${{ steps.tag_step.outputs.date_tag }}
