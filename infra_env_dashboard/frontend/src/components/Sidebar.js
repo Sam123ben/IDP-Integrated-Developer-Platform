@@ -1,3 +1,5 @@
+// src/components/Sidebar.js
+
 import React, { useState, useEffect } from "react";
 import "../styles/Sidebar.css";
 import { fetchInfraTypes } from "../services/api";
