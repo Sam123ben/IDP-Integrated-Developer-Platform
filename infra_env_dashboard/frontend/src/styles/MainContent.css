@@ -1,5 +1,3 @@
-/* src/styles/MainContent.css */
-
 .main-content {
     display: flex;
     flex-direction: row;
@@ -15,29 +13,30 @@
     box-sizing: border-box;
 }
 
-/* Container for card grid layout */
+/* Container for card layout with Flexbox */
 .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
-    gap: 20px; /* 20px gap between cards */
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping to new lines */
+    gap: 0; /* Setting gap to 0 as we'll use margin on cards instead */
     width: 100%;
-    max-width: 1200px; /* Control max width for readability */
+    max-width: 1200px;
     align-items: start;
-    justify-items: center; /* Center-align cards within their columns */
+    justify-content: flex-start;
     padding-top: 20px;
     box-sizing: border-box;
 }
 
-/* Basic card styling */
+/* Basic card styling with added margin */
 .card {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    width: 100%; /* Take full width of the grid column */
-    max-width: 350px; /* Optional max-width for consistent alignment */
+    width: calc(33.33% - 20px); /* Ensure three cards per row with margin */
+    max-width: 350px;
     box-sizing: border-box;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin: 10px; /* Add margin to create space between cards */
 }
 
 /* Hover effect for cards */
@@ -84,6 +83,7 @@
     color: #555;
 }
 
+/* Empty layout style for when no cards are present */
 .empty-layout {
     width: 100%;
     height: 100%;
