@@ -2,95 +2,87 @@
 
 /* Main sidebar container */
 .sidebar-container {
-    width: 250px; /* Fixed width for sidebar */
+    width: 250px;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: inherit;
-    justify-content: flex-start;
-    height: 100%; /* Full height within the flex container */
 }
 
-/* Header for the sections like INTERNAL and EXTERNAL */
-.sidebar-header {
+/* Horizontal tabs for INTERNAL and CUSTOMER */
+.sidebar-tabs {
     display: flex;
     justify-content: space-around;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
 }
 
-.sidebar-header h3 {
+.sidebar-tab {
     cursor: pointer;
-    font-size: 1.2em;
+    font-size: 1.1em;
     color: #333;
-}
-
-.sidebar-header h3.active {
-    color: #00897b;
+    padding: 10px;
+    transition: color 0.3s ease;
     font-weight: bold;
-    border-bottom: 3px solid #00897b; /* Underline active section */
 }
 
-/* Styling for each collapsible product header */
-.collapsible-header {
-    background-color: #f2f2f2;
-    padding: 12px;
-    margin-bottom: 5px;
-    border-radius: 5px;
+.sidebar-tab.active {
+    color: #008cba;
+    border-bottom: 3px solid #008cba; /* Underline for active tab */
+}
+
+.sidebar-tab:hover {
+    color: #008cba;
+}
+
+/* Sidebar content for products and environments */
+.sidebar-content {
+    padding-top: 10px;
+}
+
+/* Product section with gray background */
+.product-section {
+    margin-top: 10px;
+}
+
+.product-name {
+    font-size: 1em;
+    color: #333;
+    font-weight: bold;
     cursor: pointer;
-    font-weight: bold;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 10px;
+    background-color: #f0f0f0; /* Consistent gray background */
+    border-radius: 5px;
     transition: background-color 0.3s;
 }
 
-.collapsible-header:hover {
-    background-color: #e8e8e8;
+.product-name:hover {
+    background-color: #e0e0e0; /* Slightly darker on hover */
 }
 
-.collapsible-header.active {
-    background-color: #e0e0e0; /* Darker shade when active */
+.toggle-icon {
+    font-size: 0.9em;
+    color: #333;
 }
 
-/* Arrow icon for collapsible header */
-.collapsible-header .arrow {
-    transition: transform 0.3s;
-}
-
-.collapsible-header.active .arrow {
-    transform: rotate(90deg); /* Rotate arrow when expanded */
-}
-
-/* Collapsible content list (hidden by default) */
-.collapsible-content {
-    display: none;
-    list-style: none;
-    padding: 0 15px; /* Indent content */
+/* Environment list under each product */
+.environment-list {
+    list-style-type: none;
+    padding: 0 10px;
     margin: 0;
 }
 
-.collapsible-content li {
-    padding: 8px 0;
+.environment-item {
+    padding: 5px 0;
     font-size: 0.9em;
-    color: #555;
+    color: #333;
     cursor: pointer;
-    transition: color 0.2s;
+    transition: color 0.3s ease;
 }
 
-.collapsible-content li:hover {
-    color: #00897b; /* Highlight on hover */
-}
-
-/* Active styles for expanded content */
-.collapsible-content.visible {
-    display: block;
-}
-
-/* Additional spacing for each section */
-.sidebar-section {
-    margin-bottom: 15px;
+.environment-item:hover {
+    color: #00897b;
 }

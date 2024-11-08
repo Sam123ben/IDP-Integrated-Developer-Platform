@@ -1,89 +1,84 @@
-// src/components/Sidebar.js
-
 import React, { useState, useEffect } from "react";
 import "../styles/Sidebar.css";
+import { fetchInfraTypes } from "../services/api";
 
-function Sidebar({ onSectionSelect, onEnvironmentSelect }) {
-    const [infraTypes, setInfraTypes] = useState([]); // Store fetched data
-    const [selectedSection, setSelectedSection] = useState(null); // Track which section is selected
-    const [expandedSections, setExpandedSections] = useState({}); // Track expanded sections for toggling
+function Sidebar({ onEnvironmentSelect }) {
+    const [infraTypes, setInfraTypes] = useState([]);
+    const [selectedSection, setSelectedSection] = useState("INTERNAL");
+    const [expandedProducts, setExpandedProducts] = useState({});
 
-    // Fetch infrastructure types data from the backend
+    // Fetch infrastructure types on load
     useEffect(() => {
-        fetch("http://localhost:8081/api/infra-types")
-            .then((response) => response.json())
-            .then((data) => {
-                console.log("Fetched infraTypes:", data); // Debug log for fetched data
-                const infraTypesData = data.infraTypes || [];
-                setInfraTypes(infraTypesData);
+        fetchInfraTypes()
+            .then(setInfraTypes)
+            .catch(error => console.error("Failed to load infrastructure types:", error));
+    }, []);
 
-                // Only set default selection if no section is currently selected
-                if (infraTypesData.length > 0 && !selectedSection) {
-                    const defaultSection = infraTypesData[0].name;
-                    setSelectedSection(defaultSection);
-                    onSectionSelect(defaultSection); // Notify App.js about the initial section
-                }
-            })
-            .catch((error) => console.error("Error fetching infrastructure types:", error));
-    }, [selectedSection, onSectionSelect]);
-
-    // Toggle section visibility
-    const toggleSection = (section) => {
-        setExpandedSections((prev) => ({
+    // Toggle expanded state for each product
+    const toggleProduct = (productName) => {
+        setExpandedProducts(prev => ({
             ...prev,
-            [section]: !prev[section],
+            [productName]: !prev[productName],
         }));
     };
 
-    // Handle section tab click
-    const handleTabClick = (sectionType) => {
-        setSelectedSection(sectionType); // Update local state to selected section
-        onSectionSelect(sectionType); // Notify App.js of the section selection
-    };
-
-    // Handle environment click
-    const handleEnvironmentClick = (environment) => {
-        onEnvironmentSelect(environment); // Notify App.js of environment selection
-    };
+    // Filter the infraTypes to show only selected section (INTERNAL or CUSTOMER)
+    const filteredInfraTypes = infraTypes.filter(
+        (infraType) => infraType.name.toUpperCase() === selectedSection
+    );
 
     return (
         <div className="sidebar-container">
-            {/* Sidebar header with dynamic sections */}
-            <div className="sidebar-header">
-                {infraTypes.map((infraType) => (
-                    <h3
-                        key={infraType.id}
-                        className={selectedSection === infraType.name ? "active" : ""}
-                        onClick={() => handleTabClick(infraType.name)}
-                    >
-                        {infraType.name}
-                    </h3>
-                ))}
+            {/* Horizontal tabs for INTERNAL and CUSTOMER */}
+            <div className="sidebar-tabs">
+                <span
+                    className={`sidebar-tab ${selectedSection === "INTERNAL" ? "active" : ""}`}
+                    onClick={() => setSelectedSection("INTERNAL")}
+                >
+                    INTERNAL
+                </span>
+                <span
+                    className={`sidebar-tab ${selectedSection === "CUSTOMER" ? "active" : ""}`}
+                    onClick={() => setSelectedSection("CUSTOMER")}
+                >
+                    CUSTOMER
+                </span>
             </div>
 
-            {/* Render sections based on the selected infrastructure type */}
-            {infraTypes
-                .filter((infraType) => infraType.name === selectedSection)
-                .flatMap((infraType) =>
-                    (infraType.sections || []).map((section) => (
-                        <div className="sidebar-section" key={section.name}>
+            {/* Display the products and environments under the selected section */}
+            <div className="sidebar-content">
+                {filteredInfraTypes.map((infraType) =>
+                    infraType.sections.map((section) => (
+                        <div key={section.name} className="product-section">
+                            {/* Product header with toggle button */}
                             <div
-                                className={`collapsible-header ${expandedSections[section.name] ? "active" : ""}`}
-                                onClick={() => toggleSection(section.name)}
+                                className="product-name"
+                                onClick={() => toggleProduct(section.name)}
                             >
                                 {section.name}
-                                <span className={`arrow ${expandedSections[section.name] ? "rotate" : ""}`}>▶</span>
+                                <span className="toggle-icon">
+                                    {expandedProducts[section.name] ? "▼" : "▶"}
+                                </span>
                             </div>
-                            <ul className={`collapsible-content ${expandedSections[section.name] ? "visible" : ""}`}>
-                                {(section.environments || []).map((environment, idx) => (
-                                    <li key={idx} onClick={() => handleEnvironmentClick(environment)}>
-                                        {environment}
-                                    </li>
-                                ))}
-                            </ul>
+
+                            {/* Environments under each product */}
+                            {expandedProducts[section.name] && (
+                                <ul className="environment-list">
+                                    {section.environments.map((env) => (
+                                        <li
+                                            key={env}
+                                            className="environment-item"
+                                            onClick={() => onEnvironmentSelect(selectedSection, section.name, env)}
+                                        >
+                                            {env}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                     ))
                 )}
+            </div>
         </div>
     );
 }

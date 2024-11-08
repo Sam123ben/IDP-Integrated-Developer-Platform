@@ -2,27 +2,30 @@
 
 .main-content {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
     padding: 20px;
-    background-color: #ffffff; /* Match sidebar background color */
-    border: 2px solid #ddd; /* Match sidebar border color */
+    background-color: #ffffff;
+    border: 2px solid #ddd;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Optional: Slight shadow for depth */
-    min-height: 100%; /* Take up full height */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-height: 100%;
     width: 100%;
     box-sizing: border-box;
 }
 
-.empty-layout {
+/* Container for card grid layout */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 20px; /* 20px gap between cards */
     width: 100%;
-    height: 100%;
-    background-color: #ffffff; /* Ensure it matches the main content background */
-    min-height: 100%; /* Take up full height */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    max-width: 1200px; /* Control max width for readability */
+    align-items: start;
+    justify-items: center; /* Center-align cards within their columns */
+    padding-top: 20px;
+    box-sizing: border-box;
 }
 
 /* Basic card styling */
@@ -31,8 +34,8 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    width: 300px;
-    max-width: 100%;
+    width: 100%; /* Take full width of the grid column */
+    max-width: 350px; /* Optional max-width for consistent alignment */
     box-sizing: border-box;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -43,23 +46,22 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Specific styles for different card types based on status */
+/* Styling for different card statuses */
 .card.smoke {
-    border-left: 4px solid red; /* Indicator for failed deployment */
+    border-left: 4px solid red;
 }
 
 .card.manual {
-    border-left: 4px solid #FF8C00; /* Deep orange for deployment in progress */
+    border-left: 4px solid #FF8C00;
 }
 
-/* Status text styling */
 .status-failed {
     color: red;
     font-weight: bold;
 }
 
 .status-progress {
-    color: #FF8C00; /* Deep orange for better visibility */
+    color: #FF8C00;
     font-weight: bold;
 }
 
@@ -80,4 +82,14 @@
     font-size: 0.95em;
     line-height: 1.4;
     color: #555;
+}
+
+.empty-layout {
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

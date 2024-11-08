@@ -1,8 +1,6 @@
-// src/components/AppVersionModal.js
-
 import React from "react";
 import ReactDOM from "react-dom";
-import "../styles/AppVersionModal.css"; // Import modal-specific styles
+import "../styles/AppVersionModal.css";
 
 const AppVersionModal = ({ onClose, envName = "Smoke Build" }) => {
     return ReactDOM.createPortal(
@@ -39,7 +37,7 @@ const AppVersionModal = ({ onClose, envName = "Smoke Build" }) => {
                 </div>
             </div>
         </div>,
-        document.body // Render modal at the root of the document
+        document.body
     );
 };
 

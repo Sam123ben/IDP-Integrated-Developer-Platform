@@ -1,29 +1,30 @@
 // src/components/MainContent.js
 
 import React from "react";
-import "../styles/MainContent.css";
 import Card from "./Card";
+import "../styles/MainContent.css";
 
-function MainContent({ selectedSection }) {
+function MainContent({ envDetails }) {
     return (
         <div className="main-content">
-            {selectedSection ? (
-                // Render cards if a section is selected
-                selectedSection.sections.map((section, index) => (
+            {envDetails.length > 0 ? (
+                envDetails.map((env, index) => (
                     <Card
-                        key={index}
-                        name={section.name}
-                        status="Online" // Placeholder values, replace with actual data as needed
-                        lastUpdated="Just now"
-                        contact="John Doe"
-                        appVersion="1.0.0"
-                        dbVersion="v2.0.1"
-                        comments="Environment is active."
+                        key={env.id}
+                        name={env.name}
+                        lastUpdated={new Date(env.lastUpdated).toLocaleString()}
+                        status={env.status}
+                        contact={env.contact}
+                        appVersion={env.appVersion}
+                        dbVersion={env.dbVersion}
+                        comments={env.comments}
+                        url={env.url}
                     />
                 ))
             ) : (
-                // Empty layout when no section is selected
-                <div className="empty-layout"></div>
+                <div className="empty-layout">
+                    <p>Select an environment to view details.</p>
+                </div>
             )}
         </div>
     );

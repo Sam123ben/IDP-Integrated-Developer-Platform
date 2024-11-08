@@ -1,9 +1,10 @@
 /* src/styles/Card.css */
 
+/* Grid container for cards, responsive for different screen sizes */
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two columns on larger screens */
-    gap: 40px; /* Space between cards */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Dynamic columns based on available space */
+    gap: 20px; /* Space between cards */
     max-width: 1200px;
     width: 100%;
     align-items: start; /* Align items to the start for consistent vertical alignment */
@@ -19,18 +20,17 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 20px;
     width: 100%; /* Full width within the grid */
-    max-width: 600px; /* Control max width for readability */
+    max-width: 400px; /* Control max width for readability */
     min-height: 300px; /* Minimum height for large cards */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
-    margin: auto; /* Center card */
 }
 
 .card {
-    margin: 15px;
+    margin: 0; /* Remove margin to avoid extra gaps */
     background-color: #ffffff;
     border: 2px solid #ddd;
     border-radius: 8px;
@@ -86,7 +86,6 @@
 .status-indicator-green {
     background: linear-gradient(145deg, #084f19, #66ff66); /* Green gradient for shiny effect */
 }
-
 
 /* Red indicator for unsuccessful status */
 .status-indicator-red {
@@ -145,7 +144,6 @@
     color: #000; /* Changed color to black for darker dots */
 }
 
-
 .card-link {
     color: #0066cc;
     margin: 4px 0; /* Reduced margin for a tighter look */
@@ -186,7 +184,7 @@
 }
 
 .card-layout {
-    display: block;
+    display: flex;
     justify-content: center;
     padding: 20px;
     background-color: #f8f8f8;
@@ -212,87 +210,6 @@
     cursor: pointer;
     text-decoration: underline;
 }
-
-.dialog-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.dialog-box {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    width: 400px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    position: relative;
-}
-
-.dialog-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.dialog-header h3 {
-    margin: 0;
-    font-size: 1.2em;
-    color: #0066cc;
-}
-
-.close-button {
-    cursor: pointer;
-    font-size: 1.5em;
-}
-
-.dialog-content {
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.app-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-.app-list li {
-    display: flex;
-    align-items: center;
-    padding: 5px 0;
-}
-
-.status-icon {
-    font-size: 1.2em;
-    margin-right: 10px;
-}
-
-.status-icon.green {
-    color: green;
-}
-
-.status-icon.orange {
-    color: #FF8C00;
-}
-
-.status-icon.red {
-    color: red;
-}
-
-.version-clickable {
-    color: #007BFF;
-    cursor: pointer;
-    text-decoration: underline;
-}
-
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

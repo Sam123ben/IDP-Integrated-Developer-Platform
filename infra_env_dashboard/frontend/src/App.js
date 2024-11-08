@@ -5,53 +5,37 @@ import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import MainContent from "./components/MainContent";
 import Footer from "./components/Footer";
-import TileContainer from "./components/TileContainer";
 import "./styles/App.css";
 
 function App() {
-    const [selectedSection, setSelectedSection] = useState(null);
     const [selectedEnvironment, setSelectedEnvironment] = useState(null);
+    const [envDetails, setEnvDetails] = useState([]);
 
-    // Function to handle section selection from Sidebar
-    const handleSectionSelect = (section) => {
-        console.log("Selected section:", section);
-        setSelectedSection(section);
+    // Function to fetch environment details based on selected product and environment name
+    const fetchEnvDetails = async (product, envName) => {
+        try {
+            const response = await fetch(`http://localhost:8082/api/internal-env-details?product=${encodeURIComponent(product)}&EnvName=${encodeURIComponent(envName)}`);
+            const data = await response.json();
+            setEnvDetails(data.environmentDetails || []); // Store environment details
+        } catch (error) {
+            console.error("Failed to fetch environment details:", error);
+            setEnvDetails([]); // Clear details if fetch fails
+        }
     };
 
-    // Function to handle environment selection from Sidebar
-    const handleEnvironmentSelect = (environment) => {
-        console.log("Selected environment:", environment);
-        setSelectedEnvironment(environment);
+    // Handle environment selection
+    const handleEnvironmentSelect = (section, product, environment) => {
+        console.log(`Selected environment: ${environment} for product: ${product}`);
+        setSelectedEnvironment({ product, environment });
+        fetchEnvDetails(product, environment); // Fetch details for the selected environment
     };
-
-    // Sample environments based on selection (replace with actual fetching logic)
-    const environments = selectedEnvironment
-        ? [
-              {
-                  name: selectedEnvironment,
-                  lastUpdated: "19/08/2021 21:30",
-                  status: "Online",
-                  contact: "Samyak",
-                  appVersion: "Smoke Build",
-                  dbVersion: "7.2.0876",
-                  comments: "Testing this env so please check",
-                  statusClass: "card-online",
-                  applications: [
-                      { name: "awp", version: "develop-20240201", status: "green" },
-                      { name: "idsrv", version: "develop-20231113", status: "orange" },
-                      { name: "portal", version: "develop-20240429", status: "orange" },
-                      { name: "webapi", version: "develop-20240415", status: "red" }
-                  ]
-              }
-          ]
-        : []; // Empty array when no environment is selected
 
     return (
         <div className="app">
             <Header />
             <div className="main-layout">
-                <Sidebar onSectionSelect={handleSectionSelect} onEnvironmentSelect={handleEnvironmentSelect} />
-                <TileContainer environments={environments} /> {/* Pass environments prop */}
+                <Sidebar onEnvironmentSelect={handleEnvironmentSelect} />
+                <MainContent envDetails={envDetails} /> {/* Pass envDetails to MainContent */}
             </div>
             <Footer />
         </div>

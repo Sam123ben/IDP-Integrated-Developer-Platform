@@ -2,10 +2,9 @@
 
 import React, { useState } from "react";
 import AppVersionModal from "./AppVersionModal";
-import "../styles/TileContainer.css";
 import "../styles/Card.css";
 
-function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, statusClass }) {
+function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, url }) {
     const [showModal, setShowModal] = useState(false);
 
     const handleVersionClick = (event) => {
@@ -24,7 +23,7 @@ function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comme
         "gray";
 
     return (
-        <div className={`card ${statusClass} big-card`}>
+        <div className="card">
             <div className="card-header">
                 <div className="card-title-section">
                     <span className="status-indicator" style={{ backgroundColor: statusColor }}></span>
@@ -32,12 +31,11 @@ function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comme
                 </div>
                 <div className="card-updated-section">
                     <span className="card-updated">Last updated: {lastUpdated}</span>
-                    <span className="three-dots">⋮</span>
                 </div>
             </div>
             {/* Environment URL */}
-            <a href={`https://${name.toLowerCase()}.example.com`} className="card-link" target="_blank" rel="noopener noreferrer">
-                https://{name.toLowerCase()}.example.com
+            <a href={`https://${url}`} className="card-link" target="_blank" rel="noopener noreferrer">
+                {url}
             </a>
             <p><strong>Status:</strong> <span className="status-text">{status}</span></p>
             <p><strong>Contact:</strong> {contact}</p>
@@ -46,7 +44,6 @@ function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comme
                 <span 
                     className="version-clickable"
                     onClick={handleVersionClick} 
-                    style={{ color: "#007BFF", cursor: "pointer", textDecoration: "underline" }}
                 >
                     {appVersion}
                 </span>
