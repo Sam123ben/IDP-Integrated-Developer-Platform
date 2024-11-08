@@ -3,13 +3,13 @@
 /* Responsive Flex container for cards */
 .card-grid {
     display: flex;
-    flex-wrap: wrap; /* Allow cards to wrap to new lines */
-    gap: 20px; /* Space between cards */
+    flex-wrap: wrap;
+    gap: 20px;
     max-width: 1200px;
     width: 100%;
-    justify-content: center; /* Center-align cards within the container */
-    padding: 20px; /* Padding around the grid */
-    margin: 0 auto; /* Center align grid container */
+    justify-content: center;
+    padding: 20px;
+    margin: 0 auto;
 }
 
 /* Default card styling */
@@ -18,26 +18,19 @@
     border: 2px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 15px 20px; /* Adjusted padding for a tighter layout */
-    flex: 1 1 calc(33.33% - 20px); /* Adjust card width to fill 3 per row */
-    max-width: 400px; /* Prevents cards from growing too large */
-    min-width: 300px; /* Minimum width for better readability */
-    box-sizing: border-box; /* Include padding and border in total width/height */
+    padding: 15px 20px;
+    flex: 1 1 calc(33.33% - 20px);
+    max-width: 400px;
+    min-width: 300px;
+    box-sizing: border-box;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: stretch;
-    overflow: auto; /* Enable vertical scrolling */
+    overflow: auto;
     cursor: pointer;
-    margin: 10px; /* Add margin for spacing around cards */
-}
-
-/* Bigger card variation */
-.card.big-card {
-    width: 100%; /* Full width within the grid */
-    max-width: 400px; /* Control max width for readability */
-    min-height: 300px; /* Minimum height for large cards */
+    margin: 10px;
 }
 
 /* Card header styling */
@@ -45,19 +38,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 8px; /* Reduced gap for tighter layout */
-    margin-bottom: 8px; /* Adjusted spacing below header */
+    margin-bottom: 8px;
 }
 
 /* Status indicator styling */
 .status-indicator {
-    width: 20px; /* Adjusted size for a larger appearance */
+    width: 20px;
     height: 20px;
-    border-radius: 50%; /* Make it round */
+    border-radius: 50%;
     display: inline-block;
     margin-right: 8px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
-    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0.2)); /* Glossy effect */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0.2));
     background-blend-mode: overlay;
     position: relative;
 }
@@ -72,53 +64,27 @@
     height: 50%;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.6);
-    filter: blur(2px); /* Soft, shiny spot */
+    filter: blur(2px);
 }
 
 /* Status indicator colors */
-.status-indicator-green {
-    background: linear-gradient(145deg, #084f19, #66ff66); /* Green gradient for shiny effect */
-}
-
-.status-indicator-red {
-    background: linear-gradient(145deg, #931522, #ff6666); /* Red gradient for shiny effect */
-}
-
-.status-indicator-orange {
-    background: linear-gradient(145deg, #c4791e, #d58917); /* Deep orange gradient for shiny effect */
-}
+.status-indicator-green { background: linear-gradient(145deg, #084f19, #66ff66); }
+.status-indicator-red { background: linear-gradient(145deg, #931522, #ff6666); }
+.status-indicator-orange { background: linear-gradient(145deg, #c4791e, #d58917); }
 
 /* Status text colors to match indicators */
-.status-text-success {
-    color: green;
-    font-weight: bold;
-}
+.status-text-success { color: green; font-weight: bold; }
+.status-text-failed { color: red; font-weight: bold; }
+.status-text-progress { color: #FF8C00; font-weight: bold; }
+.status-text-default { color: gray; font-weight: bold; }
 
-.status-text-failed {
-    color: red;
-    font-weight: bold;
-}
-
-.status-text-progress {
-    color: #FF8C00; /* Matches the orange indicator */
-    font-weight: bold;
-}
-
-.status-text-default {
-    color: gray; /* Default color for unknown statuses */
-    font-weight: bold;
-}
-
-/* App version link color to match other clickable links */
+/* App version link color */
 .version-clickable {
-    color: #0066cc; /* Same blue color as other links */
+    color: #0066cc;
     text-decoration: underline;
     cursor: pointer;
 }
-
-.version-clickable:hover {
-    color: darkblue; /* Darker blue on hover */
-}
+.version-clickable:hover { color: darkblue; }
 
 /* Card title and updated section styling */
 .card-title-section {
@@ -127,57 +93,92 @@
 }
 
 .card-title {
-    font-size: 1.1em; /* Slightly smaller font size */
+    font-size: 1.1em;
     font-weight: normal;
     color: #333;
 }
 
+/* Last updated and three-dot menu section */
 .card-updated-section {
     display: flex;
     align-items: center;
     font-size: 0.85em;
     color: #666;
-    gap: 6px; /* Reduced space for a more compact look */
+    gap: 6px;
 }
 
-.card-updated {
-    white-space: nowrap;
+.card-updated { white-space: nowrap; }
+
+/* Three-dot menu styling */
+.three-dots {
+    font-size: 1.5em;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #333;
+    padding: 0;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
 }
 
-/* Styling for the card link */
+/* Dropdown menu styling */
+.dropdown-menu {
+    position: absolute;
+    top: 24px;
+    right: 10px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 10px;
+    z-index: 10;
+    display: none;
+    flex-direction: column;
+    align-items: start;
+    min-width: 150px;
+}
+
+.dropdown-menu.show {
+    display: flex;
+}
+
+.dropdown-item {
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+    color: #333;
+    width: 100%;
+    text-align: left;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Styling for card link */
 .card-link {
     color: #0066cc;
-    margin: 4px 0; /* Reduced margin for a tighter look */
+    margin: 4px 0;
     text-decoration: underline;
     font-size: 0.9em;
     display: inline-block;
 }
 
-.card-link:hover {
-    color: darkblue;
-}
+.card-link:hover { color: darkblue; }
 
 /* Status-specific card background colors */
-.card-failed {
-    border-left: 4px solid red;
-    background-color: #fff5f5;
-}
-
-.card-in-progress {
-    border-left: 4px solid rgb(137, 92, 7);
-    background-color: #fff4e0;
-}
-
-.card-online {
-    border-left: 4px solid green;
-    background-color: #e5f8e9;
-}
+.card-failed { border-left: 4px solid red; background-color: #fff5f5; }
+.card-in-progress { border-left: 4px solid rgb(137, 92, 7); background-color: #fff4e0; }
+.card-online { border-left: 4px solid green; background-color: #e5f8e9; }
 
 /* Paragraph styling within card */
 .card p {
-    margin: 3px 0; /* Reduced margin for closer lines */
+    margin: 3px 0;
     font-size: 0.9em;
-    line-height: 1.2; /* Adjusted line-height for compact spacing */
+    line-height: 1.2;
 }
 
 .card-layout {
@@ -208,16 +209,8 @@
     text-decoration: underline;
 }
 
-/* Responsive adjustments for small screens */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .card-grid {
-        flex-direction: column; /* Stack cards vertically on smaller screens */
-        gap: 20px;
-        padding: 15px;
-    }
-
-    .card {
-        min-width: 100%; /* Make cards full-width on small screens */
-        max-width: 100%;
-    }
+    .card-grid { flex-direction: column; gap: 20px; padding: 15px; }
+    .card { min-width: 100%; max-width: 100%; }
 }
