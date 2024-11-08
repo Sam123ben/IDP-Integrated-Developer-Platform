@@ -1,3 +1,4 @@
+// router.go
 package router
 
 import (
@@ -7,21 +8,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(internalHandler *handlers.InternalHandler) *gin.Engine {
+func SetupRouter(internalHandler *handlers.InternalEnvHandler) *gin.Engine {
 	router := gin.Default()
 
 	// Apply CORS settings
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Content-Type", "Authorization"},
-		AllowCredentials: true,
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{"GET", "POST", "OPTIONS"},
+		AllowHeaders: []string{"Content-Type"},
 	}))
 
 	// Define API routes
 	api := router.Group("/api")
 	{
-		api.GET("/internal-env-details", internalHandler.GetInternalEnvDetails)
+		api.GET("/internal-env-details", internalHandler.FetchInternalEnvDetails)
 	}
+
 	return router
 }
