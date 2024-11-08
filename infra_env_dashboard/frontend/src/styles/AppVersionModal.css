@@ -28,12 +28,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #007B8F; /* Adjust color for banner */
+    background-color: #007B8F;
     color: white;
     padding: 10px 20px;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     font-weight: bold;
+}
+
+.env-name-container {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Controls the spacing between env name and close button */
 }
 
 .env-name {
@@ -48,6 +54,7 @@
     font-size: 1.2em;
     color: white;
     cursor: pointer;
+    margin-left: 10px; /* Adds space between the name and close button */
 }
 
 .modal-body ul {
@@ -80,7 +87,7 @@
 }
 
 .version {
-    margin-left: auto; /* Move version to the far right */
+    margin-left: auto;
     font-weight: normal;
     color: #333;
 }

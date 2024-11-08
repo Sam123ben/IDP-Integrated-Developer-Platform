@@ -25,9 +25,13 @@ function App() {
 
     // Handle environment selection
     const handleEnvironmentSelect = (section, product, environment) => {
-        console.log(`Selected environment: ${environment} for product: ${product}`);
-        setSelectedEnvironment({ product, environment });
-        fetchEnvDetails(product, environment); // Fetch details for the selected environment
+        if (product && environment) { // Ensure both product and environment are available
+            console.log(`Selected environment: ${environment} for product: ${product}`);
+            setSelectedEnvironment({ product, environment });
+            fetchEnvDetails(product, environment); // Fetch details for the selected environment
+        } else {
+            console.warn("Product or environment is missing in the selection");
+        }
     };
 
     return (

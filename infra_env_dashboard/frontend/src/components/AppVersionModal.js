@@ -4,14 +4,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "../styles/AppVersionModal.css";
 
-const AppVersionModal = ({ onClose, envName = "Smoke Build" }) => {
+const AppVersionModal = ({ onClose, envName = "Environment Name" }) => {
     return ReactDOM.createPortal(
         <div className="modal-overlay">
             <div className="modal-content">
                 <div className="modal-header">
                     <h2>App Version Detail</h2>
-                    <span className="env-name">{envName}</span>
-                    <button onClick={onClose} className="close-button">✖️</button>
+                    <div className="env-name-container">
+                        <span className="env-name">{envName}</span>
+                        <button onClick={onClose} className="close-button">✖</button>
+                    </div>
                 </div>
                 <div className="modal-body">
                     <ul>
