@@ -1,3 +1,5 @@
+/* src/style/MainContent.css */
+
 .main-content {
     display: flex;
     flex-direction: row;
@@ -16,8 +18,8 @@
 /* Container for card layout with Flexbox */
 .card-grid {
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping to new lines */
-    gap: 0; /* Setting gap to 0 as we'll use margin on cards instead */
+    flex-wrap: wrap; /* Allow cards to wrap to new lines */
+    gap: 20px; /* Spacing between cards */
     width: 100%;
     max-width: 1200px;
     align-items: start;
@@ -26,17 +28,17 @@
     box-sizing: border-box;
 }
 
-/* Basic card styling with added margin */
+/* Basic card styling with flexible width */
 .card {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    width: calc(33.33% - 20px); /* Ensure three cards per row with margin */
-    max-width: 350px;
+    flex: 1 1 calc(33.33% - 20px); /* Make cards responsive and fill each row */
+    max-width: 100%; /* Ensure they don’t exceed the row width */
     box-sizing: border-box;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin: 10px; /* Add margin to create space between cards */
+    margin: 10px; /* Space around each card */
 }
 
 /* Hover effect for cards */
