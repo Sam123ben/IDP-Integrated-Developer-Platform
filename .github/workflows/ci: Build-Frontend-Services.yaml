@@ -49,7 +49,6 @@ jobs:
   manual-build-push:
     name: Manual Docker Build and Push
     runs-on: ubuntu-latest
-    needs: [ci-build] # Make sure manual build runs after a successful CI build
     if: github.event_name == 'workflow_dispatch' # Only run on manual trigger
 
     steps:
