@@ -5,7 +5,7 @@ FROM golang:1.23.2 AS builder
 WORKDIR /app
 
 # Copy go.mod and go.sum files
-COPY fetch_internal_env_details/go.mod fetch_internal_env_details/go.sum ./
+COPY go.mod go.sum ./
 
 # Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go mod download
@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-RUN cd services/fetch_infra_types/ && \
+RUN cd services/fetch_internal_env_details/ && \
     CGO_ENABLED=0 GOOS=linux go build -o main .
 
 # Stage 2: Run
@@ -23,8 +23,11 @@ FROM alpine:latest
 # Set the Current Working Directory inside the container
 WORKDIR /root/
 
-# Copy the binary from the builder stage
-COPY --from=builder /app/services/fetch_infra_types/main .
+# Copy the pre-built binary file from the previous stage
+COPY --from=builder /app/services/fetch_internal_env_details/main .
 
-# Command to run the executable
+# Expose port 8080
+EXPOSE 8080
+
+# Run the binary program
 CMD ["./main"]
