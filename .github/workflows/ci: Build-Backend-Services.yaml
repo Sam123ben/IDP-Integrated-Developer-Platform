@@ -80,14 +80,10 @@ jobs:
         run: |
           # Build the Docker tag based on the provided date and optional release version
           RELEASE_TAG="v${RELEASE_VERSION}"
-          DATE_TAG="v$(date +'%Y.%m.%d')"
-          NEW_DATE_TAG="${DATE_TAG}-${RELEASE_TAG}"
 
-          echo "Docker Tag (Date Version): ${NEW_DATE_TAG}"
           echo "Docker Tag (Release Version): ${RELEASE_TAG}"
 
           # Set output variables for GitHub Actions
-          echo "date_tag=${NEW_DATE_TAG}" >> "$GITHUB_OUTPUT"
           echo "release_tag=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
 
       # Step 4: Log in to Docker Hub using the Access Token
@@ -106,9 +102,4 @@ jobs:
           push: true
           tags: |
             sam123ben/infra-dashboard-${{ matrix.service }}:latest
-            sam123ben/infra-dashboard-${{ matrix.service }}:${{ steps.tag_step.outputs.date_tag }}
             sam123ben/infra-dashboard-${{ matrix.service }}:${{ steps.tag_step.outputs.release_tag }}
-
-      # Optional Step: Verify Docker Image
-      - name: Verify Docker Image
-        run: docker images sam123ben/infra-dashboard-${{ matrix.service }}:${{ steps.tag_step.outputs.date_tag }}
