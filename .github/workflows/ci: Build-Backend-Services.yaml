@@ -45,7 +45,8 @@ jobs:
       - name: Build Docker Image (No Push)
         uses: docker/build-push-action@v5
         with:
-          context: ./infra_env_dashboard/backend/services/${{ matrix.service }} # Correct context for Dockerfile location
+          file: ./infra_env_dashboard/backend/services/${{ matrix.service }}/Dockerfile
+          context: ./infra_env_dashboard/backend # Correct context for Dockerfile location
           push: false
           tags: |
             sam123ben/infra-dashboard-${{ matrix.service }}:${{ steps.tag_step.outputs.tag }}
@@ -107,7 +108,8 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./infra_env_dashboard/backend/services/${{ matrix.service }} # Correct context for Dockerfile location
+          file: ./infra_env_dashboard/backend/services/${{ matrix.service }}/Dockerfile
+          context: ./infra_env_dashboard/backend # Correct context for Dockerfile location
           push: true
           tags: |
             sam123ben/infra-dashboard-${{ matrix.service }}:latest
