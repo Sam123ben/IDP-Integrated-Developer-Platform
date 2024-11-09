@@ -93,4 +93,3 @@ jobs:
           push: true
           tags: |
             sam123ben/infra-dashboard:latest
-            sam123ben/infra-dashboard:${{ steps.tag_step.outputs.release_tag }}

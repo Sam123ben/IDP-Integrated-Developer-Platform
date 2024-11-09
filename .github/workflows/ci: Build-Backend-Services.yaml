@@ -102,4 +102,3 @@ jobs:
           push: true
           tags: |
             sam123ben/infra-dashboard-${{ matrix.service }}:latest
-            sam123ben/infra-dashboard-${{ matrix.service }}:${{ steps.tag_step.outputs.release_tag }}
