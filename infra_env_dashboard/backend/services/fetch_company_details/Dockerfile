@@ -15,7 +15,7 @@ COPY . .
 
 # Build the Go app
 RUN cd services/fetch_company_details/ && \
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
+    CGO_ENABLED=0 GOOS=linux go build -o main .
 
 # Stage 2: Run
 FROM alpine:latest
@@ -24,7 +24,7 @@ FROM alpine:latest
 WORKDIR /root/
 
 # Copy the pre-built binary file from the previous stage
-COPY --from=builder /app/main .
+COPY --from=builder /app/services/fetch_company_details/main .
 
 # Expose port 8080
 EXPOSE 8080
