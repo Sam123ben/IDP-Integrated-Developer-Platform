@@ -33,13 +33,10 @@
     margin: 10px;
 }
 
-/* Card header styling */
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
+/* Card status-specific borders */
+.card-online { border-color: green; }
+.card-in-progress { border-color: #FF8C00; }
+.card-offline { border-color: red; }
 
 /* Status indicator styling */
 .status-indicator {
@@ -74,9 +71,17 @@
 
 /* Status text colors to match indicators */
 .status-text-success { color: green; font-weight: bold; }
-.status-text-failed { color: red; font-weight: bold; }
 .status-text-progress { color: #FF8C00; font-weight: bold; }
-.status-text-default { color: gray; font-weight: bold; }
+.status-text-failed { color: red; font-weight: bold; }
+.status-text-default { color: #333; font-weight: normal; }
+
+/* Card header styling */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
 
 /* App version link color */
 .version-clickable {
@@ -169,11 +174,6 @@
 
 .card-link:hover { color: darkblue; }
 
-/* Status-specific card background colors */
-.card-failed { border-left: 4px solid red; background-color: #fff5f5; }
-.card-in-progress { border-left: 4px solid rgb(137, 92, 7); background-color: #fff4e0; }
-.card-online { border-left: 4px solid green; background-color: #e5f8e9; }
-
 /* Paragraph styling within card */
 .card p {
     margin: 3px 0;
@@ -201,12 +201,6 @@
     border: 1px solid #e0e0e0;
     transition: box-shadow 0.6s ease, transform 0.6s ease;
     align-items: stretch;
-}
-
-.app-version-link {
-    color: #0066cc;
-    cursor: pointer;
-    text-decoration: underline;
 }
 
 /* Responsive adjustments */

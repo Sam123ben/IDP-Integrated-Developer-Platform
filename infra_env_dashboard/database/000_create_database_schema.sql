@@ -268,3 +268,99 @@ VALUES
     ((SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Launch', 'launch.staging.example.com', '2021-08-26 09:00:00', 'In Progress', 'Mike', 'staging-launch-20241010.2', '7.2.0888', 'Launch environment for Product 2 Staging'),
     ((SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Hotfix', 'hotfix.staging.example.com', '2021-08-26 10:00:00', 'Offline', 'Nina', 'staging-hotfix-20241015.3', '7.2.0889', 'Hotfix environment for Product 2 Staging')
 ON CONFLICT DO NOTHING;
+
+
+
+############################################################################################################
+############################################################################################################
+
+-- Update Product 1 DEV environments
+UPDATE environment_details
+SET app_version = 'v1.0.0'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
+  AND name = 'Dev';
+
+UPDATE environment_details
+SET app_version = 'v1.0.1'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
+  AND name = 'Smoke';
+
+UPDATE environment_details
+SET app_version = 'v1.0.2'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
+  AND name = 'Stage';
+
+-- Update Product 1 QA environments
+UPDATE environment_details
+SET app_version = 'v2.1.0'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
+  AND name = 'Manual';
+
+UPDATE environment_details
+SET app_version = 'v2.1.1'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
+  AND name = 'Auto';
+
+UPDATE environment_details
+SET app_version = 'v2.1.2'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
+  AND name = 'Prelaunch';
+
+-- Update Product 1 PRESALES environments
+UPDATE environment_details
+SET app_version = 'v3.0.0'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
+  AND name = 'Demo';
+
+UPDATE environment_details
+SET app_version = 'v3.0.1'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
+  AND name = 'Sales';
+
+UPDATE environment_details
+SET app_version = 'v3.0.2'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
+  AND name = 'Presales';
+
+-- Update Product 1 CONSULT environments
+UPDATE environment_details
+SET app_version = 'v4.2.0'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'CONSULT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
+  AND name = 'Tech';
+
+UPDATE environment_details
+SET app_version = 'v4.2.1'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'CONSULT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
+  AND name = 'SRE';
+
+-- Update Product 2 QA environments
+UPDATE environment_details
+SET app_version = 'v5.0.0'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
+  AND name = 'Manual';
+
+UPDATE environment_details
+SET app_version = 'v5.0.1'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
+  AND name = 'Auto';
+
+UPDATE environment_details
+SET app_version = 'v5.0.2'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
+  AND name = 'Prelaunch';
+
+-- Update Product 2 STAGING environments
+UPDATE environment_details
+SET app_version = 'v6.1.0'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
+  AND name = 'Release';
+
+UPDATE environment_details
+SET app_version = 'v6.1.1'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
+  AND name = 'Launch';
+
+UPDATE environment_details
+SET app_version = 'v6.1.2'
+WHERE environment_id = (SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
+  AND name = 'Hotfix';
