@@ -11,7 +11,7 @@ on:
       - develop
   workflow_dispatch: # Manual trigger
     inputs:
-      release_version:
+      RELEASE_VERSION:
         description: 'Release version (e.g., 1.0.0). The "v" prefix will be automatically added.'
         required: false
         default: ''
@@ -56,36 +56,29 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Install jq (for parsing JSON)
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
+      # Step 2: Validate Release Version
+      - name: Validate Release Version
+        run: |
+          if [ -z "${{ github.event.inputs.RELEASE_VERSION }}" ]; then
+            echo "Error: Please provide a valid release version for manual build and push."
+            exit 1
+          fi
 
       # Step 3: Set up Docker Image Tag
-      - name: Set up Docker Image Tag
-        id: tag_step
+      - name: Set Docker Tag Based on Date and Release Version
+        env:
+          DATE_TAG: "v$(date +'%Y.%m.%d')"
+          RELEASE_VERSION: ${{ github.event.inputs.RELEASE_VERSION }}
         run: |
-          DATE_TAG="v$(date +'%Y.%m.%d')"
-          # Fetch previous tags and determine the next build number for today
-          PREVIOUS_TAGS=$(curl -s -H "Authorization: Bearer ${{ secrets.DOCKER_HUB_PAT_TOKEN }}" "https://hub.docker.com/v2/repositories/sam123ben/infra-dashboard/tags/?page_size=100")
-          COUNT=$(echo "$PREVIOUS_TAGS" | jq '.results | map(select(.name | startswith("'"$DATE_TAG"'"))) | length')
-          NEW_BUILD_NUMBER=$((COUNT + 1))
-          NEW_DATE_TAG="${DATE_TAG}.${NEW_BUILD_NUMBER}"
-          
-          # Handle release version from input
-          if [ -n "${{ github.event.inputs.release_version }}" ]; then
-            RELEASE_TAG="v${{ github.event.inputs.release_version }}"
-          else
-            RELEASE_TAG=""
-          fi
-          
-          echo "Docker Tag (Date Version): ${NEW_DATE_TAG}"
-          if [ -n "${RELEASE_TAG}" ]; then
-            echo "Docker Tag (Release Version): ${RELEASE_TAG}"
-          fi
+          RELEASE_TAG="v${RELEASE_VERSION}"
+          NEW_DATE_TAG="${DATE_TAG}-${RELEASE_TAG}"
 
-          # Set output variables
-          echo "::set-output name=date_tag::${NEW_DATE_TAG}"
-          echo "::set-output name=release_tag::${RELEASE_TAG}"
+          echo "Docker Tag (Date Version): ${NEW_DATE_TAG}"
+          echo "Docker Tag (Release Version): ${RELEASE_TAG}"
+
+          # Set output variables for GitHub Actions
+          echo "date_tag=${NEW_DATE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "release_tag=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
 
       # Step 4: Log in to Docker Hub using the Access Token
       - name: Log in to Docker Hub
