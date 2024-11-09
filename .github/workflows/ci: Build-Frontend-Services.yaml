@@ -65,7 +65,8 @@ jobs:
             exit 1
           fi
 
-      # Step 3: Set Docker Tag Based on Date and Release Version
+      # Step 3: Set up Docker Image Tag
+      - name: Set Docker Tag Based on Release Version
         env:
           RELEASE_VERSION: ${{ github.event.inputs.RELEASE_VERSION }}
         run: |
