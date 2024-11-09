@@ -186,6 +186,16 @@ INSERT INTO products (name) VALUES ('Product 1') ON CONFLICT DO NOTHING;
 INSERT INTO environments (product_id, name)
 VALUES
     ((SELECT id FROM products WHERE name = 'Product 1'), 'DEV')
+    ((SELECT id FROM products WHERE name = 'Product 1'), 'QA')
+    ((SELECT id FROM products WHERE name = 'Product 1'), 'CONSULT')
+    ((SELECT id FROM products WHERE name = 'Product 1'), 'PRESALES')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO environments (product_id, name)
+VALUES
+    ((SELECT id FROM products WHERE name = 'Product 2'), 'DEV')
+    ((SELECT id FROM products WHERE name = 'Product 2'), 'QA')
+    ((SELECT id FROM products WHERE name = 'Product 2'), 'STAGING')
 ON CONFLICT DO NOTHING;
 
 -- Insert into environment_details
@@ -196,8 +206,33 @@ VALUES
     ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Stage', 'stage.example.com', '2021-08-19 21:30:00', 'Online', 'Samyak', 'develop-20240512.1', '7.2.0876', 'Testing this env so please check')
 ON CONFLICT DO NOTHING;
 
+-- Product 1
 
+-- Insert QA environments for Product 1
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Manual', 'manual.qa.example.com', '2021-08-23 08:00:00', 'Online', 'Alice', 'qa-manual-20240823.1', '7.2.0876', 'Manual QA environment for Product 1'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Auto', 'auto.qa.example.com', '2021-08-23 09:00:00', 'In Progress', 'Bob', 'qa-auto-20240901.2', '7.2.0877', 'Automated QA environment for Product 1'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Prelaunch', 'prelaunch.qa.example.com', '2021-08-23 10:00:00', 'Offline', 'Charlie', 'qa-prelaunch-20240915.1', '7.2.0878', 'Prelaunch QA environment for Product 1')
+ON CONFLICT DO NOTHING;
 
+-- Insert PRESALES environments for Product 1
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    ((SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Demo', 'demo.presales.example.com', '2021-08-23 11:00:00', 'Online', 'David', 'presales-demo-20240901.1', '7.2.0880', 'Demo environment for Product 1 Presales'),
+    ((SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Sales', 'sales.presales.example.com', '2021-08-23 12:00:00', 'Offline', 'Eve', 'presales-sales-20240910.2', '7.2.0881', 'Sales environment for Product 1 Presales'),
+    ((SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Presales', 'presales.presales.example.com', '2021-08-23 13:00:00', 'In Progress', 'Frank', 'presales-presales-20240915.3', '7.2.0882', 'Presales environment for Product 1 Presales')
+ON CONFLICT DO NOTHING;
+
+-- Insert CONSULT environments for Product 1
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    ((SELECT id FROM environments WHERE name = 'CONSULT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Tech', 'tech.consult.example.com', '2021-08-24 08:00:00', 'Online', 'Grace', 'consult-tech-20240905.1', '7.2.0879', 'Tech environment for Product 1 Consult'),
+    ((SELECT id FROM environments WHERE name = 'CONSULT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'SRE', 'sre.consult.example.com', '2021-08-24 09:00:00', 'Offline', 'Hank', 'consult-sre-20240912.2', '7.2.0883', 'SRE environment for Product 1 Consult')
+ON CONFLICT DO NOTHING;
+
+############################################################################################################
+############################################################################################################
 
 -- Insert into products
 INSERT INTO products (name) VALUES ('Product 2') ON CONFLICT DO NOTHING;
@@ -208,10 +243,28 @@ VALUES
     ((SELECT id FROM products WHERE name = 'Product 2'), 'DEV')
 ON CONFLICT DO NOTHING;
 
+-- Product 2
+
 -- Insert into environment_details
 INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
 VALUES
     ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Dev', 'dev.example.com', '2021-08-20 18:45:00', 'Online', 'Samyak', 'develop-20240822.1', '7.2.0876', 'Testing this Product 2 Dev env'),
     ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Smoke', 'smoke.example.com', '2021-08-21 10:00:00', 'Online', 'Samyak', 'develop-20240921.3', '7.2.0877', 'Testing this Product 2 Smoke env'),
     ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Stage', 'stage.example.com', '2021-08-22 11:00:00', 'Online', 'Samyak', 'develop-20240513.1', '7.2.0878', 'Testing this Product 2 Stage env')
+ON CONFLICT DO NOTHING;
+
+-- Insert QA environments for Product 2
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Manual', 'manual.qa.example.com', '2021-08-25 08:00:00', 'Online', 'Isaac', 'qa-manual-20240920.1', '7.2.0884', 'Manual QA environment for Product 2'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Auto', 'auto.qa.example.com', '2021-08-25 09:00:00', 'In Progress', 'Jack', 'qa-auto-20240925.2', '7.2.0885', 'Automated QA environment for Product 2'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Prelaunch', 'prelaunch.qa.example.com', '2021-08-25 10:00:00', 'Offline', 'Karen', 'qa-prelaunch-20241001.3', '7.2.0886', 'Prelaunch QA environment for Product 2')
+ON CONFLICT DO NOTHING;
+
+-- Insert STAGING environments for Product 2
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    ((SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Release', 'release.staging.example.com', '2021-08-26 08:00:00', 'Online', 'Laura', 'staging-release-20241005.1', '7.2.0887', 'Release environment for Product 2 Staging'),
+    ((SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Launch', 'launch.staging.example.com', '2021-08-26 09:00:00', 'In Progress', 'Mike', 'staging-launch-20241010.2', '7.2.0888', 'Launch environment for Product 2 Staging'),
+    ((SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'Hotfix', 'hotfix.staging.example.com', '2021-08-26 10:00:00', 'Offline', 'Nina', 'staging-hotfix-20241015.3', '7.2.0889', 'Hotfix environment for Product 2 Staging')
 ON CONFLICT DO NOTHING;

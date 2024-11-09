@@ -35,8 +35,15 @@ function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comme
         status === "Deployment In Progress" ? "status-text-progress" : 
         "status-text-default";
 
+    // Dynamic class for card border color based on status
+    const cardStatusClass =
+        status === "Online" ? "card-online" :
+        status === "Deployment In Progress" ? "card-in-progress" :
+        status === "Offline" ? "card-offline" :
+        "card-default";
+
     return (
-        <div className="card">
+        <div className={`card ${cardStatusClass}`}>
             <div className="card-header">
                 <div className="card-title-section">
                     <span className={`status-indicator ${statusIndicatorClass}`}></span>
