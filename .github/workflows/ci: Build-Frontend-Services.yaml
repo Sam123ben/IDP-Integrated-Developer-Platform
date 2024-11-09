@@ -96,8 +96,8 @@ jobs:
           tags: |
             sam123ben/infra-dashboard:latest
             sam123ben/infra-dashboard:${{ steps.tag_step.outputs.date_tag }}
-            ${{ steps.tag_step.outputs.release_tag }}
+            sam123ben/infra-dashboard:${{ steps.tag_step.outputs.release_tag }}
 
       # Optional Step: Verify Docker Image
       - name: Verify Docker Image
-        run: docker images sam123ben/infra-dashboard:${{ steps.tag_step.outputs.date_tag }}
+        run: docker images sam123ben/infra-dashboard:${{ steps.tag_step.outputs.release_tag }}

@@ -107,7 +107,7 @@ jobs:
           tags: |
             sam123ben/infra-dashboard-${{ matrix.service }}:latest
             sam123ben/infra-dashboard-${{ matrix.service }}:${{ steps.tag_step.outputs.date_tag }}
-            ${{ steps.tag_step.outputs.release_tag }}
+            sam123ben/infra-dashboard-${{ matrix.service }}:${{ steps.tag_step.outputs.release_tag }}
 
       # Optional Step: Verify Docker Image
       - name: Verify Docker Image
