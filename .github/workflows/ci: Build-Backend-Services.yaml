@@ -76,11 +76,11 @@ jobs:
       # Step 3: Set up Docker Image Tag
       - name: Set Docker Tag Based on Date and Release Version
         env:
-          DATE_TAG: "v$(date +'%Y.%m.%d')"
           RELEASE_VERSION: ${{ github.event.inputs.RELEASE_VERSION }}
         run: |
           # Build the Docker tag based on the provided date and optional release version
           RELEASE_TAG="v${RELEASE_VERSION}"
+          DATE_TAG="v$(date +'%Y.%m.%d')"
           NEW_DATE_TAG="${DATE_TAG}-${RELEASE_TAG}"
 
           echo "Docker Tag (Date Version): ${NEW_DATE_TAG}"
