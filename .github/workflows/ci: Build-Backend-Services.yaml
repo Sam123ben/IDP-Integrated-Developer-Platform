@@ -1,4 +1,4 @@
-name: CI Docker Build and Push for Backend Services
+name: CI Docker Build and Push for Combined Backend Services
 
 on:
   push:
@@ -22,10 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name != 'workflow_dispatch'  # Only run on push or PR, skip manual dispatch
 
-    strategy:
-      matrix:
-        service: [fetch_company_details, fetch_infra_types, fetch_internal_env_details]
-
     steps:
       # Step 1: Checkout the repository
       - name: Checkout Repository
@@ -45,20 +41,16 @@ jobs:
       - name: Build Docker Image (No Push)
         uses: docker/build-push-action@v5
         with:
-          file: ./infra_env_dashboard/backend/services/${{ matrix.service }}/Dockerfile
-          context: ./infra_env_dashboard/backend # Correct context for Dockerfile location
+          file: ./infra_env_dashboard/backend/Dockerfile # Path to the single Dockerfile
+          context: ./infra_env_dashboard/backend # Set context to backend root
           push: false
           tags: |
-            sam123ben/infra-dashboard-${{ matrix.service }}:${{ steps.tag_step.outputs.tag }}
+            sam123ben/infra-dashboard-backend:${{ steps.tag_step.outputs.tag }}
 
   manual-build-push:
     name: Manual Docker Build and Push
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' # Only run on manual trigger
-
-    strategy:
-      matrix:
-        service: [fetch_company_details, fetch_infra_types, fetch_internal_env_details]
 
     steps:
       # Step 1: Checkout the repository
@@ -84,9 +76,9 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          file: ./infra_env_dashboard/backend/services/${{ matrix.service }}/Dockerfile
-          context: ./infra_env_dashboard/backend # Correct context for Dockerfile location
+          file: ./infra_env_dashboard/backend/Dockerfile # Path to the single Dockerfile
+          context: ./infra_env_dashboard/backend # Set context to backend root
           push: true
           tags: |
-            sam123ben/infra-dashboard-${{ matrix.service }}:latest
-            sam123ben/infra-dashboard-${{ matrix.service }}:${{ github.event.inputs.RELEASE_VERSION }}
+            sam123ben/infra-dashboard-backend:latest
+            sam123ben/infra-dashboard-backend:${{ github.event.inputs.RELEASE_VERSION }}
