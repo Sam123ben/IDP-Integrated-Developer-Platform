@@ -1,4 +1,4 @@
-name: CI Docker Build and Push for Combined Backend Services
+name: CI Docker Build and Push for Backend Services
 
 on:
   push:
