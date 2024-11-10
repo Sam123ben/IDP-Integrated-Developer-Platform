@@ -194,22 +194,10 @@ cd infra_env_dashboard/backend
 
 Start each backend service individually using Go:
 
-#### Company Service
+#### Backend Service
 
 ```bash
-go run services/fetch_company_details/main.go
-```
-
-#### Environment Service
-
-```bash
-go run services/fetch_infra_types/main.go
-```
-
-#### Internal Environment Details Service
-
-```bash
-go run services/fetch_internal_env_details/main.go
+go run main.go
 ```
 
 Each service will start and listen on its designated port (e.g., Company Service on port 8081, Environment Service on port 8082).
