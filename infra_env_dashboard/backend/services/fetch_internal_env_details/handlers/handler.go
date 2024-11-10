@@ -23,14 +23,14 @@ func NewInternalEnvHandler(repo *repository.InternalRepository) *InternalEnvHand
 // @Tags Internal Environment
 // @Produce json
 // @Param product query string true "Product Name"
-// @Param EnvName query string true "Environment Name"
+// @Param group query string true "Environment Group"
 // @Success 200 {object} map[string]interface{} "environmentDetails"
 // @Failure 400 {object} map[string]string "error"
 // @Failure 500 {object} map[string]string "error"
 // @Router /api/internal-env-details [get]
 func (h *InternalEnvHandler) FetchInternalEnvDetails(c *gin.Context) {
 	product := c.Query("product")
-	envName := c.Query("EnvName")
+	group := c.Query("group") // Updated to accept "group" instead of "EnvName"
 
 	// Fetch the list of valid products from the database
 	products, err := h.Repo.GetAllProducts()
@@ -63,14 +63,14 @@ func (h *InternalEnvHandler) FetchInternalEnvDetails(c *gin.Context) {
 	}
 
 	// Validate required parameters
-	if product == "" || envName == "" {
-		logrus.Error("Product and EnvName parameters are required")
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Product and EnvName parameters are required"})
+	if product == "" || group == "" {
+		logrus.Error("Product and group parameters are required")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Product and group parameters are required"})
 		return
 	}
 
-	// Retrieve environment details
-	environmentDetails, err := h.Repo.GetEnvironmentDetailsByEnvName(product, envName)
+	// Retrieve environment details using product and group
+	environmentDetails, err := h.Repo.GetEnvironmentDetailsByEnvName(product, group)
 	if err != nil {
 		logrus.Errorf("Failed to fetch environment details: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch environment details"})
