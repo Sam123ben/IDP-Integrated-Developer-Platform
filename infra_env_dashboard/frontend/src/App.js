@@ -14,7 +14,7 @@ function App() {
     // Function to fetch environment details based on selected product and environment name
     const fetchEnvDetails = async (product, envName) => {
         try {
-            const response = await fetch(`http://localhost:8082/api/internal-env-details?product=${encodeURIComponent(product)}&EnvName=${encodeURIComponent(envName)}`);
+            const response = await fetch(`http://localhost:8080/api/internal-env-details?product=${encodeURIComponent(product)}&group=${encodeURIComponent(envName)}`);
             const data = await response.json();
             setEnvDetails(data.environmentDetails || []); // Store environment details
         } catch (error) {

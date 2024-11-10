@@ -18,11 +18,12 @@ func NewInfraRepository(db *gorm.DB) *InfraRepository {
 func (repo *InfraRepository) GetAllInfraTypes() ([]models.InfraType, error) {
 	var infraTypes []models.InfraType
 
-	// Use GORM's Preload to load sections for each infra type
+	// Use GORM’s Preload to load sections for each infra type
 	if err := repo.DB.Preload("Sections").Find(&infraTypes).Error; err != nil {
+		log.Printf("Error fetching infra types: %v", err)
 		return nil, err
 	}
 
-	log.Printf("Fetched infraTypes: %+v\n", infraTypes) // Add debug logs
+	log.Printf("Fetched infra types: %+v\n", infraTypes)
 	return infraTypes, nil
 }

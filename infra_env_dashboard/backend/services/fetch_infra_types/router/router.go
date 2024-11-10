@@ -2,26 +2,15 @@ package router
 
 import (
 	"backend/services/fetch_infra_types/handlers"
+	"backend/services/fetch_infra_types/repository"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func SetupRouter(infraHandler *handlers.InfraHandler) *gin.Engine {
-	router := gin.Default()
+func SetupInfraRoutes(api *gin.RouterGroup, db *gorm.DB) {
+	repo := repository.NewInfraRepository(db)
+	handler := handlers.NewInfraHandler(repo)
 
-	// Apply CORS settings
-	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // Adjust as needed
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Content-Type", "Authorization"},
-		AllowCredentials: true,
-	}))
-
-	// Define API routes
-	api := router.Group("/api")
-	{
-		api.GET("/infra-types", infraHandler.GetInfraTypes)
-	}
-	return router
+	api.GET("/infra-types", handler.GetInfraTypes)
 }

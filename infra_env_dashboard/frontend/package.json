@@ -19,7 +19,7 @@
       "changeOrigin": true
     },
     "/api/internal-env-details": {
-      "target": "http://localhost:8082",
+      "target": "http://localhost:8080",
       "changeOrigin": true
     }
   },
