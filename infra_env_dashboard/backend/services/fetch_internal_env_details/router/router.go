@@ -1,28 +1,16 @@
-// router.go
 package router
 
 import (
 	"backend/services/fetch_internal_env_details/handlers"
+	"backend/services/fetch_internal_env_details/repository"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func SetupRouter(internalHandler *handlers.InternalEnvHandler) *gin.Engine {
-	router := gin.Default()
+func SetupInternalEnvRoutes(api *gin.RouterGroup, db *gorm.DB) {
+	repo := repository.NewInternalRepository(db)
+	handler := handlers.NewInternalEnvHandler(repo)
 
-	// Apply CORS settings
-	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{"GET", "POST", "OPTIONS"},
-		AllowHeaders: []string{"Content-Type"},
-	}))
-
-	// Define API routes
-	api := router.Group("/api")
-	{
-		api.GET("/internal-env-details", internalHandler.FetchInternalEnvDetails)
-	}
-
-	return router
+	api.GET("/internal-env-details", handler.FetchInternalEnvDetails)
 }

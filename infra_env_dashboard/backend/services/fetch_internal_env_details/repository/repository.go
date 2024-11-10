@@ -1,11 +1,8 @@
-// repository.go
 package repository
 
 import (
 	"backend/services/fetch_internal_env_details/models"
-	"fmt"
 
-	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -13,16 +10,22 @@ type InternalRepository struct {
 	DB *gorm.DB
 }
 
-// NewInternalRepository initializes a new repository instance
 func NewInternalRepository(db *gorm.DB) *InternalRepository {
 	return &InternalRepository{DB: db}
 }
 
-// GetEnvironmentDetailsByEnvName retrieves environment details for a specific product and environment name
+// GetAllProducts retrieves all products from the database
+func (repo *InternalRepository) GetAllProducts() ([]models.Product, error) {
+	var products []models.Product
+	if err := repo.DB.Find(&products).Error; err != nil {
+		return nil, err
+	}
+	return products, nil
+}
+
+// Existing function to get environment details
 func (repo *InternalRepository) GetEnvironmentDetailsByEnvName(product string, envName string) ([]models.EnvironmentDetail, error) {
 	var environmentDetails []models.EnvironmentDetail
-
-	// Query to filter by product name and environment name
 	err := repo.DB.
 		Table("environment_details").
 		Joins("JOIN environments ON environments.id = environment_details.environment_id").
@@ -31,12 +34,8 @@ func (repo *InternalRepository) GetEnvironmentDetailsByEnvName(product string, e
 		Select("environment_details.*").
 		Find(&environmentDetails).Error
 
-	// Log query results for debugging purposes
 	if err != nil {
-		logrus.Errorf("Database query failed: %v", err)
-		return nil, fmt.Errorf("failed to retrieve environment details: %w", err)
+		return nil, err
 	}
-
-	logrus.Infof("Fetched environment details: %v", environmentDetails)
 	return environmentDetails, nil
 }

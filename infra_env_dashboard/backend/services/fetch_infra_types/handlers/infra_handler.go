@@ -18,7 +18,7 @@ func NewInfraHandler(repo *repository.InfraRepository) *InfraHandler {
 // GetInfraTypes godoc
 // @Summary Get infrastructure types
 // @Description Retrieves all infrastructure types (e.g., INTERNAL, CUSTOMER)
-// @Tags infra-types
+// @Tags Infra Types
 // @Produce json
 // @Success 200 {array} models.InfraType
 // @Failure 500 {object} map[string]string "error"

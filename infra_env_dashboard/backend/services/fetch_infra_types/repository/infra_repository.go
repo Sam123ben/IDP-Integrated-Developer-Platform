@@ -4,6 +4,7 @@ import (
 	"backend/services/fetch_infra_types/models"
 	"log"
 
+	"github.com/lib/pq" // Import pq for PostgreSQL array handling
 	"gorm.io/gorm"
 )
 
@@ -18,11 +19,18 @@ func NewInfraRepository(db *gorm.DB) *InfraRepository {
 func (repo *InfraRepository) GetAllInfraTypes() ([]models.InfraType, error) {
 	var infraTypes []models.InfraType
 
-	// Use GORM's Preload to load sections for each infra type
+	// Preload sections for each infra type
 	if err := repo.DB.Preload("Sections").Find(&infraTypes).Error; err != nil {
 		return nil, err
 	}
 
-	log.Printf("Fetched infraTypes: %+v\n", infraTypes) // Add debug logs
+	// Example: Convert StringArray to pq.StringArray if needed
+	for i := range infraTypes {
+		for j := range infraTypes[i].Sections {
+			infraTypes[i].Sections[j].Environments = models.StringArray(pq.StringArray(infraTypes[i].Sections[j].Environments))
+		}
+	}
+
+	log.Printf("Fetched infraTypes: %+v\n", infraTypes)
 	return infraTypes, nil
 }

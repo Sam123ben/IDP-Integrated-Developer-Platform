@@ -18,8 +18,9 @@ func (repo *CompanyRepository) CreateCompany(company *models.Company) error {
 	return repo.DB.Create(company).Error
 }
 
-func (repo *CompanyRepository) Getcompany() ([]models.Company, error) {
-	var company []models.Company
-	err := repo.DB.Find(&company).Error
-	return company, err
+// Rename Getcompany to GetCompany
+func (repo *CompanyRepository) GetCompany() ([]models.Company, error) {
+	var companies []models.Company
+	err := repo.DB.Find(&companies).Error
+	return companies, err
 }
