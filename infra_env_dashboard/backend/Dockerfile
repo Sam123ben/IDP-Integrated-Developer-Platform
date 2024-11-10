@@ -23,6 +23,9 @@ WORKDIR /root/
 # Copy the binary from the builder stage
 COPY --from=builder /app/main .
 
+# Copy the config.yaml file into the appropriate location in the final image
+COPY --from=builder /app/common/configs/config.yaml ./common/configs/config.yaml
+
 # Expose the port that the application will listen on
 EXPOSE 8080
 

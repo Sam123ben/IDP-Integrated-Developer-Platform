@@ -1,11 +1,12 @@
-version: '3'
+version: '3.8'
+
 services:
   db:
     image: postgres:13
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: environment_dashboard
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
     ports:
       - "5432:5432"
     volumes:
@@ -13,29 +14,35 @@ services:
     networks:
       - backend_network
 
-  company_service:
+  backend_service:
     build:
-      context: ./backend/services/fetch_company_details
+      context: ./backend
     ports:
-      - "8081:8081"
+      - "8080:8080"
     depends_on:
       - db
+      - migrate  # Ensure migrations run before starting backend
     networks:
       - backend_network
     environment:
-      DATABASE_URL: postgres://user:password@db:5432/environment_dashboard
+      DATABASE_URL: postgres://myuser:mypassword@db:5432/mydatabase?sslmode=disable
 
-  environment_service:
-    build:
-      context: ./backend/services/fetch_infra_types
-    ports:
-      - "8082:8082"
+  migrate:
+    image: migrate/migrate:latest
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "until pg_isready -h db -p 5432 -U myuser; do
+         echo 'Waiting for Postgres to be ready...';
+         sleep 2;
+         ls -l /migrations;  # Debugging
+       done;
+       migrate -path=/migrations -database=postgres://myuser:mypassword@db:5432/mydatabase?sslmode=disable up"
     depends_on:
       - db
+    volumes:
+      - ./database:/migrations  # Mount the SQL script folder
     networks:
       - backend_network
-    environment:
-      DATABASE_URL: postgres://user:password@db:5432/environment_dashboard
 
   frontend:
     build:
@@ -43,8 +50,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - company_service
-      - environment_service
+      - backend_service
     networks:
       - backend_network
 
