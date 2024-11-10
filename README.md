@@ -19,7 +19,6 @@ The project is divided into multiple services and components:
 
 This document provides a detailed overview of the project's folder structure. Each directory and file is organized to enhance modularity, readability, and maintainability.
 
-```plaintext
 .
 ├── README.md                     # Main project documentation
 ├── docs                          # Documentation assets
@@ -139,65 +138,126 @@ This document provides a detailed overview of the project's folder structure. Ea
 
 ## Getting Started
 
-### Prerequisites
+## Prerequisites
+Ensure the following are installed on your system:
+- **Docker** and **Docker Compose**
+- **Go (Golang)** for running backend services
+- **Node.js** and **npm** for frontend
 
-- **Docker** and **Docker Compose** installed on your system.
+---
 
-### Installation
+## Option 1: Manually Start Each Service Locally
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yourusername/infra_env_dashboard.git
-   cd infra_env_dashboard
-   ```
+### 1. Clone the Repository
 
-2. **Setup environment variables** (Optional):
-   - You may adjust database user and password in `docker-compose.yml` if needed.
+```bash
+git clone https://github.com/Sam123ben/IDP-Integrated-Developer-Platform.git
+cd infra_env_dashboard
+```
 
-3. **Run the application**:
+### 2. Set Up and Start PostgreSQL Database
+Run the following Docker command to start a PostgreSQL container locally:
+
+```
+docker run --name my_postgres \
+  -e POSTGRES_USER=myuser \
+  -e POSTGRES_PASSWORD=mypassword \
+  -e POSTGRES_DB=mydatabase \
+  -p 5432:5432 \
+  -d postgres
+```
+> **Note**: This command starts the PostgreSQL process locally without a persistent volume. To retain data, use the `-v` option to map a local directory to the Docker container (e.g., `-v /your/local/dir:/var/lib/postgresql/data`).
+
+To enter the running PostgreSQL service and interact with the database, execute:
+
+```bash
+docker exec -it my_postgres psql -U myuser -d mydatabase
+```
+
+### 3. Initialize Database Schema and Test Data
+To enter the running PostgreSQL service and interact with the database, execute:
+
+```bash
+docker exec -it my_postgres psql -U myuser -d mydatabase
+```
+
+Once connected, you can initialize the database schema and add some quick test data. Open the SQL script file `database/000_create_database_schema.sql`, copy the SQL commands, and paste them into the PostgreSQL terminal.
+
+This will create the necessary tables and relationships for the application, and you can also add dummy data for testing purposes.
+
+### 4. Start Backend Services
+Navigate to the backend directory:
+
+```bash
+cd infra_env_dashboard/backend
+```
+
+Start each backend service individually using Go:
+
+#### Company Service
+
+```bash
+go run services/fetch_company_details/main.go
+```
+
+#### Environment Service
+
+```bash
+go run services/fetch_infra_types/main.go
+```
+
+#### Internal Environment Details Service
+
+```bash
+go run services/fetch_internal_env_details/main.go
+```
+
+Each service will start and listen on its designated port (e.g., Company Service on port 8081, Environment Service on port 8082).
+
+### 5. Start the Frontend
+Navigate to the frontend directory:
+
+```bash
+cd infra_env_dashboard/frontend
+```
+
+Install dependencies if needed:
+
+```bash
+npm install
+```
+
+Start the frontend development server:
+
+```bash
+npm start
+```
+
+The frontend will be accessible at [http://localhost:3000](http://localhost:3000).
+
+### Testing the Dashboard
+1. Open [http://localhost:3000](http://localhost:3000) in your browser.
+2. Check for correct display of environments grouped by infra type (e.g., **INTERNAL** or **CUSTOMER**).
+3. Test each backend service's integration with the frontend by verifying data from each service is displayed correctly in the UI.
+
+## Option 2: Using Docker Compose (Future Testing)
+In the future, you can use Docker Compose to simplify starting up all services. The `docker-compose.yml` file is already configured for this:
+
+1. Adjust any environment variables in `docker-compose.yml` as needed.
+
+2. Run the following command to build and start all services together:
+
    ```bash
    docker-compose up --build
    ```
+This will automatically start:
 
-   This will build and run the services:
-   - **PostgreSQL Database** on port `5432`
-   - **Company Service** (backend) on port `8081`
-   - **Environment Service** (backend) on port `8082`
-   - **Frontend** on port `3000`
+- **PostgreSQL Database** on port 5432
+- **Company Service** on port 8081
+- **Environment Service** on port 8082
+- **Frontend** on port 3000
 
-4. **Access the dashboard**:
-   Open [http://localhost:3000](http://localhost:3000) in your web browser.
-
-### Project Components
-
-- **Backend Services**:
-  - `fetch_company_details`: Provides details about the company.
-  - `fetch_infra_types`: Lists infra types, sections, and groups for managing different environments.
-- **Frontend**:
-  - Built with React. This provides a user interface to display and manage all environments based on infra type.
-
-### Database Setup
-
-- **Database**: PostgreSQL is used as the database for storing company, infra types, sections, environment groups, and environments.
-- **Schema**: The `database/000_create_database_schema.sql` file initializes the database tables and relations.
-
-### API Endpoints
-
-Each backend service has its own API endpoints:
-
-1. **Company Service** (`fetch_company_details`):
-   - `GET /company` - Retrieves company details.
-
-2. **Environment Service** (`fetch_infra_types`):
-   - `GET /infra_types` - Fetches infra types, sections, and groups.
-
-Check the API documentation (Swagger) for detailed endpoint information.
-
-### Environment Variables
-
-- **Best Practices for Credentials**: For local development, you can use `config.yaml` to store database connection details and other configurations. However, for production environments, it is highly recommended to use secure methods like **HashiCorp Vault**, **AWS Secrets Manager**, or another secrets management service to avoid storing sensitive information (such as passwords or API keys) directly in code or configuration files. This helps ensure that true production passwords are not leaked or stored in Git.
-
-- **DATABASE_URL**: Used by backend services to connect to the PostgreSQL database. Set up automatically in `docker-compose.yml`.
+Access the dashboard at [http://localhost:3000](http://localhost:3000) to test it.
 
 ### File Structure
 
@@ -278,7 +338,7 @@ To improve the quality and reliability of the application, the following enhance
 
 If you’d like to contribute:
 
-1. Fork the repo
+1. Clone the repo
 2. Create a new branch (`git checkout -b feature-name`)
 3. Commit changes (`git commit -am 'Add new feature'`)
 4. Push the branch (`git push origin feature-name`)
