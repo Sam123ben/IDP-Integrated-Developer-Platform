@@ -60,10 +60,12 @@ jobs:
       # Step 5: Initialize Terraform with remote backend configuration
       - name: Terraform Init
         run: terraform init
+        working-directory: infra_env_dashboard/infra-automation
 
       # Step 6: Terraform Plan
       - name: Terraform Plan
         run: terraform plan
+        working-directory: infra_env_dashboard/infra-automation
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
@@ -74,6 +76,7 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
+        working-directory: infra_env_dashboard/infra-automation
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
