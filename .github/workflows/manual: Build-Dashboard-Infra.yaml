@@ -52,11 +52,11 @@ jobs:
           echo "::set-output name=AZURE_STORAGE_KEY::$AZURE_STORAGE_KEY"
 
           # Check if Blob Container exists
-          if ! az storage container show --name "customername-tfstate" --account-name "dashboardstatestg" --account-key "$AZURE_STORAGE_KEY" &>/dev/null; then
-            echo "Creating blob container: customername-tfstate"
-            az storage container create --name "customername-tfstate" --account-name "dashboardstatestg" --account-key "$AZURE_STORAGE_KEY"
+          if ! az storage container show --name "dashboard-tfstate" --account-name "dashboardstatestg" --account-key "$AZURE_STORAGE_KEY" &>/dev/null; then
+            echo "Creating blob container: dashboard-tfstate"
+            az storage container create --name "dashboard-tfstate" --account-name "dashboardstatestg" --account-key "$AZURE_STORAGE_KEY"
           else
-            echo "Blob container 'customername-tfstate' already exists."
+            echo "Blob container 'dashboard-tfstate' already exists."
           fi
 
       # Step 5: Initialize Terraform with remote backend configuration
@@ -64,10 +64,10 @@ jobs:
         run: terraform init
         working-directory: infra_env_dashboard/infra-automation
         env:
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
+          TF_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+          TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
           ARM_ACCESS_KEY: ${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}
 
       # Step 6: Terraform Plan
@@ -75,10 +75,10 @@ jobs:
         run: terraform plan
         working-directory: infra_env_dashboard/infra-automation
         env:
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
+          TF_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+          TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
           ARM_ACCESS_KEY: ${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}
 
       # Step 7: Terraform Apply (only for main branch pushes, requires confirmation otherwise)
@@ -87,8 +87,8 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: infra_env_dashboard/infra-automation
         env:
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
+          TF_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+          TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
           ARM_ACCESS_KEY: ${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}

@@ -1,4 +1,3 @@
-# Specify the required provider for Azure
 terraform {
   required_providers {
     azurerm = {
@@ -11,10 +10,11 @@ terraform {
 
 # Configure the Azure provider
 provider "azurerm" {
-  features {}  # Required block for azurerm provider configuration
-  # Uncomment and replace with your values for inline authentication (only for dev use)
-  client_id       = "your-client-id"
-  client_secret   = "your-client-secret"
-  subscription_id = "your-subscription-id"
-  tenant_id       = "your-tenant-id"
+  features {}
+
+  # Use variables to hold authentication details
+  client_id       = var.client_id
+  client_secret   = var.client_secret
+  subscription_id = var.subscription_id
+  tenant_id       = var.tenant_id
 }
