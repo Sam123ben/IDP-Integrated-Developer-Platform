@@ -8,6 +8,7 @@ variable "app_subnet_cidr" {}
 
 variable "db_subnet_name" {}
 variable "db_subnet_cidr" {}
+variable "tags" {}
 
 variable "app_nsg_name" {
   description = "Name for the Application Network Security Group"

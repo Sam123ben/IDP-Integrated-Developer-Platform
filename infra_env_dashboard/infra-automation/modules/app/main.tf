@@ -7,6 +7,7 @@ resource "azurerm_app_service_plan" "app_service_plan" {
     tier = "Standard"
     size = "S1"
   }
+  tags = var.tags  # Apply tags here
 }
 
 # Backend App Service with database connection via private endpoint
@@ -24,6 +25,7 @@ resource "azurerm_app_service" "backend_app" {
   site_config {
     linux_fx_version = "DOCKER|sam123ben/infra-dashboard-backend:latest"
   }
+  tags = var.tags  # Apply tags here
 }
 
 # Frontend App Service listening on port 3000
@@ -40,4 +42,5 @@ resource "azurerm_app_service" "frontend_app" {
   site_config {
     linux_fx_version = "DOCKER|sam123ben/infra-dashboard:latest"
   }
+  tags = var.tags  # Apply tags here
 }
