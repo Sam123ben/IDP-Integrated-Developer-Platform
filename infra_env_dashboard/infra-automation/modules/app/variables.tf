@@ -5,5 +5,3 @@ variable "backend_app_name" {}
 variable "frontend_app_name" {}
 variable "database_url" {}
 variable "db_server_name" {}
-variable "db_subnet_id" {}
-variable "vnet_id" {}
