@@ -3,6 +3,11 @@ variable "location" {
   default     = "Australia East"
 }
 
+variable "resource_group_name" {
+  description = "The name of the resource group to be created"
+  type        = string
+}
+
 variable "admin_password" {
   description = "Admin password for PostgreSQL server"
   sensitive   = true
