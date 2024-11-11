@@ -29,6 +29,7 @@ jobs:
 
       # Step 4: Check and Create Resource Group, Storage Account, and Blob Container
       - name: Create Azure Resource Group and Storage for Terraform State
+        id: setup_azure_storage
         run: |
           # Check if Resource Group exists
           if ! az group show --name "dashboard-state-rg" &>/dev/null; then
@@ -46,8 +47,9 @@ jobs:
             echo "Storage account 'dashboardstatestg' already exists."
           fi
 
-          # Retrieve Storage Account key
-          export AZURE_STORAGE_KEY=$(az storage account keys list --resource-group "dashboard-state-rg" --account-name "dashboardstatestg" --query "[0].value" --output tsv)
+          # Retrieve Storage Account key and set as output
+          AZURE_STORAGE_KEY=$(az storage account keys list --resource-group "dashboard-state-rg" --account-name "dashboardstatestg" --query "[0].value" --output tsv)
+          echo "::set-output name=AZURE_STORAGE_KEY::$AZURE_STORAGE_KEY"
 
           # Check if Blob Container exists
           if ! az storage container show --name "customername-tfstate" --account-name "dashboardstatestg" --account-key "$AZURE_STORAGE_KEY" &>/dev/null; then
@@ -62,10 +64,11 @@ jobs:
         run: terraform init
         working-directory: infra_env_dashboard/infra-automation
         env:
-            ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-            ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-            ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-            ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_ACCESS_KEY: ${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}
 
       # Step 6: Terraform Plan
       - name: Terraform Plan
@@ -76,6 +79,7 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_ACCESS_KEY: ${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}
 
       # Step 7: Terraform Apply (only for main branch pushes, requires confirmation otherwise)
       - name: Terraform Apply
@@ -87,3 +91,4 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_ACCESS_KEY: ${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}
