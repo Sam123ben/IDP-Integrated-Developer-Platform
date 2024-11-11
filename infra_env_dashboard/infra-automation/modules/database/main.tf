@@ -31,7 +31,6 @@ resource "azurerm_postgresql_virtual_network_rule" "vnet_rule" {
   ignore_missing_vnet_service_endpoint = true
 }
 
-
 # Private Endpoint for PostgreSQL in the database subnet
 resource "azurerm_private_endpoint" "postgres_private_endpoint" {
   name                = "${var.db_server_name}-private-endpoint"
@@ -47,7 +46,7 @@ resource "azurerm_private_endpoint" "postgres_private_endpoint" {
   }
 }
 
-# Private DNS Zone for the PostgreSQL server (replace with actual private DNS zone name)
+# Private DNS Zone for the PostgreSQL server
 resource "azurerm_private_dns_zone" "db_private_dns_zone" {
   name                = "privatelink.postgres.database.azure.com"
   resource_group_name = var.resource_group_name
@@ -67,5 +66,5 @@ resource "azurerm_private_dns_a_record" "db_private_a_record" {
   zone_name           = azurerm_private_dns_zone.db_private_dns_zone.name
   resource_group_name = var.resource_group_name
   ttl                 = 300
-  records             = [azurerm_private_endpoint.postgres_private_endpoint.private_ip_address]
+  records             = [azurerm_private_endpoint.postgres_private_endpoint.private_service_connection[0].private_ip_address]
 }
