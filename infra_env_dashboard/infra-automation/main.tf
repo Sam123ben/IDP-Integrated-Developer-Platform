@@ -20,6 +20,8 @@ module "network" {
 
   app_nsg_name        = "app-nsg"
   db_nsg_name         = "db-nsg"
+
+  depends_on = [ module.resource_group ]
 }
 
 # Define the database module
@@ -34,6 +36,8 @@ module "database" {
   db_name             = "mydatabase"
   subnet_id           = module.network.db_subnet_id  # Pass subnet ID from the network module output
   vnet_id             = module.network.vnet_id        # Pass VNet ID from the network module output
+
+  depends_on = [ module.network ]
 }
 
 # Define the app module
@@ -46,4 +50,6 @@ module "app" {
   frontend_app_name       = "samyak-frontend-app"
   database_url            = module.database.db_server_fqdn  # Pass FQDN from database module output
   db_server_name          = module.database.db_server_name
+
+  depends_on = [ module.database ]
 }
