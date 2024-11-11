@@ -42,8 +42,8 @@ module "app" {
   app_service_plan_name   = "myAppServicePlan"
   location                = module.resource_group.location
   resource_group_name     = module.resource_group.name
-  backend_app_name        = "backend-app"
-  frontend_app_name       = "frontend-app"
+  backend_app_name        = "samyak-backend-app"
+  frontend_app_name       = "samyak-frontend-app"
   database_url            = module.database.db_server_fqdn  # Pass FQDN from database module output
   db_server_name          = module.database.db_server_name
 }
