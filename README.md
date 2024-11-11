@@ -253,6 +253,12 @@ Access the dashboard at [http://localhost:3000](http://localhost:3000) to test i
 - **backend/services**: Each service has its own folder with code, handlers, models, repository, and routing.
 - **frontend**: Contains the React code for the dashboard UI.
 
+### Infrastructure Automation - Terraform
+
+docs: Add reference to infra-automation README in main README
+
+Added a reference to the infra-automation README for detailed instructions on setting up and managing the infrastructure using Terraform
+
 ## Future Enhancements
 
 To improve the quality and reliability of the application, the following enhancements are planned:
