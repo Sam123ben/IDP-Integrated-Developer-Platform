@@ -25,9 +25,7 @@ jobs:
       - name: Set up Azure CLI
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.ARM_CLIENT_ID }}
-          client-secret: ${{ secrets.ARM_CLIENT_SECRET }}
-          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Step 4: Check and Create Resource Group, Storage Account, and Blob Container
       - name: Create Azure Resource Group and Storage for Terraform State
