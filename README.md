@@ -259,6 +259,8 @@ docs: Add reference to infra-automation README in main README
 
 Added a reference to the infra-automation README for detailed instructions on setting up and managing the infrastructure using Terraform
 
+[Infrastructure-Automation](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/tree/main/infra_env_dashboard/infra-automation#readme)
+
 ## Future Enhancements
 
 To improve the quality and reliability of the application, the following enhancements are planned:
