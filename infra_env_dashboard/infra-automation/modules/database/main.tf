@@ -19,13 +19,16 @@ resource "azurerm_postgresql_flexible_server" "db_server" {
 }
 
 # PostgreSQL Database in the Flexible Server
-resource "azurerm_postgresql_flexible_database" "database" {
-  name                = var.db_name
-  resource_group_name = var.resource_group_name
-  server_name         = azurerm_postgresql_flexible_server.db_server.name
-  charset             = "UTF8"
-  collation           = "English_United States.1252"
-  tags = var.tags  # Apply tags here
+resource "azurerm_postgresql_flexible_server_database" "database" {
+  name      = var.db_name
+  server_id = azurerm_postgresql_flexible_server.db_server.id
+  collation = "en_US.utf8"
+  charset   = "UTF8"
+
+  # Prevent accidental data loss by disabling deletion
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Private DNS Zone for the PostgreSQL server
