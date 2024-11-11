@@ -33,6 +33,7 @@ module "database" {
   admin_password      = var.admin_password
   db_name             = "mydatabase"
   subnet_id           = module.network.db_subnet_id  # Pass subnet ID from the network module output
+  vnet_id             = module.network.vnet_id        # Pass VNet ID from the network module output
 }
 
 # Define the app module
@@ -45,6 +46,4 @@ module "app" {
   frontend_app_name       = "frontend-app"
   database_url            = module.database.db_server_fqdn  # Pass FQDN from database module output
   db_server_name          = module.database.db_server_name
-  db_subnet_id            = module.network.db_subnet_id  # Pass subnet ID from the network module output
-  vnet_id                 = module.network.vnet_id  # Pass VNet ID from the network module output
 }
