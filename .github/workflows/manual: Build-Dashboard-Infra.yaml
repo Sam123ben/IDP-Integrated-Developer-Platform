@@ -80,7 +80,7 @@ jobs:
           TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
           ARM_ACCESS_KEY: ${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}
-          TF_admin_password: ${{ secrets.ADMIN_PASSWORD }}
+          TF_VAR_admin_password: ${{ secrets.ADMIN_PASSWORD }}
 
       # Step 7: Terraform Apply (only for main branch pushes, requires confirmation otherwise)
       - name: Terraform Apply
@@ -93,4 +93,4 @@ jobs:
           TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
           ARM_ACCESS_KEY: ${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}
-          TF_admin_password: ${{ secrets.ADMIN_PASSWORD }}
+          TF_VAR_admin_password: ${{ secrets.ADMIN_PASSWORD }}

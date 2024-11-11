@@ -8,10 +8,6 @@ variable "admin_password" {
   sensitive   = true
 }
 
-variable "storage_endpoint" {
-  description = "Storage endpoint for threat detection policy"
-}
-
 variable "client_id" {
   type        = string
   description = "Azure Client ID for authentication"
