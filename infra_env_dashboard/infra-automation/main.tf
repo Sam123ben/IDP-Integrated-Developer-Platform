@@ -22,7 +22,6 @@ module "database" {
   sku_name            = "B_Gen5_1"
   admin_username      = "myadmin"
   admin_password      = var.admin_password
-  storage_endpoint    = var.storage_endpoint
   db_name             = "mydatabase"
   subnet_id           = module.network.db_subnet_id  # Pass subnet ID from the network module
 }

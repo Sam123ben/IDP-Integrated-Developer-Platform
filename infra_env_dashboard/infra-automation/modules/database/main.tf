@@ -13,13 +13,6 @@ resource "azurerm_postgresql_server" "db_server" {
   public_network_access_enabled    = false
   ssl_enforcement_enabled          = false
   ssl_minimal_tls_version_enforced = "TLS1_2"
-
-  # threat_detection_policy {
-  #   state                      = "Enabled"
-  #   email_account_admins       = true
-  #   storage_endpoint           = var.storage_endpoint
-  #   retention_days             = 7
-  # }
 }
 
 resource "azurerm_postgresql_database" "database" {
