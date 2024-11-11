@@ -24,6 +24,7 @@ module "database" {
   admin_password      = var.admin_password
   storage_endpoint    = var.storage_endpoint
   db_name             = "mydatabase"
+  subnet_id           = module.network.db_subnet_id  # Pass subnet ID from the network module
 }
 
 module "app" {

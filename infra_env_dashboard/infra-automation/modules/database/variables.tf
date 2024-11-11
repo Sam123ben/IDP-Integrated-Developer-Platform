@@ -6,3 +6,4 @@ variable "admin_username" {}
 variable "admin_password" {}
 variable "storage_endpoint" {}
 variable "db_name" {}
+variable "subnet_id" {}
