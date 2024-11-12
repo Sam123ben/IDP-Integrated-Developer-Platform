@@ -19,17 +19,17 @@ resource "azurerm_postgresql_flexible_server" "db_server" {
 }
 
 # PostgreSQL Database in the Flexible Server
-resource "azurerm_postgresql_flexible_server_database" "database" {
-  name      = var.db_name
-  server_id = azurerm_postgresql_flexible_server.db_server.id
-  collation = "en_US.utf8"
-  charset   = "UTF8"
+# resource "azurerm_postgresql_flexible_server_database" "database" {
+#   name      = var.db_name
+#   server_id = azurerm_postgresql_flexible_server.db_server.id
+#   collation = "en_US.utf8"
+#   charset   = "UTF8"
 
-  # Prevent accidental data loss by disabling deletion
-  lifecycle {
-    prevent_destroy = true
-  }
-}
+#   # Prevent accidental data loss by disabling deletion
+#   lifecycle {
+#     prevent_destroy = true
+#   }
+# }
 
 # Private DNS Zone for the PostgreSQL server
 resource "azurerm_private_dns_zone" "db_private_dns_zone" {
