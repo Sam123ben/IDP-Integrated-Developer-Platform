@@ -1,21 +1,25 @@
-# PostgreSQL Flexible Server
+# PostgreSQL Flexible Server with Private Access Mode
 resource "azurerm_postgresql_flexible_server" "db_server" {
   name                = var.db_server_name
   location            = var.location
   resource_group_name = var.resource_group_name
+  delegated_subnet_id = var.subnet_id  # Ensure this is a delegated subnet for PostgreSQL
 
-  version                       = "12"
-  administrator_login           = var.admin_username
-  administrator_password        = var.admin_password
-  delegated_subnet_id           = var.subnet_id  # Subnet ID for Flexible Server
-  private_dns_zone_id           = azurerm_private_dns_zone.db_private_dns_zone.id
+  # Configure the PostgreSQL version and administrator credentials
+  version              = "13"
+  administrator_login  = var.admin_username
+  administrator_password = var.admin_password
+
+  # Set up storage
+  storage_mb = 32768
+  sku_name   = "Standard_D4s_v3"
+  zone       = "1"
+
+  # Enable Private Access Mode (if available in your region)
   public_network_access_enabled = false
-  storage_mb                    = 32768  # Example size; adjust as needed
-  storage_tier                  = "P30"
-  sku_name                      = "GP_Standard_D4s_v3"  # Example SKU; adjust as needed
+  private_dns_zone_id = azurerm_private_dns_zone.db_private_dns_zone.id
 
-  zone = "1"  # Define the zone based on region availability
-  tags = var.tags  # Apply tags here
+  tags = var.tags
 }
 
 # PostgreSQL Database in the Flexible Server
