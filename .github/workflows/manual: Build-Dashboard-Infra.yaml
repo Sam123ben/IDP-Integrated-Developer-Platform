@@ -1,4 +1,4 @@
-name: Terraform CI/CD Pipeline
+name: CI/CD Build the Infra Automation for Dashboard Service
 
 on:
   push:
