@@ -8,3 +8,4 @@ variable "db_name" {}
 variable "subnet_id" {}
 variable "vnet_id" {}
 variable "tags" {}
+variable "vm_admin_password" {}

@@ -13,6 +13,11 @@ variable "admin_password" {
   sensitive   = true
 }
 
+variable "vm_admin_password" {
+  description = "Admin password for the VM"
+  sensitive   = true
+}
+
 variable "client_id" {
   type        = string
   description = "Azure Client ID for authentication"
