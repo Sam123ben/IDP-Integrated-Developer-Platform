@@ -1,4 +1,4 @@
-name: CI/CD Build the Infra Automation for Dashboard Service
+name: Build the Infra Automation for Dashboard Service
 
 on:
   push:
