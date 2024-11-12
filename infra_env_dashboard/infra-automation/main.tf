@@ -9,7 +9,7 @@ module "resource_group" {
 # Define the network module
 module "network" {
   source              = "./modules/network"
-  vnet_name           = "aks-vnet"
+  vnet_name           = "dashboard-vnet"
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
   address_space       = "10.0.0.0/16"
