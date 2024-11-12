@@ -1,6 +1,10 @@
 # Infra Environment Dashboard
 
-Infra Environment Dashboard is a web application that helps teams manage and visualize infrastructure environments across different infra types like **INTERNAL** (for internal development) and **CUSTOMER** (for customer-specific environments). The dashboard is highly configurable using the database, meaning if the correct data is entered into the database, it will automatically flow into the dashboard without additional configuration. The dashboard makes it easy to see each environment’s status, grouped by products or customers. The dashboard is highly configurable using the database, and as long as the data is correct in the database, the information will seamlessly flow into the UI for easy visualization.
+[![Dashboard Infra Build](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/manual:%20Build-Dashboard-Infra.yaml/badge.svg)](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/manual:%20Build-Dashboard-Infra.yaml)
+[![Backend Services CI](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Backend-Services.yaml/badge.svg)](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Backend-Services.yaml)
+[![Frontend Services CI](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Frontend-Services.yaml/badge.svg)](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Frontend-Services.yaml)
+
+Infra Environment Dashboard is a web application that helps teams manage and visualize infrastructure environments across different infra types like **INTERNAL** (for internal development) and **CUSTOMER** (for customer-specific environments). The dashboard is highly configurable using the database, meaning if the correct data is entered into the database, it will automatically flow into the dashboard without additional configuration. The dashboard makes it easy to see each environment’s status, grouped by products or customers.
 
 ## Features
 
@@ -247,19 +251,9 @@ This will automatically start:
 
 Access the dashboard at [http://localhost:3000](http://localhost:3000) to test it.
 
-### File Structure
+## Infrastructure Automation - Terraform
 
-- **backend/common**: Common files like database connection (`db.go`), HTTP service handlers (`http_service.go`), and logging setup (`logger.go`).
-- **backend/services**: Each service has its own folder with code, handlers, models, repository, and routing.
-- **frontend**: Contains the React code for the dashboard UI.
-
-### Infrastructure Automation - Terraform
-
-docs: Add reference to infra-automation README in main README
-
-Added a reference to the infra-automation README for detailed instructions on setting up and managing the infrastructure using Terraform
-
-[Infrastructure-Automation](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/tree/main/infra_env_dashboard/infra-automation#readme)
+For detailed instructions on setting up and managing the infrastructure using Terraform, please refer to the [Infrastructure Automation README](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/tree/main/infra_env_dashboard/infra-automation#readme).
 
 ## Future Enhancements
 
@@ -330,7 +324,7 @@ To improve the quality and reliability of the application, the following enhance
 - **Frontend**:
   - Implement `ESLint` and `Prettier` for consistent code formatting and linting.
 
-### Contributing
+## Contributing
 
 If you’d like to contribute:
 
@@ -340,6 +334,6 @@ If you’d like to contribute:
 4. Push the branch (`git push origin feature-name`)
 5. Open a pull request
 
-### License
+## License
 
 This project is licensed under the MIT License.
