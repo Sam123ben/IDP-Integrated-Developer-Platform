@@ -20,6 +20,7 @@ resource "azurerm_postgresql_flexible_server" "db_server" {
   private_dns_zone_id           = azurerm_private_dns_zone.db_private_dns_zone.id
 
   tags = var.tags
+  depends_on = [azurerm_private_dns_zone_virtual_network_link.db_dns_zone_link]
 }
 
 # PostgreSQL Database in the Flexible Server
@@ -33,6 +34,7 @@ resource "azurerm_postgresql_flexible_server_database" "database" {
   lifecycle {
     prevent_destroy = true
   }
+  depends_on = [ azurerm_postgresql_flexible_server.db_server ]
 }
 
 # Private DNS Zone for the PostgreSQL server
@@ -49,30 +51,4 @@ resource "azurerm_private_dns_zone_virtual_network_link" "db_dns_zone_link" {
   private_dns_zone_name = azurerm_private_dns_zone.db_private_dns_zone.name
   virtual_network_id    = var.vnet_id
   tags                  = var.tags # Apply tags here
-}
-
-# Private Endpoint for PostgreSQL Flexible Server in the database subnet
-resource "azurerm_private_endpoint" "postgres_private_endpoint" {
-  name                = "${var.db_server_name}-private-endpoint"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  subnet_id           = var.subnet_id
-
-  private_service_connection {
-    name                           = "${var.db_server_name}-connection"
-    private_connection_resource_id = azurerm_postgresql_flexible_server.db_server.id
-    is_manual_connection           = false
-    subresource_names              = ["postgresqlServer"]
-  }
-  tags = var.tags # Apply tags here
-}
-
-# DNS A Record for the PostgreSQL private endpoint
-resource "azurerm_private_dns_a_record" "db_private_a_record" {
-  name                = "${azurerm_postgresql_flexible_server.db_server.name}.postgres.database.azure.com"
-  zone_name           = azurerm_private_dns_zone.db_private_dns_zone.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 300
-  records             = [azurerm_private_endpoint.postgres_private_endpoint.private_service_connection[0].private_ip_address]
-  tags                = var.tags # Apply tags here
 }

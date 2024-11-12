@@ -34,7 +34,7 @@ module "database" {
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
   sku_name            = "B_Gen5_1"
-  admin_username      = "myadmin"
+  admin_username      = "psqladmin"
   admin_password      = var.admin_password
   db_name             = "mydatabase"
   subnet_id           = module.network.db_subnet_id # Pass subnet ID from the network module output
