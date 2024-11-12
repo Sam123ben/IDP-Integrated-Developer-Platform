@@ -3,11 +3,11 @@ resource "azurerm_postgresql_flexible_server" "db_server" {
   name                = var.db_server_name
   location            = var.location
   resource_group_name = var.resource_group_name
-  delegated_subnet_id = var.subnet_id  # Ensure this is a delegated subnet for PostgreSQL
+  delegated_subnet_id = var.subnet_id # Ensure this is a delegated subnet for PostgreSQL
 
   # Configure the PostgreSQL version and administrator credentials
-  version              = "13"
-  administrator_login  = var.admin_username
+  version                = "13"
+  administrator_login    = var.admin_username
   administrator_password = var.admin_password
 
   # Set up storage
@@ -17,7 +17,7 @@ resource "azurerm_postgresql_flexible_server" "db_server" {
 
   # Enable Private Access Mode (if available in your region)
   public_network_access_enabled = false
-  private_dns_zone_id = azurerm_private_dns_zone.db_private_dns_zone.id
+  private_dns_zone_id           = azurerm_private_dns_zone.db_private_dns_zone.id
 
   tags = var.tags
 }
@@ -39,7 +39,7 @@ resource "azurerm_postgresql_flexible_server_database" "database" {
 resource "azurerm_private_dns_zone" "db_private_dns_zone" {
   name                = "privatelink.postgres.database.azure.com"
   resource_group_name = var.resource_group_name
-  tags = var.tags  # Apply tags here
+  tags                = var.tags # Apply tags here
 }
 
 # DNS Zone Association with VNet
@@ -48,7 +48,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "db_dns_zone_link" {
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.db_private_dns_zone.name
   virtual_network_id    = var.vnet_id
-  tags = var.tags  # Apply tags here
+  tags                  = var.tags # Apply tags here
 }
 
 # Private Endpoint for PostgreSQL Flexible Server in the database subnet
@@ -64,7 +64,7 @@ resource "azurerm_private_endpoint" "postgres_private_endpoint" {
     is_manual_connection           = false
     subresource_names              = ["postgresqlServer"]
   }
-  tags = var.tags  # Apply tags here
+  tags = var.tags # Apply tags here
 }
 
 # DNS A Record for the PostgreSQL private endpoint
@@ -74,5 +74,5 @@ resource "azurerm_private_dns_a_record" "db_private_a_record" {
   resource_group_name = var.resource_group_name
   ttl                 = 300
   records             = [azurerm_private_endpoint.postgres_private_endpoint.private_service_connection[0].private_ip_address]
-  tags = var.tags  # Apply tags here
+  tags                = var.tags # Apply tags here
 }
