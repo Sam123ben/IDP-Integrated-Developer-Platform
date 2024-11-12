@@ -1,8 +1,10 @@
 # Infra Environment Dashboard
 
-[![Dashboard Infra Build](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/manual:%20Build-Dashboard-Infra.yaml/badge.svg)](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/manual:%20Build-Dashboard-Infra.yaml)
-[![Backend Services CI](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Backend-Services.yaml/badge.svg)](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Backend-Services.yaml)
-[![Frontend Services CI](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Frontend-Services.yaml/badge.svg)](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Frontend-Services.yaml)
+| Status Badge | Description |
+|--------------|-------------|
+| [![Dashboard Infra Build](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/manual:%20Build-Dashboard-Infra.yaml/badge.svg)](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/manual:%20Build-Dashboard-Infra.yaml) | Dashboard Infra Build Status |
+| [![Backend Services CI](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Backend-Services.yaml/badge.svg)](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Backend-Services.yaml) | Backend Services CI Status |
+| [![Frontend Services CI](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Frontend-Services.yaml/badge.svg)](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/actions/workflows/ci:%20Build-Frontend-Services.yaml) | Frontend Services CI Status |
 
 Infra Environment Dashboard is a web application that helps teams manage and visualize infrastructure environments across different infra types like **INTERNAL** (for internal development) and **CUSTOMER** (for customer-specific environments). The dashboard is highly configurable using the database, meaning if the correct data is entered into the database, it will automatically flow into the dashboard without additional configuration. The dashboard makes it easy to see each environment’s status, grouped by products or customers.
 
