@@ -99,6 +99,8 @@ resource "azurerm_linux_virtual_machine" "sql_runner_vm" {
     version   = "latest"
   }
   tags = var.tags
+
+  depends_on = [ azurerm_postgresql_flexible_server_database.database , azurerm_network_interface.sql_runner_nic ]
 }
 
 # VM Extension to Install PostgreSQL Client and Run SQL Script
