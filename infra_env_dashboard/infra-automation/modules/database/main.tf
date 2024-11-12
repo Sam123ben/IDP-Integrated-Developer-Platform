@@ -12,7 +12,7 @@ resource "azurerm_postgresql_flexible_server" "db_server" {
 
   # Set up storage
   storage_mb = 32768
-  sku_name   = "Standard_D4s_v3"
+  sku_name   = "B_Standard_B1ms"
   zone       = "1"
 
   # Enable Private Access Mode (if available in your region)
