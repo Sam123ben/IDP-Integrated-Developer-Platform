@@ -22,6 +22,8 @@ resource "azurerm_linux_virtual_machine" "sql_runner_vm" {
   admin_username      = "azureuser"  # Update with your preferred username
   admin_password      = var.vm_admin_password  # Variable for VM password
 
+  disable_password_authentication = false  # Enable password authentication instead of SSH keys
+
   network_interface_ids = [
     azurerm_network_interface.sql_runner_nic.id
   ]
@@ -57,7 +59,7 @@ resource "null_resource" "apply_sql_schema" {
       "sudo apt-get install -y postgresql-client",
 
       # Run SQL script on PostgreSQL server
-      "PGPASSWORD='${var.admin_password}' psql -h ${azurerm_postgresql_flexible_server.db_server.fqdn} -U ${var.admin_username} -d ${azurerm_postgresql_flexible_server_database.database.name} -f /path/to/your/schema.sql"
+      "PGPASSWORD='${var.admin_password}' psql -h ${azurerm_postgresql_flexible_server.db_server.fqdn} -U ${var.admin_username} -d ${azurerm_postgresql_flexible_server_database.database.name} -f ~/infra_env_dashboard/database/000_create_database_schema.sql"
     ]
 
     connection {
@@ -65,6 +67,19 @@ resource "null_resource" "apply_sql_schema" {
       host     = azurerm_linux_virtual_machine.sql_runner_vm.public_ip_address
       user     = "azureuser"
       password = var.vm_admin_password  # Use password instead of SSH key
+    }
+  }
+
+  # Upload the schema SQL file to the VM
+  provisioner "file" {
+    source      = "${path.module}/../../infra_env_dashboard/database/000_create_database_schema.sql"
+    destination = "~/infra_env_dashboard/database/000_create_database_schema.sql"
+
+    connection {
+      type     = "ssh"
+      host     = azurerm_linux_virtual_machine.sql_runner_vm.public_ip_address
+      user     = "azureuser"
+      password = var.vm_admin_password
     }
   }
 }
