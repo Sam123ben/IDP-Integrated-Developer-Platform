@@ -1,4 +1,49 @@
-# Network Interface for the VM within the same subnet
+# Step 1: Create Storage Account
+resource "azurerm_storage_account" "sql_script_storage" {
+  name                     = "sqlscriptstorage${random_string.suffix.result}"
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  tags                     = var.tags
+}
+
+# Generate a random suffix for unique storage account naming
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+}
+
+# Step 2: Create Blob Container
+resource "azurerm_storage_container" "sql_scripts_container" {
+  name                  = "sqlscripts"
+  storage_account_name  = azurerm_storage_account.sql_script_storage.name
+  container_access_type = "private"
+}
+
+# Step 3: Upload SQL Script to Blob
+resource "azurerm_storage_blob" "sql_script_blob" {
+  name                   = "000_create_database_schema.sql"
+  storage_account_name   = azurerm_storage_account.sql_script_storage.name
+  storage_container_name = azurerm_storage_container.sql_scripts_container.name
+  type                   = "Block"
+  source                 = "${path.module}/scripts/000_create_database_schema.sql"  # Path to the SQL script
+
+  depends_on = [azurerm_storage_container.sql_scripts_container]
+}
+
+# Step 4: Grant VM Access to Storage Account (using SAS token for secure access)
+data "azurerm_storage_account_sas" "sql_script_sas" {
+  connection_string = azurerm_storage_account.sql_script_storage.primary_connection_string
+  https_only        = true
+  start             = "2023-01-01T00:00Z"
+  expiry            = "2030-01-01T00:00Z"
+  permissions       = "rl"  # Read and list permissions
+
+  depends_on = [azurerm_storage_blob.sql_script_blob]
+}
+
+# Network Interface for the VM
 resource "azurerm_network_interface" "sql_runner_nic" {
   name                = "sql-runner-nic"
   location            = var.location
@@ -9,19 +54,16 @@ resource "azurerm_network_interface" "sql_runner_nic" {
     subnet_id                     = var.app_subnet_id
     private_ip_address_allocation = "Dynamic"
   }
-
-  depends_on = [azurerm_postgresql_flexible_server_database.database]
 }
 
-# Define the VM in the same VNet as the PostgreSQL server
+# Define the VM
 resource "azurerm_linux_virtual_machine" "sql_runner_vm" {
-  name                = "sql-runner-vm"
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  size                = "Standard_B1s"
-  admin_username      = "azureuser"
-  admin_password      = var.vm_admin_password
-
+  name                  = "sql-runner-vm"
+  resource_group_name   = var.resource_group_name
+  location              = var.location
+  size                  = "Standard_B1s"
+  admin_username        = "azureuser"
+  admin_password        = var.vm_admin_password
   disable_password_authentication = false
 
   network_interface_ids = [
@@ -39,12 +81,10 @@ resource "azurerm_linux_virtual_machine" "sql_runner_vm" {
     sku       = "22_04-lts"
     version   = "latest"
   }
-
-  depends_on = [azurerm_network_interface.sql_runner_nic]
-  tags       = var.tags
+  tags = var.tags
 }
 
-# VM Extension to install PostgreSQL client and execute SQL script
+# VM Extension to Install PostgreSQL Client and Run SQL Script
 resource "azurerm_virtual_machine_extension" "sql_runner_extension" {
   name                 = "sql-runner-extension"
   virtual_machine_id   = azurerm_linux_virtual_machine.sql_runner_vm.id
@@ -52,19 +92,11 @@ resource "azurerm_virtual_machine_extension" "sql_runner_extension" {
   type                 = "CustomScript"
   type_handler_version = "2.0"
 
-  # Command to install PostgreSQL client and execute the SQL script
   settings = <<SETTINGS
     {
-      "commandToExecute": "sudo apt-get update -y && sudo apt-get install -y postgresql-client && PGPASSWORD='${var.admin_password}' psql -h ${azurerm_postgresql_flexible_server.db_server.fqdn} -U ${var.admin_username} -d ${azurerm_postgresql_flexible_server_database.database.name} -f /home/azureuser/000_create_database_schema.sql"
+      "commandToExecute": "sudo apt-get update -y && sudo apt-get install -y postgresql-client && curl -L '${azurerm_storage_blob.sql_script_blob.url}${data.azurerm_storage_account_sas.sql_script_sas.sas}' -o /home/azureuser/000_create_database_schema.sql && PGPASSWORD='${var.admin_password}' psql -h ${azurerm_postgresql_flexible_server.db_server.fqdn} -U ${var.admin_username} -d ${azurerm_postgresql_flexible_server_database.database.name} -f /home/azureuser/000_create_database_schema.sql"
     }
   SETTINGS
-
-  # Upload the SQL script file to the VM
-  protected_settings = <<PROTECTED_SETTINGS
-    {
-      "fileUris": ["${path.module}/scripts/000_create_database_schema.sql"]
-    }
-  PROTECTED_SETTINGS
 
   depends_on = [
     azurerm_linux_virtual_machine.sql_runner_vm,
