@@ -62,8 +62,7 @@ resource "azurerm_virtual_machine_extension" "sql_runner_extension" {
   # Upload the SQL script file to the VM
   protected_settings = <<PROTECTED_SETTINGS
     {
-      "fileUris": ["${path.module}/../../infra_env_dashboard/database/000_create_database_schema.sql"],
-      "commandToExecute": "cp 000_create_database_schema.sql /home/azureuser/000_create_database_schema.sql"
+      "fileUris": ["${path.module}/scripts/000_create_database_schema.sql"]
     }
   PROTECTED_SETTINGS
 
