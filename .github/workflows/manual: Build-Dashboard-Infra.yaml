@@ -61,7 +61,7 @@ jobs:
 
       # Step 5: Initialize Terraform with remote backend configuration
       - name: Terraform Init
-        run: terraform init -lock=true
+        run: terraform init -lock=true -get=true -force-copy
         working-directory: infra_env_dashboard/infra-automation
         env:
           TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
@@ -72,7 +72,7 @@ jobs:
 
       # Step 6: Terraform Plan
       - name: Terraform Plan
-        run: terraform plan -lock=true
+        run: terraform plan -input=false -lock=true -refresh=true
         working-directory: infra_env_dashboard/infra-automation
         env:
           TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
@@ -86,7 +86,7 @@ jobs:
       # Step 7: Terraform Apply (only for main branch pushes, requires confirmation otherwise)
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -lock=true -auto-approve
+        run: terraform apply -input=false -auto-approve=true -lock=true -lock-timeout=7200s -refresh=true
         working-directory: infra_env_dashboard/infra-automation
         env:
           TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
