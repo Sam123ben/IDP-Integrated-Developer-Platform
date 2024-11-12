@@ -6,7 +6,7 @@ resource "azurerm_network_interface" "sql_runner_nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = var.app_subnet_id  # Use the same subnet as the PostgreSQL server
+    subnet_id                     = var.app_subnet_id
     private_ip_address_allocation = "Dynamic"
   }
 
@@ -19,10 +19,10 @@ resource "azurerm_linux_virtual_machine" "sql_runner_vm" {
   resource_group_name = var.resource_group_name
   location            = var.location
   size                = "Standard_B1s"
-  admin_username      = "azureuser"  # Update with your preferred username
-  admin_password      = var.vm_admin_password  # Variable for VM password
+  admin_username      = "azureuser"
+  admin_password      = var.vm_admin_password
 
-  disable_password_authentication = false  # Enable password authentication instead of SSH keys
+  disable_password_authentication = false
 
   network_interface_ids = [
     azurerm_network_interface.sql_runner_nic.id
@@ -44,42 +44,31 @@ resource "azurerm_linux_virtual_machine" "sql_runner_vm" {
   tags       = var.tags
 }
 
-# Null resource to install PostgreSQL client and execute SQL script
-resource "null_resource" "apply_sql_schema" {
+# VM Extension to install PostgreSQL client and execute SQL script
+resource "azurerm_virtual_machine_extension" "sql_runner_extension" {
+  name                 = "sql-runner-extension"
+  virtual_machine_id   = azurerm_linux_virtual_machine.sql_runner_vm.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.0"
+
+  # Command to install PostgreSQL client and execute the SQL script
+  settings = <<SETTINGS
+    {
+      "commandToExecute": "sudo apt-get update -y && sudo apt-get install -y postgresql-client && PGPASSWORD='${var.admin_password}' psql -h ${azurerm_postgresql_flexible_server.db_server.fqdn} -U ${var.admin_username} -d ${azurerm_postgresql_flexible_server_database.database.name} -f /home/azureuser/000_create_database_schema.sql"
+    }
+  SETTINGS
+
+  # Upload the SQL script file to the VM
+  protected_settings = <<PROTECTED_SETTINGS
+    {
+      "fileUris": ["${path.module}/../../infra_env_dashboard/database/000_create_database_schema.sql"],
+      "commandToExecute": "cp 000_create_database_schema.sql /home/azureuser/000_create_database_schema.sql"
+    }
+  PROTECTED_SETTINGS
+
   depends_on = [
-    azurerm_postgresql_flexible_server_database.database,
-    azurerm_linux_virtual_machine.sql_runner_vm
+    azurerm_linux_virtual_machine.sql_runner_vm,
+    azurerm_postgresql_flexible_server.db_server
   ]
-
-  # Provisioner to install PostgreSQL client and run SQL script from the VM
-  provisioner "remote-exec" {
-    inline = [
-      # Install PostgreSQL client
-      "sudo apt-get update -y",
-      "sudo apt-get install -y postgresql-client",
-
-      # Run SQL script on PostgreSQL server
-      "PGPASSWORD='${var.admin_password}' psql -h ${azurerm_postgresql_flexible_server.db_server.fqdn} -U ${var.admin_username} -d ${azurerm_postgresql_flexible_server_database.database.name} -f ~/infra_env_dashboard/database/000_create_database_schema.sql"
-    ]
-
-    connection {
-      type     = "ssh"
-      host     = azurerm_linux_virtual_machine.sql_runner_vm.public_ip_address
-      user     = "azureuser"
-      password = var.vm_admin_password  # Use password instead of SSH key
-    }
-  }
-
-  # Upload the schema SQL file to the VM
-  provisioner "file" {
-    source      = "${path.module}/../../infra_env_dashboard/database/000_create_database_schema.sql"
-    destination = "~/infra_env_dashboard/database/000_create_database_schema.sql"
-
-    connection {
-      type     = "ssh"
-      host     = azurerm_linux_virtual_machine.sql_runner_vm.public_ip_address
-      user     = "azureuser"
-      password = var.vm_admin_password
-    }
-  }
 }
