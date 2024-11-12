@@ -1,6 +1,6 @@
 # Step 1: Create Storage Account
 resource "azurerm_storage_account" "sql_script_storage" {
-  name                     = "samyakstorage"
+  name                     = "samstgaccount01" # The Name of the Storage Account must be unique
   resource_group_name      = var.resource_group_name
   location                 = var.location
   account_tier             = "Standard"
