@@ -1,10 +1,16 @@
-name: Build DevOps Dashboard Infra
+name: Terraform CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Enables manual triggering of the workflow
+      - "feature/**"       # Include feature branches for init and plan only
+      - "bugfix/**"
+      - "hotfix/**"
+  pull_request:
+    branches:
+      - main               # Validate PRs to main with init and plan
+  workflow_dispatch:        # Enables manual triggering of the workflow
 
 jobs:
   terraform:
@@ -19,58 +25,47 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_wrapper: false  # Recommended for remote backends
+          terraform_wrapper: false
 
-      # Step 3: Set up Azure CLI
-      - name: Set up Azure CLI
+      # Step 3: Set up Azure CLI for authentication
+      - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Step 4: Check and Create Resource Group, Storage Account, and Blob Container
-      - name: Create Azure Resource Group and Storage for Terraform State
+      # Step 4: Set up Azure Storage Backend if it doesn't already exist
+      - name: Set Up Azure Storage Backend for Terraform State
         id: setup_azure_storage
         run: |
-          # Check if Resource Group exists
           if ! az group show --name "dashboard-state-rg" &>/dev/null; then
             echo "Creating resource group: dashboard-state-rg"
             az group create --name "dashboard-state-rg" --location "eastus"
-          else
-            echo "Resource group 'dashboard-state-rg' already exists."
           fi
 
-          # Check if Storage Account exists
           if ! az storage account show --name "dashboardstatestg" --resource-group "dashboard-state-rg" &>/dev/null; then
             echo "Creating storage account: dashboardstatestg"
             az storage account create --name "dashboardstatestg" --resource-group "dashboard-state-rg" --location "eastus" --sku Standard_LRS
-          else
-            echo "Storage account 'dashboardstatestg' already exists."
           fi
 
-          # Retrieve Storage Account key and set as output
           AZURE_STORAGE_KEY=$(az storage account keys list --resource-group "dashboard-state-rg" --account-name "dashboardstatestg" --query "[0].value" --output tsv)
           echo "::set-output name=AZURE_STORAGE_KEY::$AZURE_STORAGE_KEY"
 
-          # Check if Blob Container exists
           if ! az storage container show --name "dashboard-tfstate" --account-name "dashboardstatestg" --account-key "$AZURE_STORAGE_KEY" &>/dev/null; then
             echo "Creating blob container: dashboard-tfstate"
             az storage container create --name "dashboard-tfstate" --account-name "dashboardstatestg" --account-key "$AZURE_STORAGE_KEY"
-          else
-            echo "Blob container 'dashboard-tfstate' already exists."
           fi
 
       # Step 5: Initialize Terraform with remote backend configuration
       - name: Terraform Init
-        run: terraform init -lock=true -get=true -force-copy
+        run: terraform init -input=false -backend-config="storage_account_name=dashboardstatestg" -backend-config="container_name=dashboard-tfstate" -backend-config="key=terraform.tfstate" -backend-config="access_key=${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}"
         working-directory: infra_env_dashboard/infra-automation
         env:
           TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
           TF_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
           TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
-          ARM_ACCESS_KEY: ${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}
 
-      # Step 6: Terraform Plan
+      # Step 6: Terraform Plan (Run on all branches)
       - name: Terraform Plan
         run: terraform plan -input=false -lock=true -refresh=true
         working-directory: infra_env_dashboard/infra-automation
@@ -79,11 +74,10 @@ jobs:
           TF_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
           TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
-          ARM_ACCESS_KEY: ${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}
           TF_VAR_admin_password: ${{ secrets.ADMIN_PASSWORD }}
           TF_VAR_resource_group_name: "dashboard-service-rg"
 
-      # Step 7: Terraform Apply (only for main branch pushes, requires confirmation otherwise)
+      # Step 7: Conditional Terraform Apply (Only on Main Branch)
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -input=false -auto-approve=true -lock=true -lock-timeout=7200s -refresh=true
