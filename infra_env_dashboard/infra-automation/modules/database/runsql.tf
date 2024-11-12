@@ -1,17 +1,11 @@
 # Step 1: Create Storage Account
 resource "azurerm_storage_account" "sql_script_storage" {
-  name                     = "sqlscriptstorage${random_string.suffix.result}"
+  name                     = "samyakstorage"
   resource_group_name      = var.resource_group_name
   location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
   tags                     = var.tags
-}
-
-# Generate a random suffix for unique storage account naming
-resource "random_string" "suffix" {
-  length  = 6
-  special = false
 }
 
 # Step 2: Create Blob Container
@@ -32,14 +26,37 @@ resource "azurerm_storage_blob" "sql_script_blob" {
   depends_on = [azurerm_storage_container.sql_scripts_container]
 }
 
-# Step 4: Grant VM Access to Storage Account (using SAS token for secure access)
+# Step 4: Generate SAS Token for VM Access to SQL Script Blob
 data "azurerm_storage_account_sas" "sql_script_sas" {
   connection_string = azurerm_storage_account.sql_script_storage.primary_connection_string
   https_only        = true
   start             = "2023-01-01T00:00Z"
   expiry            = "2030-01-01T00:00Z"
-  permissions       = "rl"  # Read and list permissions
+  resource_types {
+    service   = true
+    container = false
+    object    = true
+  }
 
+  services {
+    blob  = true
+    queue = false
+    table = false
+    file  = false
+  }
+
+  permissions {
+    read    = true
+    write   = false
+    delete  = false
+    list    = false
+    add     = false
+    create  = false
+    update  = false
+    process = false
+    tag     = false
+    filter  = false
+  }
   depends_on = [azurerm_storage_blob.sql_script_blob]
 }
 
@@ -58,12 +75,12 @@ resource "azurerm_network_interface" "sql_runner_nic" {
 
 # Define the VM
 resource "azurerm_linux_virtual_machine" "sql_runner_vm" {
-  name                  = "sql-runner-vm"
-  resource_group_name   = var.resource_group_name
-  location              = var.location
-  size                  = "Standard_B1s"
-  admin_username        = "azureuser"
-  admin_password        = var.vm_admin_password
+  name                        = "sql-runner-vm"
+  resource_group_name         = var.resource_group_name
+  location                    = var.location
+  size                        = "Standard_B1s"
+  admin_username              = "azureuser"
+  admin_password              = var.vm_admin_password
   disable_password_authentication = false
 
   network_interface_ids = [
@@ -100,6 +117,7 @@ resource "azurerm_virtual_machine_extension" "sql_runner_extension" {
 
   depends_on = [
     azurerm_linux_virtual_machine.sql_runner_vm,
-    azurerm_postgresql_flexible_server.db_server
+    azurerm_postgresql_flexible_server.db_server,
+    azurerm_storage_blob.sql_script_blob
   ]
 }
