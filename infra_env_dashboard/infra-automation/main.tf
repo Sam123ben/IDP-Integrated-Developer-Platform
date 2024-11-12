@@ -36,6 +36,7 @@ module "database" {
   sku_name            = "B_Gen5_1"
   admin_username      = "psqladmin"
   admin_password      = var.admin_password
+  vm_admin_password   = var.vm_admin_password
   db_name             = "mydatabase"
   subnet_id           = module.network.db_subnet_id # Pass subnet ID from the network module output
   vnet_id             = module.network.vnet_id      # Pass VNet ID from the network module output
