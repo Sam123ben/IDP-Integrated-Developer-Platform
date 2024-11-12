@@ -33,3 +33,14 @@ variable "tenant_id" {
   type        = string
   description = "Azure Tenant ID"
 }
+
+# Define common tags to be used across all resources
+variable "tags" {
+  description = "Tags to apply to all resources"
+  type        = map(string)
+  default = {
+    environment = "dev"
+    owner       = "samyak"
+    project     = "DevOps Dashboard"
+  }
+}

@@ -1,14 +1,3 @@
-# Define common tags to be used across all resources
-variable "tags" {
-  description = "Tags to apply to all resources"
-  type        = map(string)
-  default = {
-    environment = "dev"
-    owner       = "samyak"
-    project     = "DevOps Dashboard"
-  }
-}
-
 # Define the resource group using the resource_group module
 module "resource_group" {
   source              = "./modules/resource_group"

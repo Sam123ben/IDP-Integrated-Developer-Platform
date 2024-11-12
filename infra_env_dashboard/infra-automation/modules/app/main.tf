@@ -25,6 +25,8 @@ resource "azurerm_app_service" "backend_app" {
   site_config {
     linux_fx_version = "DOCKER|sam123ben/infra-dashboard-backend:latest"
   }
+
+  depends_on = [ azurerm_app_service_plan.app_service_plan ]  # Ensure the App Service Plan is created first
   tags = var.tags  # Apply tags here
 }
 
@@ -42,5 +44,7 @@ resource "azurerm_app_service" "frontend_app" {
   site_config {
     linux_fx_version = "DOCKER|sam123ben/infra-dashboard:latest"
   }
+
+  depends_on = [ azurerm_app_service_plan.app_service_plan ]  # Ensure the App Service Plan is created first
   tags = var.tags  # Apply tags here
 }
