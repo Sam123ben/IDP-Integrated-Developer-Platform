@@ -39,6 +39,7 @@ module "database" {
   vm_admin_password   = var.vm_admin_password
   db_name             = "mydatabase"
   subnet_id           = module.network.db_subnet_id # Pass subnet ID from the network module output
+  app_subnet_id       = module.network.app_subnet_id # Pass app subnet ID from the network module output
   vnet_id             = module.network.vnet_id      # Pass VNet ID from the network module output
 
   tags = var.tags # Pass tags to the module
