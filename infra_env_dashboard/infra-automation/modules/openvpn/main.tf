@@ -108,13 +108,13 @@ resource "azurerm_virtual_machine_extension" "openvpn_extension" {
 
   settings = <<SETTINGS
     {
-      "commandToExecute": "chmod +x /home/azureuser/install_openvpn.sh && bash /home/azureuser/install_openvpn.sh"
+      "commandToExecute": "sudo apt-get update -y && sudo upgrade -y"
     }
   SETTINGS
 
-  protected_settings = {
-    "fileUris" = ["${azurerm_storage_blob.openvpn_script_blob.url}${data.azurerm_storage_account_sas.openvpn_script_sas.sas}"]
-  }
+  # protected_settings = {
+  #   "fileUris" = ["${azurerm_storage_blob.openvpn_script_blob.url}${data.azurerm_storage_account_sas.openvpn_script_sas.sas}"]
+  # }
 
   depends_on = [
     azurerm_linux_virtual_machine.openvpn_vm,
