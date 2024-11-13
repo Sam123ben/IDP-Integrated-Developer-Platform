@@ -39,3 +39,12 @@ variable "bastion_sku" {
   type        = string
   default     = "Basic"
 }
+
+variable "bastion_subnet_name" {
+  description = "Name for the Bastion subnet"
+}
+
+variable "bastion_subnet_cidr" {
+  description = "CIDR for the Bastion subnet"
+  type        = string
+}

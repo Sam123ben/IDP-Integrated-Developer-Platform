@@ -27,8 +27,8 @@ module "network" {
   # Bastion configurations
   bastion_name             = "bastion-host"
   bastion_subnet_name      = "AzureBastionSubnet"
-  bastion_nsg_name         = "bastion-nsg"
   bastion_sku              = "Basic"
+  bastion_subnet_cidr      = "10.0.3.0/27"
 
   tags = var.tags # Pass tags to the module
 

@@ -1,3 +1,13 @@
+# Bastion Subnet
+resource "azurerm_subnet" "bastion_subnet" {
+  name                 = var.bastion_subnet_name
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = var.vnet_name
+  address_prefixes     = [var.bastion_subnet_cidr]  # Ensure this prefix is within your VNet range
+
+  depends_on = [azurerm_virtual_network.vnet]
+}
+
 # Public subnet for OpenVPN
 resource "azurerm_subnet" "public_subnet" {
   name                 = var.public_subnet_name
