@@ -1,3 +1,4 @@
+# Description: This workflow is used to build the infrastructure for the Dashboard Service
 name: Build the Infra Automation for Dashboard Service
 
 on:
