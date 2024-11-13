@@ -18,11 +18,6 @@ variable "vm_admin_password" {
   type        = string
 }
 
-variable "subnet_id" {
-  description = "Subnet ID where the VM will be deployed."
-  type        = string
-}
-
 variable "tags" {
   description = "Tags to apply to resources."
   type        = map(string)
