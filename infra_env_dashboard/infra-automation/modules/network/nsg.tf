@@ -6,15 +6,123 @@ resource "azurerm_network_security_group" "bastion_nsg" {
   tags                = var.tags
 
   security_rule {
-    name                        = "Allow-Bastion-Inbound"
-    priority                    = 100
-    direction                   = "Inbound"
-    access                      = "Allow"
-    protocol                    = "Tcp"
-    source_port_range           = "*"
-    destination_port_range      = "443"
-    source_address_prefix       = "*"
-    destination_address_prefix  = "*"
+    name                       = "AllowHttpsInbound"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "Internet"
+    destination_address_prefix = "*"
+    access                     = "Allow"
+    priority                   = 100
+    direction                  = "Inbound"
+  }
+
+  security_rule {
+    name                       = "AllowGatewayManagerInbound"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "GatewayManager"
+    destination_address_prefix = "*"
+    access                     = "Allow"
+    priority                   = 110
+    direction                  = "Inbound"
+  }
+
+  security_rule {
+    name                       = "AllowLoadBalancerInBound"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "AzureLoadBalancer"
+    destination_address_prefix = "*"
+    access                     = "Allow"
+    priority                   = 120
+    direction                  = "Inbound"
+  }
+
+  security_rule {
+    name                       = "AllowBastionHostCommunicationInBound"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_ranges    = ["8080", "5701"]
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "VirtualNetwork"
+    access                     = "Allow"
+    priority                   = 130
+    direction                  = "Inbound"
+  }
+
+  security_rule {
+    name                       = "DenyAllInBound"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+    access                     = "Deny"
+    priority                   = 1000
+    direction                  = "Inbound"
+  }
+
+  security_rule {
+    name                       = "AllowSshRdpOutbound"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_ranges    = ["22", "3389"]
+    source_address_prefix      = "*"
+    destination_address_prefix = "VirtualNetwork"
+    access                     = "Allow"
+    priority                   = 100
+    direction                  = "Outbound"
+  }
+
+  security_rule {
+    name                       = "AllowAzureCloudCommunicationOutBound"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "*"
+    destination_address_prefix = "AzureCloud"
+    access                     = "Allow"
+    priority                   = 110
+    direction                  = "Outbound"
+  }
+
+  security_rule {
+    name                       = "AllowBastionHostCommunicationOutBound"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_ranges    = ["8080", "5701"]
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "VirtualNetwork"
+    access                     = "Allow"
+    priority                   = 120
+    direction                  = "Outbound"
+  }
+
+  security_rule {
+    name                       = "AllowGetSessionInformationOutBound"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_ranges    = ["80", "443"]
+    source_address_prefix      = "*"
+    destination_address_prefix = "Internet"
+    access                     = "Allow"
+    priority                   = 130
+    direction                  = "Outbound"
+  }
+
+  security_rule {
+    name                       = "DenyAllOutBound"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+    access                     = "Deny"
+    priority                   = 1000
+    direction                  = "Outbound"
   }
 }
 
