@@ -17,3 +17,15 @@ variable "app_nsg_name" {
 variable "db_nsg_name" {
   description = "Name for the Database Network Security Group"
 }
+
+variable "public_subnet_name" {
+  description = "Name of the public subnet for OpenVPN"
+  type        = string
+  default     = "public-subnet"
+}
+
+variable "public_subnet_cidr" {
+  description = "CIDR for the public subnet for OpenVPN"
+  type        = string
+  default     = "10.0.3.0/24"
+}

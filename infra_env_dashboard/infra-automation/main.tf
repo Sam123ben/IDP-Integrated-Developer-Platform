@@ -18,6 +18,8 @@ module "network" {
   app_subnet_cidr = "10.0.1.0/24"
   db_subnet_name  = "db-subnet"
   db_subnet_cidr  = "10.0.2.0/24"
+  public_subnet_name  = "public-subnet"
+  public_subnet_cidr  = "10.0.3.0/24"
 
   app_nsg_name = "app-nsg"
   db_nsg_name  = "db-nsg"
@@ -61,4 +63,14 @@ module "app" {
   tags = var.tags # Pass tags to the module
 
   depends_on = [module.database]
+}
+
+module "openvpn" {
+  source              = "./modules/openvpn"
+  resource_group_name = module.resource_group.resource_group_name
+  location            = var.location
+  vm_admin_username   = "azureuser"  # Or define in root variables.tf
+  vm_admin_password   = var.vm_admin_password
+  subnet_id           = module.network.app_subnet_id
+  tags                = var.tags
 }

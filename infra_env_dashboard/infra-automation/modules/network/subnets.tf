@@ -1,3 +1,11 @@
+# Public subnet for OpenVPN
+resource "azurerm_subnet" "public_subnet" {
+  name                 = var.public_subnet_name
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = [var.public_subnet_cidr]
+}
+
 resource "azurerm_subnet" "app_subnet" {
   name                 = var.app_subnet_name
   resource_group_name  = var.resource_group_name
