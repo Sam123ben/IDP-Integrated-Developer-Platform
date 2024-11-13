@@ -1,14 +1,3 @@
-# Import the base64 encoding function
-locals {
-  openvpn_custom_data = <<-CUSTOM_DATA
-    #cloud-config
-    runcmd:
-      - echo "${var.vm_admin_password}" | passwd ${var.vm_admin_username} --stdin
-      - systemctl enable openvpnas
-      - systemctl start openvpnas
-  CUSTOM_DATA
-}
-
 # Public IP for OpenVPN VM
 resource "azurerm_public_ip" "openvpn_public_ip" {
   name                = "openvpn-public-ip"
@@ -61,10 +50,27 @@ resource "azurerm_linux_virtual_machine" "openvpn_vm" {
     version   = "latest"
   }
 
-  tags = var.tags
+  # Marketplace plan details for the OpenVPN Access Server image
+  plan {
+    name      = "openvpnas"
+    publisher = "openvpn"
+    product   = "openvpnas"
+  }
 
-  # Base64 encode the custom_data
+  # Custom data to configure OpenVPN on first boot
   custom_data = base64encode(local.openvpn_custom_data)
 
+  tags = var.tags
   depends_on = [azurerm_network_interface.openvpn_nic]
+}
+
+# Custom data configuration for OpenVPN
+locals {
+  openvpn_custom_data = <<-CUSTOM_DATA
+    #cloud-config
+    runcmd:
+      - echo "${var.vm_admin_password}" | passwd ${var.vm_admin_username} --stdin
+      - systemctl enable openvpnas
+      - systemctl start openvpnas
+  CUSTOM_DATA
 }
