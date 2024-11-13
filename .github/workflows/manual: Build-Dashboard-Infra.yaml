@@ -55,6 +55,9 @@ jobs:
             az storage container create --name "dashboard-tfstate" --account-name "dashboardstatestg" --account-key "$AZURE_STORAGE_KEY"
           fi
 
+          az vm image terms accept --publisher openvpn --offer openvpnas --plan openvpnas --subscription ${{ secrets.ARM_SUBSCRIPTION_ID }} || true
+          az vm image terms show --publisher openvpn --offer openvpnas --plan openvpnas --subscription ${{ secrets.ARM_SUBSCRIPTION_ID }} || true
+
       # Step 5: Initialize Terraform with remote backend configuration
       - name: Terraform Init
         run: terraform init -input=false -backend-config="storage_account_name=dashboardstatestg" -backend-config="container_name=dashboard-tfstate" -backend-config="key=terraform.tfstate" -backend-config="access_key=${{ steps.setup_azure_storage.outputs.AZURE_STORAGE_KEY }}"
