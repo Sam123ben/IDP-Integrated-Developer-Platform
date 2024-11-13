@@ -78,8 +78,6 @@ resource "azurerm_storage_blob" "openvpn_script_blob" {
   storage_container_name = "sqlscripts"
   type                   = "Block"
   source                 = "${path.module}/scripts/install_openvpn.sh"
-
-  depends_on = [azurerm_storage_container.openvpn_scripts_container]
 }
 
 # Generate SAS Token for OpenVPN script access
