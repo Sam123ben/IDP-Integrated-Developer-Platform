@@ -19,7 +19,7 @@ module "network" {
   db_subnet_name  = "db-subnet"
   db_subnet_cidr  = "10.0.2.0/24"
   public_subnet_name  = "public-subnet"
-  public_subnet_cidr  = "10.0.4.0/24"
+  public_subnet_cidr  = "10.0.3.0/24"
 
   app_nsg_name = "app-nsg"
   db_nsg_name  = "db-nsg"
@@ -28,7 +28,7 @@ module "network" {
   bastion_name             = "bastion-host"
   bastion_subnet_name      = "AzureBastionSubnet"
   bastion_sku              = "Basic"
-  bastion_subnet_cidr      = "10.0.3.0/27"
+  bastion_subnet_cidr      = "10.0.4.0/27"
 
   tags = var.tags # Pass tags to the module
 
