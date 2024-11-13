@@ -29,11 +29,6 @@ variable "tags" {
   default     = {}
 }
 
-variable "app_subnet_id" {
-  description = "Subnet ID for the application subnet."
-  type        = string
-}
-
 variable "public_subnet_id" {
   description = "Subnet ID for the public subnet."
   type        = string
