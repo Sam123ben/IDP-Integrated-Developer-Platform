@@ -1,3 +1,60 @@
+# Data source to reference existing storage account
+data "azurerm_storage_account" "openvpn_script_storage" {
+  name                = "samstgaccount01"
+  resource_group_name = var.resource_group_name
+}
+
+# Data source to reference existing blob container for scripts
+data "azurerm_storage_container" "sqlscripts_container" {
+  name                  = "sqlscripts"
+  storage_account_name  = data.azurerm_storage_account.openvpn_script_storage.name
+}
+
+# Upload OpenVPN installation script to Blob
+resource "azurerm_storage_blob" "openvpn_script_blob" {
+  name                   = "install_openvpn.sh"
+  storage_account_name   = data.azurerm_storage_account.openvpn_script_storage.name
+  storage_container_name = data.azurerm_storage_container.sqlscripts_container.name
+  type                   = "Block"
+  source                 = "${path.module}/scripts/install_openvpn.sh"
+}
+
+# Generate SAS Token for secure access to the OpenVPN script blob
+data "azurerm_storage_account_sas" "openvpn_script_sas" {
+  connection_string = data.azurerm_storage_account.openvpn_script_storage.primary_connection_string
+  https_only        = true
+  start             = "2023-01-01T00:00Z"
+  expiry            = "2030-01-01T00:00Z"
+
+  resource_types {
+    service   = true
+    container = true
+    object    = true
+  }
+
+  services {
+    blob  = true
+    queue = false
+    table = false
+    file  = false
+  }
+
+  permissions {
+    read    = true
+    write   = false
+    delete  = false
+    list    = false
+    add     = false
+    create  = false
+    update  = false
+    process = false
+    tag     = false
+    filter  = false
+  }
+
+  depends_on = [azurerm_storage_blob.openvpn_script_blob]
+}
+
 # Network Interface for OpenVPN VM
 resource "azurerm_network_interface" "openvpn_nic" {
   name                = "openvpn-nic"
@@ -38,10 +95,10 @@ resource "azurerm_linux_virtual_machine" "openvpn_vm" {
   }
 
   tags = var.tags
-  depends_on = [ azurerm_network_interface.openvpn_nic ]
+  depends_on = [azurerm_network_interface.openvpn_nic]
 }
 
-# VM Extension to install OpenVPN
+# VM Extension to install and run OpenVPN setup script
 resource "azurerm_virtual_machine_extension" "openvpn_extension" {
   name                 = "openvpn-extension"
   virtual_machine_id   = azurerm_linux_virtual_machine.openvpn_vm.id
@@ -63,54 +120,4 @@ resource "azurerm_virtual_machine_extension" "openvpn_extension" {
     azurerm_linux_virtual_machine.openvpn_vm,
     azurerm_storage_blob.openvpn_script_blob
   ]
-}
-
-# Random suffix for unique storage account naming
-resource "random_string" "suffix" {
-  length  = 6
-  special = false
-}
-
-# Upload OpenVPN installation script to Blob
-resource "azurerm_storage_blob" "openvpn_script_blob" {
-  name                   = "install_openvpn.sh"
-  storage_account_name   = "samstgaccount01"
-  storage_container_name = "sqlscripts"
-  type                   = "Block"
-  source                 = "${path.module}/scripts/install_openvpn.sh"
-}
-
-# Generate SAS Token for OpenVPN script access
-data "azurerm_storage_account_sas" "openvpn_script_sas" {
-  connection_string = azurerm_storage_account.openvpn_script_storage.primary_connection_string
-  https_only        = true
-  start             = "2023-01-01T00:00Z"
-  expiry            = "2030-01-01T00:00Z"
-
-  resource_types {
-    service   = true
-    container = true
-    object    = true
-  }
-
-  services {
-    blob  = true
-    queue = false
-    table = false
-    file  = false
-  }
-
-  permissions {
-    read    = true
-    write   = false
-    delete  = false
-    list    = false
-    add     = false
-    create  = false
-    update  = false
-    process = false
-    tag     = false
-    filter  = false
-  }
-  depends_on = [azurerm_storage_blob.openvpn_script_blob]
 }
