@@ -67,7 +67,7 @@ module "app" {
 
 module "openvpn" {
   source              = "./modules/openvpn"
-  resource_group_name = module.resource_group.resource_group_name
+  resource_group_name = module.resource_group.name
   location            = var.location
   vm_admin_username   = "azureuser"  # Or define in root variables.tf
   vm_admin_password   = var.vm_admin_password
