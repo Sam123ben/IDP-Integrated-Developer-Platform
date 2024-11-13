@@ -19,7 +19,7 @@ module "network" {
   db_subnet_name  = "db-subnet"
   db_subnet_cidr  = "10.0.2.0/24"
   public_subnet_name  = "public-subnet"
-  public_subnet_cidr  = "10.0.3.0/24"
+  public_subnet_cidr  = "10.0.4.0/24"
 
   app_nsg_name = "app-nsg"
   db_nsg_name  = "db-nsg"
