@@ -2,7 +2,7 @@
 name: Build the Infra Automation for Dashboard Service
 
 on:
-  workflow_dispatch: # ALlow manual trigger
+  workflow_dispatch: # Allow manual trigger
   push:
     branches:
       - main
