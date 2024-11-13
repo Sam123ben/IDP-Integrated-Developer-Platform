@@ -71,12 +71,12 @@ module "app" {
   depends_on = [module.database]
 }
 
-module "openvpn" {
-  source              = "./modules/openvpn"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  public_subnet_id    = module.network.public_subnet_id
-  vm_admin_username   = "openvpn"
-  vm_admin_password   = var.vm_admin_password
-  tags                = var.tags
-}
+# module "openvpn" {
+#   source              = "./modules/openvpn"
+#   location            = var.location
+#   resource_group_name = var.resource_group_name
+#   public_subnet_id    = module.network.public_subnet_id
+#   vm_admin_username   = "openvpn"
+#   vm_admin_password   = var.vm_admin_password
+#   tags                = var.tags
+# }
