@@ -29,3 +29,13 @@ variable "public_subnet_cidr" {
   type        = string
   default     = "10.0.3.0/24"
 }
+
+variable "bastion_name" {
+  description = "Name for the Bastion host"
+}
+
+variable "bastion_sku" {
+  description = "SKU for the Bastion host"
+  type        = string
+  default     = "Basic"
+}

@@ -1,3 +1,23 @@
+# Network Security Group for Bastion
+resource "azurerm_network_security_group" "bastion_nsg" {
+  name                = "bastion-nsg"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  tags                = var.tags
+
+  security_rule {
+    name                        = "Allow-Bastion-Inbound"
+    priority                    = 100
+    direction                   = "Inbound"
+    access                      = "Allow"
+    protocol                    = "Tcp"
+    source_port_range           = "*"
+    destination_port_range      = "443"
+    source_address_prefix       = "*"
+    destination_address_prefix  = "*"
+  }
+}
+
 # Network Security Group for OpenVPN in the public subnet
 resource "azurerm_network_security_group" "openvpn_nsg" {
   name                = "openvpn-nsg"
@@ -17,21 +37,9 @@ resource "azurerm_network_security_group" "openvpn_nsg" {
     source_address_prefix       = "*"
     destination_address_prefix  = "*"
   }
-
-  # Allow SSH for management on TCP port 22
-  security_rule {
-    name                        = "allow-ssh"
-    priority                    = 110
-    direction                   = "Inbound"
-    access                      = "Allow"
-    protocol                    = "Tcp"
-    source_port_range           = "*"
-    destination_port_range      = "22"
-    source_address_prefix       = "*"
-    destination_address_prefix  = "*"
-  }
 }
 
+# Application NSG
 # Application NSG
 resource "azurerm_network_security_group" "app_nsg" {
   name                = var.app_nsg_name
@@ -68,7 +76,7 @@ resource "azurerm_network_security_group" "app_nsg" {
   # Allow outbound access to the internet
   security_rule {
     name                       = "Allow-Internet-Outbound"
-    priority                   = 300
+    priority                   = 400
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "*"
@@ -88,7 +96,7 @@ resource "azurerm_network_security_group" "db_nsg" {
 
   # Allow PostgreSQL access only from App Subnet
   security_rule {
-    name                       = "Allow-Postgres"
+    name                       = "Allow-Postgres-from-App"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
@@ -99,10 +107,23 @@ resource "azurerm_network_security_group" "db_nsg" {
     destination_address_prefix = "*"
   }
 
+  # Allow SSH only from Bastion subnet
+  security_rule {
+    name                       = "Allow-SSH-from-Bastion"
+    priority                   = 200
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = azurerm_subnet.bastion_subnet.address_prefixes[0]
+    destination_address_prefix = "*"
+  }
+
   # Allow outbound access to the internet for updates/backups
   security_rule {
     name                       = "Allow-Internet-Outbound"
-    priority                   = 200
+    priority                   = 300
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "*"
@@ -129,4 +150,10 @@ resource "azurerm_subnet_network_security_group_association" "app_subnet_nsg_ass
 resource "azurerm_subnet_network_security_group_association" "db_subnet_nsg_association" {
   subnet_id                 = azurerm_subnet.db_subnet.id
   network_security_group_id = azurerm_network_security_group.db_nsg.id
+}
+
+# Associate NSG with Bastion Subnet
+resource "azurerm_subnet_network_security_group_association" "bastion_subnet_nsg_association" {
+  subnet_id                 = azurerm_subnet.bastion_subnet.id
+  network_security_group_id = azurerm_network_security_group.bastion_nsg.id
 }

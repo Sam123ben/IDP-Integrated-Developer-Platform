@@ -21,3 +21,13 @@ output "app_nsg_id" {
 output "db_nsg_id" {
   value = azurerm_network_security_group.db_nsg.id
 }
+
+output "bastion_host_id" {
+  description = "The ID of the Bastion host"
+  value       = azurerm_bastion_host.bastion.id
+}
+
+output "bastion_public_ip" {
+  description = "Public IP address of the Bastion host"
+  value       = azurerm_public_ip.bastion_public_ip.ip_address
+}
