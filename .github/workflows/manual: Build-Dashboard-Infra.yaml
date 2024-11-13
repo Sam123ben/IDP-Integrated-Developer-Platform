@@ -2,6 +2,7 @@
 name: Build the Infra Automation for Dashboard Service
 
 on:
+  workflow_dispatch: # ALlow manual trigger
   push:
     branches:
       - main
@@ -11,7 +12,6 @@ on:
   pull_request:
     branches:
       - main               # Validate PRs to main with init and plan
-  workflow_dispatch:        # Enables manual triggering of the workflow
 
 jobs:
   terraform:
