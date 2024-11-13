@@ -78,9 +78,9 @@ jobs:
           TF_VAR_vm_admin_password: ${{ secrets.ADMIN_PASSWORD }}
           TF_VAR_resource_group_name: "dashboard-service-rg"
 
-      # Step 7: Conditional Terraform Apply (Only on Main Branch)
+      # Step 7: Conditional Terraform Apply (Only on Main Branch or Manual Dispatch)
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         run: terraform apply -input=false -auto-approve=true -lock=true -lock-timeout=7200s -refresh=true
         working-directory: infra_env_dashboard/infra-automation
         env:
