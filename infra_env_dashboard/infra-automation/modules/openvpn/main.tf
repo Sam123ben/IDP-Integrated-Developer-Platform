@@ -8,7 +8,19 @@ resource "azurerm_network_interface" "openvpn_nic" {
     name                          = "internal"
     subnet_id                     = var.public_subnet_id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.openvpn_public_ip.id  # Attach public IP
   }
+}
+
+# Public IP for OpenVPN VM
+resource "azurerm_public_ip" "openvpn_public_ip" {
+  name                = "openvpn-public-ip"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  allocation_method   = "Static"
+  sku                 = "Standard"  # Recommended for VMs with NSGs for improved security
+
+  tags = var.tags
 }
 
 # VM for OpenVPN Server

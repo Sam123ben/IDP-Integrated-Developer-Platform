@@ -5,7 +5,7 @@ resource "azurerm_network_security_group" "openvpn_nsg" {
   resource_group_name = var.resource_group_name
   tags                = var.tags
 
-# Allow OpenVPN connection on UDP port 1194
+  # Allow OpenVPN connection on UDP port 1194
   security_rule {
     name                        = "allow-openvpn-udp"
     priority                    = 100
@@ -18,7 +18,7 @@ resource "azurerm_network_security_group" "openvpn_nsg" {
     destination_address_prefix  = "*"
   }
 
-# Allow SSH for management on TCP port 22
+  # Allow SSH for management on TCP port 22
   security_rule {
     name                        = "allow-ssh"
     priority                    = 110
