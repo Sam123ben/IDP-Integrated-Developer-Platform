@@ -27,6 +27,7 @@ resource "azurerm_linux_web_app" "backend_app" {
     # Application stack specifying the Docker image
     application_stack {
       docker_image_name = "sam123ben/infra-dashboard-backend:latest"
+      docker_registry_url = "https://index.docker.io"
     }
     cors {
       allowed_origins = ["*"]
@@ -67,6 +68,7 @@ resource "azurerm_linux_web_app" "frontend_app" {
     # Application stack specifying the Docker image
     application_stack {
       docker_image_name = "sam123ben/infra-dashboard:latest"
+      docker_registry_url = "https://index.docker.io"
     }
     minimum_tls_version = "1.3"
   }
