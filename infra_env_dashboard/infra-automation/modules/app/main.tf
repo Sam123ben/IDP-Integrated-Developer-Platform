@@ -21,7 +21,7 @@ resource "azurerm_linux_web_app" "backend_app" {
     WEBSITES_PORT               = "8080"
     DATABASE_URL                = var.database_url  # Database URL for private endpoint access
     DOCKER_REGISTRY_SERVER_URL  = "https://index.docker.io/v1"
-    SWAGGER_HOST                = azurerm_linux_web_app.backend_app.default_hostname
+    SWAGGER_HOST                = "${var.backend_app_name}.azurewebsites.net"
     PORT                        = "443"
   }
 
