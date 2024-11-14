@@ -31,6 +31,7 @@ resource "azurerm_linux_web_app" "backend_app" {
     cors {
       allowed_origins = ["*"]
     }
+    minimum_tls_version = "1.3"
   }
 
   connection_string {
@@ -67,6 +68,7 @@ resource "azurerm_linux_web_app" "frontend_app" {
     application_stack {
       docker_image_name = "sam123ben/infra-dashboard:latest"
     }
+    minimum_tls_version = "1.3"
   }
 
   client_affinity_enabled = false
