@@ -36,7 +36,7 @@ resource "azurerm_linux_web_app" "backend_app" {
   connection_string {
     name  = "DATABASE_URL"
     type  = "PostgreSQL"
-    value = "postgres://${var.db_admin_user}:${var.db_admin_password}@${var.db_server_name}:5432/${var.db_name}"
+    value = "postgres://${var.db_admin_user}:${var.db_admin_password}@${var.db_server_name}.postgres.database.azure.com:5432/${var.db_name}"
   }
 
   client_affinity_enabled          = false
