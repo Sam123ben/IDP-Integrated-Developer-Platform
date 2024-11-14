@@ -15,14 +15,24 @@ func InitDB() (*gorm.DB, error) {
 	// Check if DATABASE_URL environment variable is set
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL != "" {
-		// If DATABASE_URL is available, use it to connect to PostgreSQL
-		return gorm.Open(postgres.Open(dbURL), &gorm.Config{})
+		log.Println("Attempting to connect to PostgreSQL using DATABASE_URL environment variable.")
+		// Try to connect using DATABASE_URL
+		db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
+		if err == nil {
+			log.Println("Successfully connected to PostgreSQL using DATABASE_URL.")
+			return db, nil
+		}
+		// Log the error and fall back to config.yaml if connection fails
+		log.Printf("Failed to connect using DATABASE_URL: %v. Falling back to config.yaml.", err)
 	}
 
-	// If DATABASE_URL is not set, fallback to reading from config.yaml
+	// If DATABASE_URL is not set or fails, fall back to config.yaml
+	log.Println("Falling back to config.yaml for database connection settings.")
+
+	// Configure viper to find the config file
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./common/configs")
+	viper.AddConfigPath("./common/configs") // Specify the relative path to config.yaml
 
 	// Read in the config
 	if err := viper.ReadInConfig(); err != nil {
@@ -40,12 +50,14 @@ func InitDB() (*gorm.DB, error) {
 		viper.GetString("database.sslmode"),
 	)
 
+	log.Println("Attempting to connect to PostgreSQL using settings from config.yaml.")
+
 	// Open a GORM database connection
 	db, err := gorm.Open(postgres.Open(dbConfig), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("error opening database connection: %w", err)
 	}
 
-	log.Println("Database connected successfully.")
+	log.Println("Successfully connected to PostgreSQL using config.yaml.")
 	return db, nil
 }
