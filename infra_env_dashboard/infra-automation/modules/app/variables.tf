@@ -5,4 +5,7 @@ variable "backend_app_name" {}
 variable "frontend_app_name" {}
 variable "database_url" {}
 variable "db_server_name" {}
+variable "db_admin_user" {}
+variable "db_admin_password" {}
+variable "db_name" {}
 variable "tags" {}

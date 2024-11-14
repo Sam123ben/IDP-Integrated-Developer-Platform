@@ -65,6 +65,9 @@ module "app" {
   frontend_app_name     = "dashboard-frontend-app"
   database_url          = module.database.db_server_fqdn # Pass FQDN from database module output
   db_server_name        = module.database.db_server_name
+  db_admin_password     = var.admin_password
+  db_admin_user         = "psqladmin"
+  db_name               = "mydatabase"
 
   tags = var.tags # Pass tags to the module
 

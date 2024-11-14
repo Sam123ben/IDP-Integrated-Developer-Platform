@@ -43,6 +43,14 @@ func main() {
 		AllowCredentials: true,
 	}))
 
+	// Set Swagger host dynamically from environment variables for deployment flexibility
+	swaggerHost := os.Getenv("SWAGGER_HOST")
+	if swaggerHost == "" {
+		swaggerHost = "localhost:8080" // Default to localhost for local development
+	}
+	// Update the Swagger host dynamically
+	ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.InstanceName(swaggerHost))
+
 	// Swagger setup
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
