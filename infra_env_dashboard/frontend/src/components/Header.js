@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import "../styles/Header.css";
+import config from "../config"; // Import the config
 
 const Header = () => {
     const [companyName, setCompanyName] = useState("Loading...");
@@ -10,7 +11,7 @@ const Header = () => {
         console.log("Starting to fetch company name..."); // Debug log: Start of fetch
 
         // Fetch company name from the API
-        fetch('http://localhost:8080/api/company')
+        fetch(config.fetchCompanyDetails)
             .then((response) => {
                 console.log("API response received:", response); // Debug log: API response
                 if (!response.ok) {

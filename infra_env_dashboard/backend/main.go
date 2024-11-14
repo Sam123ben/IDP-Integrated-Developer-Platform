@@ -6,6 +6,8 @@ import (
 	companyRouter "backend/services/fetch_company_details/router"          // Import Company Router
 	infraRouter "backend/services/fetch_infra_types/router"                // Import Infra Router
 	internalEnvRouter "backend/services/fetch_internal_env_details/router" // Import Internal Env Router
+	"fmt"
+	"os"
 
 	_ "backend/docs" // Import Swagger docs
 
@@ -53,9 +55,18 @@ func main() {
 		internalEnvRouter.SetupInternalEnvRoutes(api, db)
 	}
 
-	// Start the server on port 8080
-	logger.Logger.Info("Server running on port 8080")
-	if err := router.Run(":8080"); err != nil {
+	// Get the port from environment variable or use default
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Default port if not specified
+	}
+
+	// Log where the server will run
+	host := "0.0.0.0" // This makes it accessible on any host interface (suitable for cloud and local)
+	logger.Logger.Infof("Server running on %s:%s", host, port)
+
+	// Start the server
+	if err := router.Run(fmt.Sprintf("%s:%s", host, port)); err != nil {
 		logger.Logger.Fatalf("Failed to run server: %v", err)
 	}
 }

@@ -5,30 +5,29 @@ import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import MainContent from "./components/MainContent";
 import Footer from "./components/Footer";
+import { fetchData } from "./services/fetchData";
 import "./styles/App.css";
 
 function App() {
     const [selectedEnvironment, setSelectedEnvironment] = useState(null);
     const [envDetails, setEnvDetails] = useState([]);
 
-    // Function to fetch environment details based on selected product and environment name
     const fetchEnvDetails = async (product, envName) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/internal-env-details?product=${encodeURIComponent(product)}&group=${encodeURIComponent(envName)}`);
-            const data = await response.json();
-            setEnvDetails(data.environmentDetails || []); // Store environment details
+            // Pass parameters as an object to fetchData
+            const data = await fetchData("fetchInternalEnvDetails", { product, group: envName });
+            setEnvDetails(data.environmentDetails || []);
         } catch (error) {
             console.error("Failed to fetch environment details:", error);
-            setEnvDetails([]); // Clear details if fetch fails
+            setEnvDetails([]);
         }
     };
 
-    // Handle environment selection
     const handleEnvironmentSelect = (section, product, environment) => {
-        if (product && environment) { // Ensure both product and environment are available
+        if (product && environment) {
             console.log(`Selected environment: ${environment} for product: ${product}`);
             setSelectedEnvironment({ product, environment });
-            fetchEnvDetails(product, environment); // Fetch details for the selected environment
+            fetchEnvDetails(product, environment);
         } else {
             console.warn("Product or environment is missing in the selection");
         }
@@ -39,7 +38,7 @@ function App() {
             <Header />
             <div className="main-layout">
                 <Sidebar onEnvironmentSelect={handleEnvironmentSelect} />
-                <MainContent envDetails={envDetails} /> {/* Pass envDetails to MainContent */}
+                <MainContent envDetails={envDetails} />
             </div>
             <Footer />
         </div>

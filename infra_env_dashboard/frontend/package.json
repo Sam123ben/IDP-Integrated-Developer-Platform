@@ -10,15 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "proxy": {
-    "/api/company": {
-      "target": "http://localhost:8080",
-      "changeOrigin": true
-    },
-    "/api/infra-types": {
-      "target": "http://localhost:8081",
-      "changeOrigin": true
-    },
-    "/api/internal-env-details": {
+    "/api": {
       "target": "http://localhost:8080",
       "changeOrigin": true
     }
@@ -37,6 +29,7 @@
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.25.9",
     "babel-loader": "^9.2.1",
+    "dotenv-webpack": "^8.1.0",
     "html-webpack-plugin": "^5.6.3",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4",

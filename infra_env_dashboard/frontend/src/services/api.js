@@ -3,7 +3,7 @@ import config from "../config";
 // Fetch company details
 export const fetchCompanyDetails = async () => {
   try {
-    const response = await fetch(`${config.fetchCompanyDetails}/company`);
+    const response = await fetch(`${config.fetchCompanyDetails}`);
     if (!response.ok) throw new Error("Failed to fetch company details");
     const data = await response.json();
     return data;
@@ -16,7 +16,7 @@ export const fetchCompanyDetails = async () => {
 // Fetch infrastructure types
 export const fetchInfraTypes = async () => {
   try {
-    const response = await fetch(`${config.fetchInfraTypes}/infra-types`);
+    const response = await fetch(`${config.fetchInfraTypes}`);
     if (!response.ok) throw new Error("Failed to fetch infra types");
     const data = await response.json();
     return data.infraTypes || [];
