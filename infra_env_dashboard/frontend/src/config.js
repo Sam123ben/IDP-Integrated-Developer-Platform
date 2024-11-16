@@ -1,8 +1,8 @@
 // config.js
 
 // Set default values for API_HOST and API_PORT
-const API_HOST = process.env.REACT_APP_API_HOST || "http://localhost";
-const API_PORT = process.env.REACT_APP_API_PORT || "8080";
+const API_HOST = process.env.REACT_APP_API_HOST;
+const API_PORT = process.env.REACT_APP_API_PORT;
 
 // Construct the base API URL
 const API_BASE_URL = `${API_HOST}:${API_PORT}/api`;
