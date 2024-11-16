@@ -6,6 +6,7 @@ import (
 	companyRouter "backend/services/fetch_company_details/router"          // Import Company Router
 	infraRouter "backend/services/fetch_infra_types/router"                // Import Infra Router
 	internalEnvRouter "backend/services/fetch_internal_env_details/router" // Import Internal Env Router
+	customerEnvRouter "backend/services/fetch_customer_env_details/router" // Import Customer Env Router
 	"fmt"
 	"os"
 
@@ -19,7 +20,7 @@ import (
 
 // @title Unified Backend API
 // @version 1.0
-// @description Unified API for Company, Infra Types, and Internal Environment Details services.
+// @description Unified API for Company, Infra Types, Internal Environment Details, and Customer Environment Details services.
 // @host localhost:8080
 // @BasePath /api
 func main() {
@@ -48,8 +49,11 @@ func main() {
 	if swaggerHost == "" {
 		swaggerHost = "localhost:8080" // Default to localhost for local development
 	}
-	// Update the Swagger host dynamically
-	ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.InstanceName(swaggerHost))
+
+	// Update Swagger host dynamically (used in docs)
+	if err := os.Setenv("SWAGGER_HOST", swaggerHost); err != nil {
+		logger.Logger.Warnf("Failed to set SWAGGER_HOST: %v", err)
+	}
 
 	// Swagger setup
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -57,13 +61,14 @@ func main() {
 	// Register service-specific routes under /api
 	api := router.Group("/api")
 	{
-		// Call the setup functions from each router, passing the api group and database connection
+		// Call the setup functions from each router, passing the API group and database connection
 		companyRouter.SetupCompanyRoutes(api, db)
 		infraRouter.SetupInfraRoutes(api, db)
 		internalEnvRouter.SetupInternalEnvRoutes(api, db)
+		customerEnvRouter.SetupCustomerEnvRoutes(api, db) // Register new Customer Env Routes
 	}
 
-	// Get the port from environment variable or use default
+	// Get the port from the environment variable or use default
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080" // Default port if not specified

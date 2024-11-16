@@ -1,3 +1,5 @@
+# models/environment_detail.go
+
 package models
 
 type EnvironmentDetail struct {
