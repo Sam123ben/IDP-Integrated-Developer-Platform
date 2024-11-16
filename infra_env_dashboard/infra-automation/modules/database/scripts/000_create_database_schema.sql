@@ -226,3 +226,37 @@ UPDATE environment_details
 SET app_version = 'v6.1.2'
 WHERE environment_id = (SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
   AND name = 'Hotfix';
+
+--- Add and Update the Customer tables
+
+-- Insert CUSTOMER environments for Vendor A -> Product 1
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'UAT', 'uat.vendorA.product1.example.com', '2024-11-16 10:00:00', 'Online', 'Derrick', 'v1.0.0', '7.2.0876', 'UAT Environment for Vendor A Product 1'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'TRAIN', 'train.vendorA.product1.example.com', '2024-11-16 11:00:00', 'Online', 'Derrick', 'v1.0.1', '7.2.0876', 'Training Environment for Vendor A Product 1'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'SUPPORT', 'support.vendorA.product1.example.com', '2024-11-16 12:00:00', 'Online', 'Derrick', 'v1.0.2', '7.2.0876', 'Support Environment for Vendor A Product 1'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'PROD', 'prod.vendorA.product1.example.com', '2024-11-16 13:00:00', 'Online', 'Derrick', 'v1.1.0', '7.2.0876', 'Production Environment for Vendor A Product 1');
+
+-- Insert CUSTOMER environments for Vendor A -> Product 2
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'UAT01', 'uat01.vendorA.product2.example.com', '2024-11-16 10:00:00', 'Online', 'Mahesh', 'v2.0.0', '7.2.0876', 'UAT01 Environment for Vendor A Product 2'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'UAT02', 'uat02.vendorA.product2.example.com', '2024-11-16 11:00:00', 'Online', 'Mahesh', 'v2.0.1', '7.2.0876', 'UAT02 Environment for Vendor A Product 2'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'PREPROD', 'preprod.vendorA.product2.example.com', '2024-11-16 12:00:00', 'Online', 'Mahesh', 'v2.0.2', '7.2.0876', 'Preprod Environment for Vendor A Product 2'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'PROD', 'prod.vendorA.product2.example.com', '2024-11-16 13:00:00', 'Online', 'Mahesh', 'v2.1.0', '7.2.0876', 'Production Environment for Vendor A Product 2');
+
+-- Insert CUSTOMER environments for Vendor B -> Product 1
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'UAT', 'uat.vendorB.product1.example.com', '2024-11-16 10:00:00', 'Online', 'Ranjeet', 'v3.0.0', '7.2.0876', 'UAT Environment for Vendor B Product 1'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'SIT', 'sit.vendorB.product1.example.com', '2024-11-16 11:00:00', 'Online', 'Ranjeet', 'v3.0.1', '7.2.0876', 'SIT Environment for Vendor B Product 1'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'PROD-Blue', 'prod-blue.vendorB.product1.example.com', '2024-11-16 12:00:00', 'Online', 'Ranjeet', 'v3.1.0', '7.2.0876', 'Production Blue Environment for Vendor B Product 1'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'PROD-Green', 'prod-green.vendorB.product1.example.com', '2024-11-16 13:00:00', 'Online', 'Ranjeet', 'v3.1.1', '7.2.0876', 'Production Green Environment for Vendor B Product 1');
+
+-- Insert CUSTOMER environments for Vendor B -> Product 2
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'UAT', 'uat.vendorB.product2.example.com', '2024-11-16 10:00:00', 'Online', 'Danny', 'v4.0.0', '7.2.0876', 'UAT Environment for Vendor B Product 2'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'SUPPORT', 'support.vendorB.product2.example.com', '2024-11-16 11:00:00', 'Online', 'Danny', 'v4.0.1', '7.2.0876', 'Support Environment for Vendor B Product 2'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'PROD-Blue', 'prod-blue.vendorB.product2.example.com', '2024-11-16 12:00:00', 'Online', 'Danny', 'v4.1.0', '7.2.0876', 'Production Blue Environment for Vendor B Product 2'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'PROD-Green', 'prod-green.vendorB.product2.example.com', '2024-11-16 13:00:00', 'Online', 'Danny', 'v4.1.1', '7.2.0876', 'Production Green Environment for Vendor B Product 2');
