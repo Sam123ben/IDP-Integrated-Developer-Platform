@@ -2,7 +2,7 @@
 
 .header {
     background-color: #00bcd4;
-    color: white;
+    color: black; /* Changed to black to match icon color */
     padding: 20px 0;
     width: 100vw;
     position: relative;
@@ -18,23 +18,20 @@
     padding: 0 5%;
 }
 
-.header-title h1 {
+.header-title {
     font-size: 2.5em;
     margin: 0;
     margin-bottom: 10px; /* Added margin-bottom to create space between title and tagline */
     font-weight: bold;
     text-align: center;
+    color: black; /* Ensured the company name is in black for consistency */
 }
 
-.header-title p {
+.header-tagline {
     font-size: 1em;
     margin: 8px 0 0;
     text-align: center;
-}
-
-/* Added a gap to the header title area */
-.header-title {
-    margin-bottom: 20px; /* Added space below the entire title and tagline area */
+    color: black; /* Ensured the tagline is also in black to match */
 }
 
 /* Styling for the icons container */

@@ -44,26 +44,11 @@ const Header: React.FC<HeaderProps> = ({ companyDetails }) => {
         };
     }, [isDropdownVisible]);
 
-    // Automatically close dropdown after 2 seconds if hovered elsewhere
-    useEffect(() => {
-        let timeoutId: NodeJS.Timeout;
-
-        if (isDropdownVisible) {
-            timeoutId = setTimeout(() => {
-                setIsDropdownVisible(false);
-            }, 2000);
-        }
-
-        return () => {
-            clearTimeout(timeoutId);
-        };
-    }, [isDropdownVisible]);
-
     return (
         <header className="header">
             <div className="header-content">
-                <h1>{companyDetails.name}</h1>
-                <h2>Monitor, Manage, and Optimize Your Infrastructure from a Single View</h2>
+                <h1 className="header-title">{companyDetails.name}</h1>
+                <h2 className="header-tagline">Monitor, Manage, and Optimize Your Infrastructure from a Single View</h2>
             </div>
             <div className="header-icons">
                 {/* Refresh Icon */}
@@ -73,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({ companyDetails }) => {
                 <div className="theme-dropdown">
                     <FiSettings className="icon settings" onClick={toggleDropdown} />
                     {isDropdownVisible && (
-                        <div className="dropdown-menu">
+                        <div className="dropdown-menu dropdown-menu-visible">
                             <div className="dropdown-item">
                                 <FaSun /> Light Theme
                             </div>
