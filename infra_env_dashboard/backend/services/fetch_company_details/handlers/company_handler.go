@@ -1,7 +1,7 @@
+// handlers/company_handler.go
 package handlers
 
 import (
-	"backend/services/fetch_company_details/models"
 	"backend/services/fetch_company_details/repository"
 	"net/http"
 
@@ -16,43 +16,19 @@ func NewCompanyHandler(repo *repository.CompanyRepository) *CompanyHandler {
 	return &CompanyHandler{Repo: repo}
 }
 
-// CreateCompany godoc
-// @Summary Create a new company
-// @Description Create a new company and store it in the database
-// @Tags Company
-// @Accept json
-// @Produce json
-// @Param company body models.Company true "Company data"
-// @Success 201 {object} models.Company
-// @Failure 400 {object} models.ErrorResponse
-// @Failure 500 {object} models.ErrorResponse
-// @Router /api/company [post]
-func (handler *CompanyHandler) CreateCompany(c *gin.Context) {
-	var company models.Company
-	if err := c.ShouldBindJSON(&company); err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
-		return
-	}
-	if err := handler.Repo.CreateCompany(&company); err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to create company"})
-		return
-	}
-	c.JSON(http.StatusCreated, company)
-}
-
-// GetCompany godoc
-// @Summary Get a list of companies
-// @Description Retrieve a list of companies from the database
+// GetCompanyDetails godoc
+// @Summary Get company details
+// @Description Retrieves details about the company
 // @Tags Company
 // @Produce json
-// @Success 200 {array} models.Company
-// @Failure 500 {object} models.ErrorResponse
-// @Router /api/company [get]
-func (handler *CompanyHandler) GetCompany(c *gin.Context) {
-	companies, err := handler.Repo.GetCompany()
+// @Success 200 {object} models.Company
+// @Failure 500 {object} map[string]string "error"
+// @Router /company [get]
+func (h *CompanyHandler) GetCompanyDetails(c *gin.Context) {
+	company, err := h.Repo.GetCompany()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to fetch companies"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve company details"})
 		return
 	}
-	c.JSON(http.StatusOK, companies)
+	c.JSON(http.StatusOK, gin.H{"company": company})
 }

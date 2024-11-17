@@ -1,5 +1,4 @@
-# router/router.go
-
+// router/router.go
 package router
 
 import (
@@ -11,7 +10,7 @@ import (
 )
 
 func SetupCustomerEnvRoutes(api *gin.RouterGroup, db *gorm.DB) {
-	repo := repository.NewCustomerEnvRepository(db)
+	repo := repository.NewCustomerRepository(db)
 	handler := handlers.NewCustomerEnvHandler(repo)
 
 	api.GET("/customer-env-details", handler.FetchCustomerEnvDetails)

@@ -1,10 +1,5 @@
 basePath: /api
 definitions:
-  backend_services_fetch_company_details_models.ErrorResponse:
-    properties:
-      error:
-        type: string
-    type: object
   models.Company:
     properties:
       id:
@@ -12,108 +7,77 @@ definitions:
       name:
         type: string
     type: object
-  models.InfraType:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      sections:
-        items:
-          $ref: '#/definitions/models.Section'
-        type: array
-    type: object
-  models.Section:
-    properties:
-      environments:
-        items:
-          type: string
-        type: array
-      id:
-        type: integer
-      infra_type_id:
-        type: integer
-      name:
-        type: string
-    type: object
 host: localhost:8080
 info:
   contact: {}
-  description: Unified API for Company, Infra Types, and Internal Environment Details
-    services.
+  description: Unified API for Company, Internal Environment Details, and Customer
+    Environment Details services.
   title: Unified Backend API
   version: "1.0"
 paths:
-  /api/company:
+  /company:
     get:
-      description: Retrieve a list of companies from the database
+      description: Retrieves details about the company
       produces:
       - application/json
       responses:
         "200":
           description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Company'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/backend_services_fetch_company_details_models.ErrorResponse'
-      summary: Get a list of companies
-      tags:
-      - Company
-    post:
-      consumes:
-      - application/json
-      description: Create a new company and store it in the database
-      parameters:
-      - description: Company data
-        in: body
-        name: company
-        required: true
-        schema:
-          $ref: '#/definitions/models.Company'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
           schema:
             $ref: '#/definitions/models.Company'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/backend_services_fetch_company_details_models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/backend_services_fetch_company_details_models.ErrorResponse'
-      summary: Create a new company
-      tags:
-      - Company
-  /api/infra-types:
-    get:
-      description: Retrieves all infrastructure types (e.g., INTERNAL, CUSTOMER)
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.InfraType'
-            type: array
         "500":
           description: error
           schema:
             additionalProperties:
               type: string
             type: object
-      summary: Get infrastructure types
+      summary: Get company details
       tags:
-      - Infra Types
-  /api/internal-env-details:
+      - Company
+  /customer-env-details:
+    get:
+      description: Retrieves environment details for a specific customer, product,
+        and environment group
+      parameters:
+      - description: Customer Name
+        in: query
+        name: customer
+        required: true
+        type: string
+      - description: Product Name
+        in: query
+        name: product
+        required: true
+        type: string
+      - description: Environment Group
+        in: query
+        name: group
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: environmentDetails
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Fetch customer environment details
+      tags:
+      - Customer Environment
+  /internal-env-details:
     get:
       description: Retrieves environment details for a specific product and environment
         group
@@ -123,9 +87,9 @@ paths:
         name: product
         required: true
         type: string
-      - description: Environment Name
+      - description: Environment Group
         in: query
-        name: EnvName
+        name: group
         required: true
         type: string
       produces:

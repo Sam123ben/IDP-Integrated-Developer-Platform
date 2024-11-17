@@ -1,3 +1,4 @@
+// repository/repository.go
 package repository
 
 import (
@@ -14,13 +15,11 @@ func NewCompanyRepository(db *gorm.DB) *CompanyRepository {
 	return &CompanyRepository{DB: db}
 }
 
-func (repo *CompanyRepository) CreateCompany(company *models.Company) error {
-	return repo.DB.Create(company).Error
-}
-
-// Rename Getcompany to GetCompany
-func (repo *CompanyRepository) GetCompany() ([]models.Company, error) {
-	var companies []models.Company
-	err := repo.DB.Find(&companies).Error
-	return companies, err
+// GetCompany retrieves the company details from the database
+func (repo *CompanyRepository) GetCompany() (models.Company, error) {
+	var company models.Company
+	if err := repo.DB.First(&company).Error; err != nil {
+		return company, err
+	}
+	return company, nil
 }

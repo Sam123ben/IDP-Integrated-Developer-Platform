@@ -1,5 +1,4 @@
-# repository/repository.go
-
+// repository/repository.go
 package repository
 
 import (
@@ -8,29 +7,37 @@ import (
 	"gorm.io/gorm"
 )
 
-type CustomerEnvRepository struct {
+type CustomerRepository struct {
 	DB *gorm.DB
 }
 
-func NewCustomerEnvRepository(db *gorm.DB) *CustomerEnvRepository {
-	return &CustomerEnvRepository{DB: db}
+func NewCustomerRepository(db *gorm.DB) *CustomerRepository {
+	return &CustomerRepository{DB: db}
 }
 
-// GetEnvironmentDetails retrieves environment details by vendor and product
-func (repo *CustomerEnvRepository) GetEnvironmentDetails(vendor, product string) ([]models.EnvironmentDetail, error) {
-	var environmentDetails []models.EnvironmentDetail
+// GetAllCustomers retrieves all customers from the database
+func (repo *CustomerRepository) GetAllCustomers() ([]models.Customer, error) {
+	var customers []models.Customer
+	if err := repo.DB.Find(&customers).Error; err != nil {
+		return nil, err
+	}
+	return customers, nil
+}
 
+// GetCustomerEnvironmentDetails retrieves customer environment details
+func (repo *CustomerRepository) GetCustomerEnvironmentDetails(customer string, product string, envName string) ([]models.EnvironmentDetail, error) {
+	var environmentDetails []models.EnvironmentDetail
 	err := repo.DB.
 		Table("environment_details").
-		Joins("JOIN products ON products.id = environment_details.product_id").
-		Joins("JOIN vendors ON vendors.id = products.vendor_id").
-		Where("LOWER(vendors.name) = LOWER(?) AND LOWER(products.name) = LOWER(?)", vendor, product).
-		Select("environment_details.name, environment_details.url, environment_details.last_updated, environment_details.status, environment_details.contact, environment_details.app_version, environment_details.db_version, environment_details.comments").
+		Joins("JOIN environments ON environments.id = environment_details.environment_id").
+		Joins("JOIN products ON products.id = environments.product_id").
+		Joins("JOIN customers ON customers.id = environments.customer_id").
+		Where("customers.name = ? AND products.name = ? AND environments.name = ?", customer, product, envName).
+		Select("environment_details.*").
 		Find(&environmentDetails).Error
 
 	if err != nil {
 		return nil, err
 	}
-
 	return environmentDetails, nil
 }

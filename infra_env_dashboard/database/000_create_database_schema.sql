@@ -1,11 +1,10 @@
 -- Drop existing tables if they exist to ensure a clean setup
--- DROP TABLE IF EXISTS environment_details;
--- DROP TABLE IF EXISTS environments;
--- DROP TABLE IF EXISTS products;
--- DROP TABLE IF EXISTS sections;
--- DROP TABLE IF EXISTS infra_types;
--- DROP TABLE IF EXISTS customers;
--- DROP TABLE IF EXISTS company;
+DROP TABLE IF EXISTS environment_details;
+DROP TABLE IF EXISTS environments;
+DROP TABLE IF EXISTS customer_products;
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS company;
 
 -- Create tables
 
@@ -23,57 +22,53 @@ BEGIN
     END IF;
 END $$;
 
--- 2. Infra types table
-CREATE TABLE IF NOT EXISTS infra_types (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE -- INTERNAL, CUSTOMER
-);
-
--- Insert sample infra types
-INSERT INTO infra_types (name) VALUES ('INTERNAL') ON CONFLICT DO NOTHING;
-INSERT INTO infra_types (name) VALUES ('CUSTOMER') ON CONFLICT DO NOTHING;
-
--- 3. Products table
+-- 2. Products table
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE
 );
 
 -- Insert sample products
-INSERT INTO products (name) VALUES ('Product 1') ON CONFLICT DO NOTHING;
-INSERT INTO products (name) VALUES ('Product 2') ON CONFLICT DO NOTHING;
-
--- 4. Customers table
-CREATE TABLE IF NOT EXISTS customers (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
-);
-
--- 5. Sections table, linked to infra types
-CREATE TABLE IF NOT EXISTS sections (
-    id SERIAL PRIMARY KEY,
-    infra_type_id INTEGER REFERENCES infra_types(id) ON DELETE CASCADE,
-    name VARCHAR(50) NOT NULL,
-    environments TEXT[] -- e.g., DEV, QA, STAGING, etc.
-);
-
--- Insert sample sections
-INSERT INTO sections (infra_type_id, name, environments)
-VALUES
-    ((SELECT id FROM infra_types WHERE name = 'INTERNAL'), 'Product 1', ARRAY['DEV', 'QA', 'CONSULT', 'PRESALES']),
-    ((SELECT id FROM infra_types WHERE name = 'INTERNAL'), 'Product 2', ARRAY['DEV', 'QA', 'STAGING']),
-    ((SELECT id FROM infra_types WHERE name = 'CUSTOMER'), 'Vendor A', ARRAY['Product 1', 'Product 2']),
-    ((SELECT id FROM infra_types WHERE name = 'CUSTOMER'), 'Vendor B', ARRAY['Product 1', 'Product 2'])
+INSERT INTO products (name)
+VALUES ('Product 1'), ('Product 2')
 ON CONFLICT DO NOTHING;
 
--- 6. Environments table, linked to products
+-- 3. Customers table
+CREATE TABLE IF NOT EXISTS customers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- Insert sample customers
+INSERT INTO customers (name)
+VALUES ('Vendor A'), ('Vendor B')
+ON CONFLICT DO NOTHING;
+
+-- 4. Customer Products join table
+CREATE TABLE IF NOT EXISTS customer_products (
+    id SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES customers(id) ON DELETE CASCADE,
+    product_id INT REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- Insert customer-product relationships
+INSERT INTO customer_products (customer_id, product_id)
+VALUES
+    ((SELECT id FROM customers WHERE name = 'Vendor A'), (SELECT id FROM products WHERE name = 'Product 1')),
+    ((SELECT id FROM customers WHERE name = 'Vendor A'), (SELECT id FROM products WHERE name = 'Product 2')),
+    ((SELECT id FROM customers WHERE name = 'Vendor B'), (SELECT id FROM products WHERE name = 'Product 1')),
+    ((SELECT id FROM customers WHERE name = 'Vendor B'), (SELECT id FROM products WHERE name = 'Product 2'))
+ON CONFLICT DO NOTHING;
+
+-- 5. Environments table, linked to products and optionally customers
 CREATE TABLE IF NOT EXISTS environments (
     id SERIAL PRIMARY KEY,
     product_id INT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    customer_id INT REFERENCES customers(id) ON DELETE CASCADE,
     name VARCHAR(50) NOT NULL
 );
 
--- Insert sample environments
+-- Insert internal environments
 INSERT INTO environments (product_id, name)
 VALUES
     ((SELECT id FROM products WHERE name = 'Product 1'), 'DEV'),
@@ -85,7 +80,35 @@ VALUES
     ((SELECT id FROM products WHERE name = 'Product 2'), 'STAGING')
 ON CONFLICT DO NOTHING;
 
--- 7. Environment details table, linked to environments
+-- Insert customer environments
+-- Vendor A Environments for Product 1
+INSERT INTO environments (product_id, customer_id, name)
+VALUES
+    ((SELECT id FROM products WHERE name = 'Product 1'), (SELECT id FROM customers WHERE name = 'Vendor A'), 'UAT'),
+    ((SELECT id FROM products WHERE name = 'Product 1'), (SELECT id FROM customers WHERE name = 'Vendor A'), 'TRAIN'),
+    ((SELECT id FROM products WHERE name = 'Product 1'), (SELECT id FROM customers WHERE name = 'Vendor A'), 'SUPPORT'),
+    ((SELECT id FROM products WHERE name = 'Product 1'), (SELECT id FROM customers WHERE name = 'Vendor A'), 'PROD'),
+
+-- Vendor A Environments for Product 2
+    ((SELECT id FROM products WHERE name = 'Product 2'), (SELECT id FROM customers WHERE name = 'Vendor A'), 'UAT01'),
+    ((SELECT id FROM products WHERE name = 'Product 2'), (SELECT id FROM customers WHERE name = 'Vendor A'), 'UAT02'),
+    ((SELECT id FROM products WHERE name = 'Product 2'), (SELECT id FROM customers WHERE name = 'Vendor A'), 'PREPROD'),
+    ((SELECT id FROM products WHERE name = 'Product 2'), (SELECT id FROM customers WHERE name = 'Vendor A'), 'PROD'),
+
+-- Vendor B Environments for Product 1
+    ((SELECT id FROM products WHERE name = 'Product 1'), (SELECT id FROM customers WHERE name = 'Vendor B'), 'UAT'),
+    ((SELECT id FROM products WHERE name = 'Product 1'), (SELECT id FROM customers WHERE name = 'Vendor B'), 'SIT'),
+    ((SELECT id FROM products WHERE name = 'Product 1'), (SELECT id FROM customers WHERE name = 'Vendor B'), 'PROD-Blue'),
+    ((SELECT id FROM products WHERE name = 'Product 1'), (SELECT id FROM customers WHERE name = 'Vendor B'), 'PROD-Green'),
+
+-- Vendor B Environments for Product 2
+    ((SELECT id FROM products WHERE name = 'Product 2'), (SELECT id FROM customers WHERE name = 'Vendor B'), 'UAT'),
+    ((SELECT id FROM products WHERE name = 'Product 2'), (SELECT id FROM customers WHERE name = 'Vendor B'), 'SUPPORT'),
+    ((SELECT id FROM products WHERE name = 'Product 2'), (SELECT id FROM customers WHERE name = 'Vendor B'), 'PROD-Blue'),
+    ((SELECT id FROM products WHERE name = 'Product 2'), (SELECT id FROM customers WHERE name = 'Vendor B'), 'PROD-Green')
+ON CONFLICT DO NOTHING;
+
+-- 6. Environment details table, linked to environments
 CREATE TABLE IF NOT EXISTS environment_details (
     id SERIAL PRIMARY KEY,
     environment_id INT NOT NULL REFERENCES environments(id) ON DELETE CASCADE,
@@ -99,164 +122,256 @@ CREATE TABLE IF NOT EXISTS environment_details (
     comments TEXT
 );
 
--- Insert sample environment details for Product 1
+-- Insert sample environment details for internal environments
+
+-- DEV environments for Product 1
 INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
 VALUES
-    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Dev', 'dev.example.com', '2021-08-19 21:30:00', 'Online', 'Samyak', 'develop-20240821.1', '7.2.0876', 'Testing this env so please check'),
-    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Smoke', 'smoke.example.com', '2021-08-19 21:30:00', 'Online', 'Samyak', 'develop-20240920.3', '7.2.0876', 'Testing this env so please check'),
-    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Stage', 'stage.example.com', '2021-08-19 21:30:00', 'Online', 'Samyak', 'develop-20240512.1', '7.2.0876', 'Testing this env so please check')
+    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id IS NULL), 'Dev', 'dev.example.com', '2021-08-19 21:30:00', 'Online', 'Samyak', 'v1.0.0', '7.2.0876', 'Testing this env so please check'),
+    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id IS NULL), 'Smoke', 'smoke.example.com', '2021-08-20 21:30:00', 'Online', 'Samyak', 'v1.0.1', '7.2.0876', 'Smoke testing environment'),
+    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id IS NULL), 'Stage', 'stage.example.com', '2021-08-21 21:30:00', 'Online', 'Samyak', 'v1.0.2', '7.2.0876', 'Staging environment for final checks')
 ON CONFLICT DO NOTHING;
-
--- Insert additional environment details for various setups
 
 -- QA environments for Product 1
 INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
 VALUES
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Manual', 'manual.qa.example.com', '2021-08-23 08:00:00', 'Online', 'Alice', 'qa-manual-20240823.1', '7.2.0876', 'Manual QA environment for Product 1'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Auto', 'auto.qa.example.com', '2021-08-23 09:00:00', 'In Progress', 'Bob', 'qa-auto-20240901.2', '7.2.0877', 'Automated QA environment for Product 1'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Prelaunch', 'prelaunch.qa.example.com', '2021-08-23 10:00:00', 'Offline', 'Charlie', 'qa-prelaunch-20240915.1', '7.2.0878', 'Prelaunch QA environment for Product 1')
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id IS NULL), 'Manual', 'manual.qa.example.com', '2021-08-23 08:00:00', 'Online', 'Alice', 'v2.1.0', '7.2.0876', 'Manual QA environment for Product 1'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id IS NULL), 'Auto', 'auto.qa.example.com', '2021-08-24 09:00:00', 'In Progress', 'Bob', 'v2.1.1', '7.2.0877', 'Automated QA environment for Product 1'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id IS NULL), 'Prelaunch', 'prelaunch.qa.example.com', '2021-08-25 10:00:00', 'Offline', 'Charlie', 'v2.1.2', '7.2.0878', 'Prelaunch QA environment for Product 1')
 ON CONFLICT DO NOTHING;
 
--- Insert PRESALES environments for Product 1
+-- PRESALES environments for Product 1
 INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
 VALUES
-    ((SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Demo', 'demo.presales.example.com', '2021-08-23 11:00:00', 'Online', 'David', 'presales-demo-20240901.1', '7.2.0880', 'Demo environment for Product 1 Presales'),
-    ((SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Sales', 'sales.presales.example.com', '2021-08-23 12:00:00', 'Offline', 'Eve', 'presales-sales-20240910.2', '7.2.0881', 'Sales environment for Product 1 Presales'),
-    ((SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Presales', 'presales.presales.example.com', '2021-08-23 13:00:00', 'In Progress', 'Frank', 'presales-presales-20240915.3', '7.2.0882', 'Presales environment for Product 1 Presales')
+    ((SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id IS NULL), 'Demo', 'demo.presales.example.com', '2021-08-26 11:00:00', 'Online', 'David', 'v3.0.0', '7.2.0880', 'Demo environment for Product 1 Presales'),
+    ((SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id IS NULL), 'Sales', 'sales.presales.example.com', '2021-08-27 12:00:00', 'Offline', 'Eve', 'v3.0.1', '7.2.0881', 'Sales environment for Product 1 Presales'),
+    ((SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id IS NULL), 'Presales', 'presales.presales.example.com', '2021-08-28 13:00:00', 'In Progress', 'Frank', 'v3.0.2', '7.2.0882', 'Presales environment for Product 1 Presales')
 ON CONFLICT DO NOTHING;
 
--- Insert CONSULT environments for Product 1
+-- CONSULT environments for Product 1
 INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
 VALUES
-    ((SELECT id FROM environments WHERE name = 'CONSULT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'Tech', 'tech.consult.example.com', '2021-08-24 08:00:00', 'Online', 'Grace', 'consult-tech-20240905.1', '7.2.0879', 'Tech environment for Product 1 Consult'),
-    ((SELECT id FROM environments WHERE name = 'CONSULT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'SRE', 'sre.consult.example.com', '2021-08-24 09:00:00', 'Offline', 'Hank', 'consult-sre-20240912.2', '7.2.0883', 'SRE environment for Product 1 Consult')
+    ((SELECT id FROM environments WHERE name = 'CONSULT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id IS NULL), 'Tech', 'tech.consult.example.com', '2021-08-29 08:00:00', 'Online', 'Grace', 'v4.2.0', '7.2.0879', 'Tech environment for Product 1 Consult'),
+    ((SELECT id FROM environments WHERE name = 'CONSULT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id IS NULL), 'SRE', 'sre.consult.example.com', '2021-08-30 09:00:00', 'Offline', 'Hank', 'v4.2.1', '7.2.0883', 'SRE environment for Product 1 Consult')
 ON CONFLICT DO NOTHING;
 
--- Add additional products, environments, and environment details similarly for a comprehensive test dataset.
-
--- Update statements for versioning environment details
-
--- Update Product 1 DEV environments
-UPDATE environment_details
-SET app_version = 'v1.0.0'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
-  AND name = 'Dev';
-
-UPDATE environment_details
-SET app_version = 'v1.0.1'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
-  AND name = 'Smoke';
-
-UPDATE environment_details
-SET app_version = 'v1.0.2'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
-  AND name = 'Stage';
-
--- Update Product 1 QA environments
-UPDATE environment_details
-SET app_version = 'v2.1.0'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
-  AND name = 'Manual';
-
-UPDATE environment_details
-SET app_version = 'v2.1.1'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
-  AND name = 'Auto';
-
-UPDATE environment_details
-SET app_version = 'v2.1.2'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
-  AND name = 'Prelaunch';
-
--- Update Product 1 PRESALES environments
-UPDATE environment_details
-SET app_version = 'v3.0.0'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
-  AND name = 'Demo';
-
-UPDATE environment_details
-SET app_version = 'v3.0.1'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
-  AND name = 'Sales';
-
-UPDATE environment_details
-SET app_version = 'v3.0.2'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'PRESALES' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
-  AND name = 'Presales';
-
--- Update Product 1 CONSULT environments
-UPDATE environment_details
-SET app_version = 'v4.2.0'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'CONSULT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
-  AND name = 'Tech';
-
-UPDATE environment_details
-SET app_version = 'v4.2.1'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'CONSULT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1'))
-  AND name = 'SRE';
-
--- Update Product 2 QA environments
-UPDATE environment_details
-SET app_version = 'v5.0.0'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
-  AND name = 'Manual';
-
-UPDATE environment_details
-SET app_version = 'v5.0.1'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
-  AND name = 'Auto';
-
-UPDATE environment_details
-SET app_version = 'v5.0.2'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
-  AND name = 'Prelaunch';
-
--- Update Product 2 STAGING environments
-UPDATE environment_details
-SET app_version = 'v6.1.0'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
-  AND name = 'Release';
-
-UPDATE environment_details
-SET app_version = 'v6.1.1'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
-  AND name = 'Launch';
-
-UPDATE environment_details
-SET app_version = 'v6.1.2'
-WHERE environment_id = (SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2'))
-  AND name = 'Hotfix';
-
---- Add and Update the Customer tables
-
--- Insert CUSTOMER environments for Vendor A -> Product 1
+-- DEV environments for Product 2
 INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
 VALUES
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'UAT', 'uat.vendorA.product1.example.com', '2024-11-16 10:00:00', 'Online', 'Derrick', 'v1.0.0', '7.2.0876', 'UAT Environment for Vendor A Product 1'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'TRAIN', 'train.vendorA.product1.example.com', '2024-11-16 11:00:00', 'Online', 'Derrick', 'v1.0.1', '7.2.0876', 'Training Environment for Vendor A Product 1'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'SUPPORT', 'support.vendorA.product1.example.com', '2024-11-16 12:00:00', 'Online', 'Derrick', 'v1.0.2', '7.2.0876', 'Support Environment for Vendor A Product 1'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'PROD', 'prod.vendorA.product1.example.com', '2024-11-16 13:00:00', 'Online', 'Derrick', 'v1.1.0', '7.2.0876', 'Production Environment for Vendor A Product 1');
+    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id IS NULL), 'Dev', 'dev.product2.example.com', '2021-09-01 10:00:00', 'Online', 'Ivan', 'v5.0.0', '7.2.0876', 'Development environment for Product 2'),
+    ((SELECT id FROM environments WHERE name = 'DEV' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id IS NULL), 'Integration', 'integration.product2.example.com', '2021-09-02 11:00:00', 'Online', 'Ivan', 'v5.0.1', '7.2.0876', 'Integration environment for Product 2')
+ON CONFLICT DO NOTHING;
 
--- Insert CUSTOMER environments for Vendor A -> Product 2
+-- QA environments for Product 2
 INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
 VALUES
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'UAT01', 'uat01.vendorA.product2.example.com', '2024-11-16 10:00:00', 'Online', 'Mahesh', 'v2.0.0', '7.2.0876', 'UAT01 Environment for Vendor A Product 2'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'UAT02', 'uat02.vendorA.product2.example.com', '2024-11-16 11:00:00', 'Online', 'Mahesh', 'v2.0.1', '7.2.0876', 'UAT02 Environment for Vendor A Product 2'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'PREPROD', 'preprod.vendorA.product2.example.com', '2024-11-16 12:00:00', 'Online', 'Mahesh', 'v2.0.2', '7.2.0876', 'Preprod Environment for Vendor A Product 2'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'PROD', 'prod.vendorA.product2.example.com', '2024-11-16 13:00:00', 'Online', 'Mahesh', 'v2.1.0', '7.2.0876', 'Production Environment for Vendor A Product 2');
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id IS NULL), 'Manual', 'manual.qa.product2.example.com', '2021-09-03 08:00:00', 'Online', 'Julia', 'v5.1.0', '7.2.0876', 'Manual QA environment for Product 2'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id IS NULL), 'Auto', 'auto.qa.product2.example.com', '2021-09-04 09:00:00', 'In Progress', 'Kevin', 'v5.1.1', '7.2.0877', 'Automated QA environment for Product 2'),
+    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id IS NULL), 'Prelaunch', 'prelaunch.qa.product2.example.com', '2021-09-05 10:00:00', 'Offline', 'Laura', 'v5.1.2', '7.2.0878', 'Prelaunch QA environment for Product 2')
+ON CONFLICT DO NOTHING;
 
--- Insert CUSTOMER environments for Vendor B -> Product 1
+-- STAGING environments for Product 2
 INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
 VALUES
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'UAT', 'uat.vendorB.product1.example.com', '2024-11-16 10:00:00', 'Online', 'Ranjeet', 'v3.0.0', '7.2.0876', 'UAT Environment for Vendor B Product 1'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'SIT', 'sit.vendorB.product1.example.com', '2024-11-16 11:00:00', 'Online', 'Ranjeet', 'v3.0.1', '7.2.0876', 'SIT Environment for Vendor B Product 1'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'PROD-Blue', 'prod-blue.vendorB.product1.example.com', '2024-11-16 12:00:00', 'Online', 'Ranjeet', 'v3.1.0', '7.2.0876', 'Production Blue Environment for Vendor B Product 1'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 1')), 'PROD-Green', 'prod-green.vendorB.product1.example.com', '2024-11-16 13:00:00', 'Online', 'Ranjeet', 'v3.1.1', '7.2.0876', 'Production Green Environment for Vendor B Product 1');
+    ((SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id IS NULL), 'Release', 'release.staging.product2.example.com', '2021-09-06 11:00:00', 'Online', 'Michael', 'v6.1.0', '7.2.0880', 'Release staging environment for Product 2'),
+    ((SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id IS NULL), 'Launch', 'launch.staging.product2.example.com', '2021-09-07 12:00:00', 'Offline', 'Nina', 'v6.1.1', '7.2.0881', 'Launch staging environment for Product 2'),
+    ((SELECT id FROM environments WHERE name = 'STAGING' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id IS NULL), 'Hotfix', 'hotfix.staging.product2.example.com', '2021-09-08 13:00:00', 'In Progress', 'Oscar', 'v6.1.2', '7.2.0882', 'Hotfix staging environment for Product 2')
+ON CONFLICT DO NOTHING;
 
--- Insert CUSTOMER environments for Vendor B -> Product 2
+-- Insert sample environment details for customer environments
+
+-- Vendor A Environments for Product 1
 INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
 VALUES
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'UAT', 'uat.vendorB.product2.example.com', '2024-11-16 10:00:00', 'Online', 'Danny', 'v4.0.0', '7.2.0876', 'UAT Environment for Vendor B Product 2'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'SUPPORT', 'support.vendorB.product2.example.com', '2024-11-16 11:00:00', 'Online', 'Danny', 'v4.0.1', '7.2.0876', 'Support Environment for Vendor B Product 2'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'PROD-Blue', 'prod-blue.vendorB.product2.example.com', '2024-11-16 12:00:00', 'Online', 'Danny', 'v4.1.0', '7.2.0876', 'Production Blue Environment for Vendor B Product 2'),
-    ((SELECT id FROM environments WHERE name = 'QA' AND product_id = (SELECT id FROM products WHERE name = 'Product 2')), 'PROD-Green', 'prod-green.vendorB.product2.example.com', '2024-11-16 13:00:00', 'Online', 'Danny', 'v4.1.1', '7.2.0876', 'Production Green Environment for Vendor B Product 2');
+    (
+        (SELECT id FROM environments WHERE name = 'UAT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor A')),
+        'UAT',
+        'uat.vendorA.product1.example.com',
+        '2024-11-16 10:00:00',
+        'Online',
+        'Derrick',
+        'v1.0.0',
+        '7.2.0876',
+        'UAT Environment for Vendor A Product 1'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'TRAIN' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor A')),
+        'TRAIN',
+        'train.vendorA.product1.example.com',
+        '2024-11-16 11:00:00',
+        'Online',
+        'Derrick',
+        'v1.0.1',
+        '7.2.0876',
+        'Training Environment for Vendor A Product 1'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'SUPPORT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor A')),
+        'SUPPORT',
+        'support.vendorA.product1.example.com',
+        '2024-11-16 12:00:00',
+        'Online',
+        'Derrick',
+        'v1.0.2',
+        '7.2.0876',
+        'Support Environment for Vendor A Product 1'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'PROD' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor A')),
+        'PROD',
+        'prod.vendorA.product1.example.com',
+        '2024-11-16 13:00:00',
+        'Online',
+        'Derrick',
+        'v1.1.0',
+        '7.2.0876',
+        'Production Environment for Vendor A Product 1'
+    )
+ON CONFLICT DO NOTHING;
+
+-- Vendor A Environments for Product 2
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    (
+        (SELECT id FROM environments WHERE name = 'UAT01' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor A')),
+        'UAT01',
+        'uat01.vendorA.product2.example.com',
+        '2024-11-16 10:00:00',
+        'Online',
+        'Mahesh',
+        'v2.0.0',
+        '7.2.0876',
+        'UAT01 Environment for Vendor A Product 2'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'UAT02' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor A')),
+        'UAT02',
+        'uat02.vendorA.product2.example.com',
+        '2024-11-16 11:00:00',
+        'Online',
+        'Mahesh',
+        'v2.0.1',
+        '7.2.0876',
+        'UAT02 Environment for Vendor A Product 2'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'PREPROD' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor A')),
+        'PREPROD',
+        'preprod.vendorA.product2.example.com',
+        '2024-11-16 12:00:00',
+        'Online',
+        'Mahesh',
+        'v2.0.2',
+        '7.2.0876',
+        'Preprod Environment for Vendor A Product 2'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'PROD' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor A')),
+        'PROD',
+        'prod.vendorA.product2.example.com',
+        '2024-11-16 13:00:00',
+        'Online',
+        'Mahesh',
+        'v2.1.0',
+        '7.2.0876',
+        'Production Environment for Vendor A Product 2'
+    )
+ON CONFLICT DO NOTHING;
+
+-- Vendor B Environments for Product 1
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    (
+        (SELECT id FROM environments WHERE name = 'UAT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor B')),
+        'UAT',
+        'uat.vendorB.product1.example.com',
+        '2024-11-16 10:00:00',
+        'Online',
+        'Ranjeet',
+        'v3.0.0',
+        '7.2.0876',
+        'UAT Environment for Vendor B Product 1'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'SIT' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor B')),
+        'SIT',
+        'sit.vendorB.product1.example.com',
+        '2024-11-16 11:00:00',
+        'Online',
+        'Ranjeet',
+        'v3.0.1',
+        '7.2.0876',
+        'SIT Environment for Vendor B Product 1'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'PROD-Blue' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor B')),
+        'PROD-Blue',
+        'prod-blue.vendorB.product1.example.com',
+        '2024-11-16 12:00:00',
+        'Online',
+        'Ranjeet',
+        'v3.1.0',
+        '7.2.0876',
+        'Production Blue Environment for Vendor B Product 1'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'PROD-Green' AND product_id = (SELECT id FROM products WHERE name = 'Product 1') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor B')),
+        'PROD-Green',
+        'prod-green.vendorB.product1.example.com',
+        '2024-11-16 13:00:00',
+        'Online',
+        'Ranjeet',
+        'v3.1.1',
+        '7.2.0876',
+        'Production Green Environment for Vendor B Product 1'
+    )
+ON CONFLICT DO NOTHING;
+
+-- Vendor B Environments for Product 2
+INSERT INTO environment_details (environment_id, name, url, last_updated, status, contact, app_version, db_version, comments)
+VALUES
+    (
+        (SELECT id FROM environments WHERE name = 'UAT' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor B')),
+        'UAT',
+        'uat.vendorB.product2.example.com',
+        '2024-11-16 10:00:00',
+        'Online',
+        'Danny',
+        'v4.0.0',
+        '7.2.0876',
+        'UAT Environment for Vendor B Product 2'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'SUPPORT' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor B')),
+        'SUPPORT',
+        'support.vendorB.product2.example.com',
+        '2024-11-16 11:00:00',
+        'Online',
+        'Danny',
+        'v4.0.1',
+        '7.2.0876',
+        'Support Environment for Vendor B Product 2'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'PROD-Blue' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor B')),
+        'PROD-Blue',
+        'prod-blue.vendorB.product2.example.com',
+        '2024-11-16 12:00:00',
+        'Online',
+        'Danny',
+        'v4.1.0',
+        '7.2.0876',
+        'Production Blue Environment for Vendor B Product 2'
+    ),
+    (
+        (SELECT id FROM environments WHERE name = 'PROD-Green' AND product_id = (SELECT id FROM products WHERE name = 'Product 2') AND customer_id = (SELECT id FROM customers WHERE name = 'Vendor B')),
+        'PROD-Green',
+        'prod-green.vendorB.product2.example.com',
+        '2024-11-16 13:00:00',
+        'Online',
+        'Danny',
+        'v4.1.1',
+        '7.2.0876',
+        'Production Green Environment for Vendor B Product 2'
+    )
+ON CONFLICT DO NOTHING;

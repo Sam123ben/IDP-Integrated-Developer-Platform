@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Unified API for Company, Infra Types, and Internal Environment Details services.",
+        "description": "Unified API for Company, Internal Environment Details, and Customer Environment Details services.",
         "title": "Unified Backend API",
         "contact": {},
         "version": "1.0"
@@ -9,96 +9,82 @@
     "host": "localhost:8080",
     "basePath": "/api",
     "paths": {
-        "/api/company": {
+        "/company": {
             "get": {
-                "description": "Retrieve a list of companies from the database",
+                "description": "Retrieves details about the company",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Company"
                 ],
-                "summary": "Get a list of companies",
+                "summary": "Get company details",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Company"
+                            "$ref": "#/definitions/models.Company"
+                        }
+                    },
+                    "500": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/backend_services_fetch_company_details_models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a new company and store it in the database",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Company"
-                ],
-                "summary": "Create a new company",
-                "parameters": [
-                    {
-                        "description": "Company data",
-                        "name": "company",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Company"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.Company"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/backend_services_fetch_company_details_models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/backend_services_fetch_company_details_models.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/api/infra-types": {
+        "/customer-env-details": {
             "get": {
-                "description": "Retrieves all infrastructure types (e.g., INTERNAL, CUSTOMER)",
+                "description": "Retrieves environment details for a specific customer, product, and environment group",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Infra Types"
+                    "Customer Environment"
                 ],
-                "summary": "Get infrastructure types",
+                "summary": "Fetch customer environment details",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer Name",
+                        "name": "customer",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Product Name",
+                        "name": "product",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Environment Group",
+                        "name": "group",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "environmentDetails",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.InfraType"
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     },
@@ -114,7 +100,7 @@
                 }
             }
         },
-        "/api/internal-env-details": {
+        "/internal-env-details": {
             "get": {
                 "description": "Retrieves environment details for a specific product and environment group",
                 "produces": [
@@ -134,8 +120,8 @@
                     },
                     {
                         "type": "string",
-                        "description": "Environment Name",
-                        "name": "EnvName",
+                        "description": "Environment Group",
+                        "name": "group",
                         "in": "query",
                         "required": true
                     }
@@ -171,55 +157,10 @@
         }
     },
     "definitions": {
-        "backend_services_fetch_company_details_models.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
         "models.Company": {
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.InfraType": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "sections": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Section"
-                    }
-                }
-            }
-        },
-        "models.Section": {
-            "type": "object",
-            "properties": {
-                "environments": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "infra_type_id": {
                     "type": "integer"
                 },
                 "name": {

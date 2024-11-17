@@ -18,3 +18,8 @@ type Product struct {
 	ID   int    `gorm:"primaryKey" json:"id"`
 	Name string `json:"name"`
 }
+
+type Customer struct {
+	ID   int    `gorm:"primaryKey" json:"id"`
+	Name string `json:"name"`
+}

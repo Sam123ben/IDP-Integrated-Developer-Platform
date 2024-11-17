@@ -1,3 +1,4 @@
+// handlers/handler.go
 package handlers
 
 import (
@@ -27,10 +28,10 @@ func NewInternalEnvHandler(repo *repository.InternalRepository) *InternalEnvHand
 // @Success 200 {object} map[string]interface{} "environmentDetails"
 // @Failure 400 {object} map[string]string "error"
 // @Failure 500 {object} map[string]string "error"
-// @Router /api/internal-env-details [get]
+// @Router /internal-env-details [get]
 func (h *InternalEnvHandler) FetchInternalEnvDetails(c *gin.Context) {
 	product := c.Query("product")
-	group := c.Query("group") // Updated to accept "group" instead of "EnvName"
+	group := c.Query("group") // Environment group
 
 	// Fetch the list of valid products from the database
 	products, err := h.Repo.GetAllProducts()
@@ -40,24 +41,18 @@ func (h *InternalEnvHandler) FetchInternalEnvDetails(c *gin.Context) {
 		return
 	}
 
-	// Extract product names to validate input
-	var validProducts []string
-	for _, p := range products {
-		validProducts = append(validProducts, p.Name)
-	}
-
 	// Validate product name
 	isValidProduct := false
-	for _, validProduct := range validProducts {
-		if strings.EqualFold(product, validProduct) {
-			product = validProduct // Use the correct casing from the database
+	for _, p := range products {
+		if strings.EqualFold(product, p.Name) {
+			product = p.Name // Use the correct casing from the database
 			isValidProduct = true
 			break
 		}
 	}
 
 	if !isValidProduct {
-		logrus.Warnf("Invalid product name provided: %s. Valid options are: %v", product, validProducts)
+		logrus.Warnf("Invalid product name provided: %s. Valid options are: %v", product, products)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product name. Please provide a valid product name."})
 		return
 	}

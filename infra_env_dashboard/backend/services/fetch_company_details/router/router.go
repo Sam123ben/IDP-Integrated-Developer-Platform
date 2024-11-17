@@ -1,3 +1,4 @@
+// router/router.go
 package router
 
 import (
@@ -12,6 +13,5 @@ func SetupCompanyRoutes(api *gin.RouterGroup, db *gorm.DB) {
 	repo := repository.NewCompanyRepository(db)
 	handler := handlers.NewCompanyHandler(repo)
 
-	api.POST("/company", handler.CreateCompany)
-	api.GET("/company", handler.GetCompany)
+	api.GET("/company", handler.GetCompanyDetails)
 }
