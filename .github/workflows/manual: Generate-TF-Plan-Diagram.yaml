@@ -76,7 +76,7 @@ jobs:
               echo "State is locked. Retrying in 30 seconds..."
               sleep 30
           done
-          terraform show -json /tmp/plan.out > plan.json
+          terraform show -json /tmp/plan.out > /tmp/plan.json
         working-directory: infra_env_dashboard/infra-automation
         env:
           TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
