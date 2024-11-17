@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import AppVersionModal from "./AppVersionModal";
+import CardMenu from "./CardMenu";
 import "../styles/Card.css";
 
 function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, url }) {
@@ -14,6 +15,16 @@ function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comme
 
     const closeModal = () => {
         setShowModal(false);
+    };
+
+    const handleSkipDeployment = (checked) => {
+        console.log(`Skip Deployment: ${checked}`);
+        // Handle skip deployment logic here
+    };
+
+    const handleUpdateComments = () => {
+        console.log("Update Comments clicked");
+        // Handle update comments logic here
     };
 
     // Determine the CSS class for status color based on status value
@@ -54,6 +65,10 @@ function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comme
                 </div>
                 <div className="card-updated-section">
                     <span className="card-updated">Last updated: {lastUpdated}</span>
+                    <CardMenu
+                        onSkipDeployment={handleSkipDeployment}
+                        onUpdateComments={handleUpdateComments}
+                    />
                 </div>
             </div>
 

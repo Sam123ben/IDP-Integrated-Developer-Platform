@@ -1,0 +1,49 @@
+/* src/styles/CardMenu.css */
+
+.card-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.three-dots {
+    font-size: 1.5em;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #333;
+    padding: 0;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 24px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 10px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    min-width: 150px;
+}
+
+.dropdown-item {
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+    color: #333;
+    width: 100%;
+    text-align: left;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
