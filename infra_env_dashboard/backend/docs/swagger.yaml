@@ -37,6 +37,34 @@ definitions:
     - customer_name
     - product_name
     type: object
+  models.InternalEnvUpdate:
+    properties:
+      appVersion:
+        type: string
+      comments:
+        type: string
+      contact:
+        type: string
+      dbVersion:
+        type: string
+      group_name:
+        type: string
+      id:
+        type: integer
+      lastUpdated:
+        type: string
+      name:
+        type: string
+      product_name:
+        type: string
+      status:
+        type: string
+      url:
+        type: string
+    required:
+    - group_name
+    - product_name
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -208,6 +236,42 @@ paths:
               type: string
             type: object
       summary: Fetch internal environment details
+      tags:
+      - Internal Environment
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing environment detail or inserts a new one if
+        it doesn't exist
+      parameters:
+      - description: Environment Detail with Product and Group
+        in: body
+        name: environment
+        required: true
+        schema:
+          $ref: '#/definitions/models.InternalEnvUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: message
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update or Insert internal environment details
       tags:
       - Internal Environment
 swagger: "2.0"

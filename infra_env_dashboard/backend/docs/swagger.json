@@ -252,6 +252,59 @@
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Updates an existing environment detail or inserts a new one if it doesn't exist",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Internal Environment"
+                ],
+                "summary": "Update or Insert internal environment details",
+                "parameters": [
+                    {
+                        "description": "Environment Detail with Product and Group",
+                        "name": "environment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.InternalEnvUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         }
     },
@@ -290,6 +343,48 @@
                     "type": "string"
                 },
                 "dbVersion": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastUpdated": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "product_name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.InternalEnvUpdate": {
+            "type": "object",
+            "required": [
+                "group_name",
+                "product_name"
+            ],
+            "properties": {
+                "appVersion": {
+                    "type": "string"
+                },
+                "comments": {
+                    "type": "string"
+                },
+                "contact": {
+                    "type": "string"
+                },
+                "dbVersion": {
+                    "type": "string"
+                },
+                "group_name": {
                     "type": "string"
                 },
                 "id": {
