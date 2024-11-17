@@ -25,14 +25,14 @@ func (repo *CustomerRepository) GetAllCustomers() ([]models.Customer, error) {
 }
 
 // GetCustomerEnvironmentDetails retrieves customer environment details
-func (repo *CustomerRepository) GetCustomerEnvironmentDetails(customer string, product string, envName string) ([]models.EnvironmentDetail, error) {
+func (repo *CustomerRepository) GetCustomerEnvironmentDetails(customer string, product string) ([]models.EnvironmentDetail, error) {
 	var environmentDetails []models.EnvironmentDetail
 	err := repo.DB.
 		Table("environment_details").
 		Joins("JOIN environments ON environments.id = environment_details.environment_id").
 		Joins("JOIN products ON products.id = environments.product_id").
 		Joins("JOIN customers ON customers.id = environments.customer_id").
-		Where("customers.name = ? AND products.name = ? AND environments.name = ?", customer, product, envName).
+		Where("customers.name = ? AND products.name = ?", customer, product).
 		Select("environment_details.*").
 		Find(&environmentDetails).Error
 

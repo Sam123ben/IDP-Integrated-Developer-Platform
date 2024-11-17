@@ -46,7 +46,7 @@ const docTemplate = `{
         },
         "/customer-env-details": {
             "get": {
-                "description": "Retrieves environment details for a specific customer, product, and environment group",
+                "description": "Retrieves environment details for a specific customer and product",
                 "produces": [
                     "application/json"
                 ],
@@ -66,13 +66,6 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Product Name",
                         "name": "product",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Environment Group",
-                        "name": "group",
                         "in": "query",
                         "required": true
                     }

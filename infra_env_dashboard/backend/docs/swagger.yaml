@@ -36,8 +36,7 @@ paths:
       - Company
   /customer-env-details:
     get:
-      description: Retrieves environment details for a specific customer, product,
-        and environment group
+      description: Retrieves environment details for a specific customer and product
       parameters:
       - description: Customer Name
         in: query
@@ -47,11 +46,6 @@ paths:
       - description: Product Name
         in: query
         name: product
-        required: true
-        type: string
-      - description: Environment Group
-        in: query
-        name: group
         required: true
         type: string
       produces:

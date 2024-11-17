@@ -20,12 +20,11 @@ func NewCustomerEnvHandler(repo *repository.CustomerRepository) *CustomerEnvHand
 
 // FetchCustomerEnvDetails godoc
 // @Summary Fetch customer environment details
-// @Description Retrieves environment details for a specific customer, product, and environment group
+// @Description Retrieves environment details for a specific customer and product
 // @Tags Customer Environment
 // @Produce json
 // @Param customer query string true "Customer Name"
 // @Param product query string true "Product Name"
-// @Param group query string true "Environment Group"
 // @Success 200 {object} map[string]interface{} "environmentDetails"
 // @Failure 400 {object} map[string]string "error"
 // @Failure 500 {object} map[string]string "error"
@@ -33,12 +32,11 @@ func NewCustomerEnvHandler(repo *repository.CustomerRepository) *CustomerEnvHand
 func (h *CustomerEnvHandler) FetchCustomerEnvDetails(c *gin.Context) {
 	customer := c.Query("customer")
 	product := c.Query("product")
-	group := c.Query("group") // Environment group
 
 	// Validate required parameters
-	if customer == "" || product == "" || group == "" {
-		logrus.Error("Customer, product, and group parameters are required")
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Customer, product, and group parameters are required"})
+	if customer == "" || product == "" {
+		logrus.Error("Customer and product parameters are required")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Customer and product parameters are required"})
 		return
 	}
 
@@ -60,13 +58,13 @@ func (h *CustomerEnvHandler) FetchCustomerEnvDetails(c *gin.Context) {
 	}
 
 	if !isValidCustomer {
-		logrus.Warnf("Invalid customer name provided: %s. Valid options are: %v", customer, customers)
+		logrus.Warnf("Invalid customer name provided: %s", customer)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer name. Please provide a valid customer name."})
 		return
 	}
 
 	// Fetch environment details
-	environmentDetails, err := h.Repo.GetCustomerEnvironmentDetails(customer, product, group)
+	environmentDetails, err := h.Repo.GetCustomerEnvironmentDetails(customer, product)
 	if err != nil {
 		logrus.Errorf("Failed to fetch customer environment details: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch customer environment details"})

@@ -19,7 +19,17 @@ type Product struct {
 	Name string `json:"name"`
 }
 
+// TableName overrides the default table name for Product
+func (Product) TableName() string {
+	return "products"
+}
+
 type Customer struct {
 	ID   int    `gorm:"primaryKey" json:"id"`
 	Name string `json:"name"`
+}
+
+// TableName overrides the default table name for Customer
+func (Customer) TableName() string {
+	return "customers"
 }
