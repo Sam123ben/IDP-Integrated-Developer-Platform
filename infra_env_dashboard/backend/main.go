@@ -56,12 +56,12 @@ func main() {
 	// Swagger setup
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// Register routes
+	// Register API routes
 	api := router.Group("/api")
 	{
-		companyRouter.SetupCompanyRoutes(api, db)
-		internalEnvRouter.SetupInternalEnvRoutes(api, db)
-		customerEnvRouter.SetupCustomerEnvRoutes(api, db)
+		companyRouter.SetupCompanyRoutes(api, db)         // For GET and PUT company details
+		internalEnvRouter.SetupInternalEnvRoutes(api, db) // For internal environment details
+		customerEnvRouter.SetupCustomerEnvRoutes(api, db) // For customer environment details
 	}
 
 	// Get port from environment variable or default

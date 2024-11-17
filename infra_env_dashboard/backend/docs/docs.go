@@ -42,6 +42,59 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Inserts or updates company details in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Company"
+                ],
+                "summary": "Add or update company details",
+                "parameters": [
+                    {
+                        "description": "Company data",
+                        "name": "company",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Company"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/customer-env-details": {
@@ -158,6 +211,9 @@ const docTemplate = `{
     "definitions": {
         "models.Company": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "id": {
                     "type": "integer"

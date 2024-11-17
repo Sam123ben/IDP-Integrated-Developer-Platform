@@ -2,11 +2,11 @@
 package models
 
 type Company struct {
-    ID   int    `gorm:"primaryKey" json:"id"`
-    Name string `json:"name"`
+	ID   int    `json:"id" gorm:"primaryKey"`
+	Name string `json:"name" binding:"required"`
 }
 
-// TableName overrides the table name used by Company to `company`
+// TableName overrides the default table name
 func (Company) TableName() string {
-    return "company"
+	return "company"
 }
