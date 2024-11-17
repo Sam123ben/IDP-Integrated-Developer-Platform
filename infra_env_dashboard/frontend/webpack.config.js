@@ -1,4 +1,5 @@
 // webpack.config.js
+
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
@@ -30,7 +31,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: './public/index.html', // Adjusted path to public/index.html
       filename: 'index.html'
     }),
     new Dotenv() // Load environment variables from a .env file
@@ -38,6 +39,7 @@ module.exports = {
   devServer: {
     static: './dist',
     hot: true,
-    port: 3000
+    port: 3000,
+    historyApiFallback: true
   }
 };

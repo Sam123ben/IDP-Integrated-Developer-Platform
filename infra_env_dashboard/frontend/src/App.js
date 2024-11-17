@@ -5,31 +5,36 @@ import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import MainContent from "./components/MainContent";
 import Footer from "./components/Footer";
-import { fetchData } from "./services/fetchData";
+import { fetchEnvironmentDetails, fetchCustomerEnvDetails } from "./services/api";
 import "./styles/App.css";
 
 function App() {
     const [selectedEnvironment, setSelectedEnvironment] = useState(null);
     const [envDetails, setEnvDetails] = useState([]);
+    const [selectedSection, setSelectedSection] = useState("INTERNAL");
 
-    const fetchEnvDetails = async (product, envName) => {
+    const fetchEnvDetails = async (section, product, groupOrCustomer) => {
         try {
-            // Pass parameters as an object to fetchData
-            const data = await fetchData("fetchInternalEnvDetails", { product, group: envName });
-            setEnvDetails(data.environmentDetails || []);
+            let data = [];
+            if (section === "INTERNAL") {
+                data = await fetchEnvironmentDetails(product, groupOrCustomer);
+            } else if (section === "CUSTOMER") {
+                data = await fetchCustomerEnvDetails(groupOrCustomer, product);
+            }
+            setEnvDetails(data);
         } catch (error) {
             console.error("Failed to fetch environment details:", error);
             setEnvDetails([]);
         }
     };
 
-    const handleEnvironmentSelect = (section, product, environment) => {
-        if (product && environment) {
-            console.log(`Selected environment: ${environment} for product: ${product}`);
-            setSelectedEnvironment({ product, environment });
-            fetchEnvDetails(product, environment);
+    const handleEnvironmentSelect = (section, product, environmentOrCustomer) => {
+        if (product && environmentOrCustomer) {
+            console.log(`Selected ${section} environment: ${environmentOrCustomer} for product: ${product}`);
+            setSelectedEnvironment({ section, product, environmentOrCustomer });
+            fetchEnvDetails(section, product, environmentOrCustomer);
         } else {
-            console.warn("Product or environment is missing in the selection");
+            console.warn("Product or environment/customer is missing in the selection");
         }
     };
 
@@ -37,7 +42,11 @@ function App() {
         <div className="app">
             <Header />
             <div className="main-layout">
-                <Sidebar onEnvironmentSelect={handleEnvironmentSelect} />
+                <Sidebar
+                    onEnvironmentSelect={handleEnvironmentSelect}
+                    selectedSection={selectedSection}
+                    setSelectedSection={setSelectedSection}
+                />
                 <MainContent envDetails={envDetails} />
             </div>
             <Footer />

@@ -3,11 +3,11 @@
 .app {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Full height for the viewport */
+    min-height: 100vh;
 }
 
 .main-layout {
-    flex: 1; /* Take up available space between header and footer */
+    flex: 1;
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 20px;
@@ -16,16 +16,8 @@
     box-sizing: border-box;
 }
 
-.main-layout .sidebar {
-    position: sticky;
-    top: 20px; /* Sidebar stays in view when scrolling */
-    align-self: start;
-}
-
-/* src/styles/App.css */
-
-.app-container {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
+@media (max-width: 768px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
 }

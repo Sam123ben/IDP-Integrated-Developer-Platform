@@ -22,6 +22,7 @@
     flex: 1 1 calc(33.33% - 20px);
     max-width: 400px;
     min-width: 300px;
+    margin: 10px;
     box-sizing: border-box;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
@@ -30,7 +31,12 @@
     align-items: stretch;
     overflow: auto;
     cursor: pointer;
-    margin: 10px;
+    width: 100%; /* Ensure the card fills the grid cell */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* Card status-specific borders */

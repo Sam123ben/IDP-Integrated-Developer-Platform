@@ -1,99 +1,41 @@
-/* src/style/MainContent.css */
+/* src/styles/MainContent.css */
 
 .main-content {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding: 20px;
-    background-color: #ffffff;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    min-height: 100%;
     width: 100%;
+    padding: 20px;
     box-sizing: border-box;
+    background-color: #ffffff;
 }
 
-/* Container for card layout with Flexbox */
+/* Grid container for cards */
 .card-grid {
-    display: flex;
-    flex-wrap: wrap; /* Allow cards to wrap to new lines */
-    gap: 20px; /* Spacing between cards */
-    width: 100%;
-    max-width: 1200px;
-    align-items: start;
-    justify-content: flex-start;
-    padding-top: 20px;
-    box-sizing: border-box;
-    margin: 0 auto; /* Center the grid container */
-}
-
-/* Basic card styling with flexible width */
-.card {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    flex: 1 1 calc(33.33% - 20px); /* Make cards responsive and fill each row */
-    min-width: 280px; /* Ensures cards don't get too narrow */
-    max-width: 100%; /* Ensure they don’t exceed the row width */
-    box-sizing: border-box;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin: 10px; /* Space around each card */
-}
-
-/* Hover effect for cards */
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Styling for different card statuses */
-.card.smoke {
-    border-left: 4px solid red;
-}
-
-.card.manual {
-    border-left: 4px solid #FF8C00;
-}
-
-.status-failed {
-    color: red;
-    font-weight: bold;
-}
-
-.status-progress {
-    color: #FF8C00;
-    font-weight: bold;
-}
-
-.status-success {
-    color: green;
-    font-weight: bold;
-}
-
-/* Typography adjustments */
-.card h2 {
-    font-size: 1.5em;
-    margin: 0 0 10px;
-    color: #333;
-}
-
-.card p {
-    margin: 5px 0;
-    font-size: 0.95em;
-    line-height: 1.4;
-    color: #555;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+    gap: 20px; /* Space between cards */
+    justify-items: stretch; /* Stretch cards to fill the grid cell */
+    align-items: stretch; /* Ensure cards have equal height */
 }
 
 /* Empty layout style for when no cards are present */
 .empty-layout {
     width: 100%;
     height: 100%;
-    background-color: #ffffff;
-    min-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #555;
+    font-size: 1.2em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 cards per row for smaller screens */
+    }
+}
+
+@media (max-width: 600px) {
+    .card-grid {
+        grid-template-columns: 1fr; /* 1 card per row for very small screens */
+    }
 }

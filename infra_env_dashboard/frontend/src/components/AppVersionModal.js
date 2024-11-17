@@ -12,31 +12,20 @@ const AppVersionModal = ({ onClose, envName = "Environment Name" }) => {
                     <h2>App Version Detail</h2>
                     <div className="env-name-container">
                         <span className="env-name">{envName}</span>
-                        <button onClick={onClose} className="close-button">✖</button>
+                        <button onClick={onClose} className="close-button">
+                            ✖
+                        </button>
                     </div>
                 </div>
                 <div className="modal-body">
+                    {/* Replace this static content with dynamic data if available */}
                     <ul>
                         <li>
                             <span className="status-icon success">✔️</span>
-                            <span>awp</span> 
+                            <span>awp</span>
                             <span className="version">develop-20240201</span>
                         </li>
-                        <li>
-                            <span className="status-icon in-progress">⏳</span>
-                            <span>idsrv</span> 
-                            <span className="version">develop-20231113</span>
-                        </li>
-                        <li>
-                            <span className="status-icon in-progress">⏳</span>
-                            <span>portal</span> 
-                            <span className="version">develop-20240429</span>
-                        </li>
-                        <li>
-                            <span className="status-icon failed">❌</span>
-                            <span>webapi</span> 
-                            <span className="version">develop-20240415</span>
-                        </li>
+                        {/* Add more list items as needed */}
                     </ul>
                 </div>
             </div>

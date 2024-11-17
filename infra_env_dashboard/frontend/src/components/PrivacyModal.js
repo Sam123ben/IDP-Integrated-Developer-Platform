@@ -11,10 +11,13 @@ function PrivacyModal({ isOpen, onClose }) {
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h3>Privacy Policy</h3>
-                    <button className="modal-close" onClick={onClose}>✖</button>
+                    <button className="modal-close" onClick={onClose}>
+                        ✖
+                    </button>
                 </div>
                 <div className="modal-body">
                     <p>This dashboard is open-source under the MIT License...</p>
+                    {/* Add more content as needed */}
                 </div>
             </div>
         </div>

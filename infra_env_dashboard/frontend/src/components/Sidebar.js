@@ -1,92 +1,136 @@
 // src/components/Sidebar.js
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../styles/Sidebar.css";
-import { fetchInfraTypes } from "../services/api";
 
-function Sidebar({ onEnvironmentSelect }) {
-    const [infraTypes, setInfraTypes] = useState([]);
-    const [selectedSection, setSelectedSection] = useState("INTERNAL");
-    const [expandedProducts, setExpandedProducts] = useState({});
+function Sidebar({ onEnvironmentSelect, selectedSection, setSelectedSection }) {
+    const [expandedItems, setExpandedItems] = useState({});
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [selectedEnv, setSelectedEnv] = useState(null);
+    const [selectedEnvOrCustomer, setSelectedEnvOrCustomer] = useState(null);
 
-    useEffect(() => {
-        fetchInfraTypes()
-            .then(setInfraTypes)
-            .catch(error => console.error("Failed to load infrastructure types:", error));
-    }, []);
+    const internalData = [
+        {
+            product: "Product 1",
+            groups: ["DEV", "QA", "UAT", "PROD"],
+        },
+        {
+            product: "Product 2",
+            groups: ["DEV", "QA", "UAT", "PROD"],
+        },
+        // Add more internal products and groups as needed
+    ];
 
-    const toggleProduct = (productName) => {
-        setExpandedProducts(prev => ({
+    const customerData = [
+        {
+            customer: "Vendor A",
+            products: ["Product 1", "Product 2"],
+        },
+        {
+            customer: "Vendor B",
+            products: ["Product 1", "Product 3"],
+        },
+        // Add more customers and their products as needed
+    ];
+
+    const toggleItem = (key) => {
+        setExpandedItems((prev) => ({
             ...prev,
-            [productName]: !prev[productName],
+            [key]: !prev[key],
         }));
-        setSelectedProduct(productName); // Update selected product
-        setSelectedEnv(null); // Clear selected environment when a new product is selected
     };
 
-    const handleEnvironmentSelect = (env, productName) => {
-        setSelectedEnv(env);
-        setSelectedProduct(productName); // Update selected product
-        onEnvironmentSelect(selectedSection, productName, env); // Pass both product and environment
+    const handleSelection = (section, product, envOrCustomer) => {
+        setSelectedProduct(product);
+        setSelectedEnvOrCustomer(envOrCustomer);
+        onEnvironmentSelect(section, product, envOrCustomer);
     };
-
-    const filteredInfraTypes = infraTypes.filter(
-        (infraType) => infraType.name.toUpperCase() === selectedSection
-    );
 
     return (
         <div className="sidebar-container">
             <div className="sidebar-tabs">
                 <span
                     className={`sidebar-tab ${selectedSection === "INTERNAL" ? "active" : ""}`}
-                    onClick={() => setSelectedSection("INTERNAL")}
+                    onClick={() => {
+                        setSelectedSection("INTERNAL");
+                        setSelectedProduct(null);
+                        setSelectedEnvOrCustomer(null);
+                        setExpandedItems({});
+                        onEnvironmentSelect("INTERNAL", null, null);
+                    }}
                 >
                     INTERNAL
                 </span>
                 <span
                     className={`sidebar-tab ${selectedSection === "CUSTOMER" ? "active" : ""}`}
-                    onClick={() => setSelectedSection("CUSTOMER")}
+                    onClick={() => {
+                        setSelectedSection("CUSTOMER");
+                        setSelectedProduct(null);
+                        setSelectedEnvOrCustomer(null);
+                        setExpandedItems({});
+                        onEnvironmentSelect("CUSTOMER", null, null);
+                    }}
                 >
                     CUSTOMER
                 </span>
             </div>
-
             <div className="sidebar-content">
-                {filteredInfraTypes.map((infraType) =>
-                    infraType.sections.map((section) => (
-                        <div key={section.name} className="product-section">
+                {selectedSection === "INTERNAL" &&
+                    internalData.map((item) => (
+                        <div key={item.product} className="product-section">
                             <div
-                                className={`product-name ${selectedProduct === section.name ? "selected" : ""}`}
-                                onClick={() => toggleProduct(section.name)}
+                                className={`product-name ${selectedProduct === item.product ? "selected" : ""}`}
+                                onClick={() => toggleItem(item.product)}
                             >
-                                {section.name}
+                                {item.product}
                                 <span className="toggle-icon">
-                                    {expandedProducts[section.name] ? "▼" : "▶"}
+                                    {expandedItems[item.product] ? "▼" : "▶"}
                                 </span>
                             </div>
-
-                            {expandedProducts[section.name] && (
-                                <ul className="environment-list">
-                                    {section.environments.map((env) => (
-                                        <li
-                                            key={env}
-                                            className={`environment-item ${
-                                                selectedEnv === env && selectedProduct === section.name
-                                                    ? "selected"
-                                                    : ""
-                                            }`}
-                                            onClick={() => handleEnvironmentSelect(env, section.name)}
-                                        >
-                                            {env}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                            {expandedItems[item.product] &&
+                                item.groups.map((group) => (
+                                    <div
+                                        key={group}
+                                        className={`environment-item ${
+                                            selectedEnvOrCustomer === group && selectedProduct === item.product
+                                                ? "selected"
+                                                : ""
+                                        }`}
+                                        onClick={() => handleSelection("INTERNAL", item.product, group)}
+                                    >
+                                        {group}
+                                    </div>
+                                ))}
                         </div>
-                    ))
-                )}
+                    ))}
+
+                {selectedSection === "CUSTOMER" &&
+                    customerData.map((customerItem) => (
+                        <div key={customerItem.customer} className="product-section">
+                            <div
+                                className={`product-name ${selectedEnvOrCustomer === customerItem.customer ? "selected" : ""}`}
+                                onClick={() => toggleItem(customerItem.customer)}
+                            >
+                                {customerItem.customer}
+                                <span className="toggle-icon">
+                                    {expandedItems[customerItem.customer] ? "▼" : "▶"}
+                                </span>
+                            </div>
+                            {expandedItems[customerItem.customer] &&
+                                customerItem.products.map((product) => (
+                                    <div
+                                        key={product}
+                                        className={`environment-item ${
+                                            selectedProduct === product && selectedEnvOrCustomer === customerItem.customer
+                                                ? "selected"
+                                                : ""
+                                        }`}
+                                        onClick={() => handleSelection("CUSTOMER", product, customerItem.customer)}
+                                    >
+                                        {product}
+                                    </div>
+                                ))}
+                        </div>
+                    ))}
             </div>
         </div>
     );

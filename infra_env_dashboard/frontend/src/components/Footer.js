@@ -1,7 +1,7 @@
 // src/components/Footer.js
 
 import React, { useState } from "react";
-import PrivacyModal from "./PrivacyModal"; // Import the new PrivacyModal component
+import PrivacyModal from "./PrivacyModal";
 import "../styles/Footer.css";
 
 function Footer() {
@@ -13,12 +13,12 @@ function Footer() {
     return (
         <div className="footer">
             <p>
-                © 2024 DevopsEnv-Dashboard -{" "}
+                © {new Date().getFullYear()} DevopsEnv-Dashboard -{" "}
                 <span className="privacy-link" onClick={openModal}>
                     Privacy
                 </span>
             </p>
-            <PrivacyModal isOpen={isModalOpen} onClose={closeModal} />
+            {isModalOpen && <PrivacyModal isOpen={isModalOpen} onClose={closeModal} />}
         </div>
     );
 }
