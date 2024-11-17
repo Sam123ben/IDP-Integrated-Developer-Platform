@@ -1,14 +1,30 @@
-// src/components/Sidebar.js
+// src/components/Sidebar.tsx
 
 import React, { useState } from "react";
 import "../styles/Sidebar.css";
 
-function Sidebar({ onEnvironmentSelect, selectedSection, setSelectedSection }) {
-    const [expandedItems, setExpandedItems] = useState({});
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [selectedEnvOrCustomer, setSelectedEnvOrCustomer] = useState(null);
+interface SidebarProps {
+    onEnvironmentSelect: (section: string, product: string | null, envOrCustomer: string | null) => void;
+    selectedSection: string;
+    setSelectedSection: (section: string) => void;
+}
 
-    const internalData = [
+interface Product {
+    product: string;
+    groups: string[];
+}
+
+interface Customer {
+    customer: string;
+    products: string[];
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ onEnvironmentSelect, selectedSection, setSelectedSection }) => {
+    const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
+    const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+    const [selectedEnvOrCustomer, setSelectedEnvOrCustomer] = useState<string | null>(null);
+
+    const internalData: Product[] = [
         {
             product: "Product 1",
             groups: ["DEV", "QA", "UAT", "PROD"],
@@ -16,11 +32,10 @@ function Sidebar({ onEnvironmentSelect, selectedSection, setSelectedSection }) {
         {
             product: "Product 2",
             groups: ["DEV", "QA", "UAT", "PROD"],
-        },
-        // Add more internal products and groups as needed
+        }
     ];
 
-    const customerData = [
+    const customerData: Customer[] = [
         {
             customer: "Vendor A",
             products: ["Product 1", "Product 2"],
@@ -28,18 +43,17 @@ function Sidebar({ onEnvironmentSelect, selectedSection, setSelectedSection }) {
         {
             customer: "Vendor B",
             products: ["Product 1", "Product 3"],
-        },
-        // Add more customers and their products as needed
+        }
     ];
 
-    const toggleItem = (key) => {
+    const toggleItem = (key: string) => {
         setExpandedItems((prev) => ({
             ...prev,
             [key]: !prev[key],
         }));
     };
 
-    const handleSelection = (section, product, envOrCustomer) => {
+    const handleSelection = (section: string, product: string | null, envOrCustomer: string | null) => {
         setSelectedProduct(product);
         setSelectedEnvOrCustomer(envOrCustomer);
         onEnvironmentSelect(section, product, envOrCustomer);
@@ -134,6 +148,6 @@ function Sidebar({ onEnvironmentSelect, selectedSection, setSelectedSection }) {
             </div>
         </div>
     );
-}
+};
 
 export default Sidebar;

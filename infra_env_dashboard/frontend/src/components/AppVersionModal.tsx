@@ -1,10 +1,15 @@
-// src/components/AppVersionModal.js
+// src/components/AppVersionModal.tsx
 
 import React from "react";
 import ReactDOM from "react-dom";
 import "../styles/AppVersionModal.css";
 
-const AppVersionModal = ({ onClose, envName = "Environment Name" }) => {
+interface AppVersionModalProps {
+    onClose: () => void;
+    envName?: string;
+}
+
+const AppVersionModal: React.FC<AppVersionModalProps> = ({ onClose, envName = "Environment Name" }) => {
     return ReactDOM.createPortal(
         <div className="modal-overlay">
             <div className="modal-content">

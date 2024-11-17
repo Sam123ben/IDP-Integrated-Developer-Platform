@@ -1,10 +1,25 @@
-// src/components/TileContainer.js
+// src/components/TileContainer.tsx
 
 import React from "react";
 import Card from "./Card";
 import "../styles/TileContainer.css";
 
-function TileContainer({ environments }) {
+interface Environment {
+    name: string;
+    lastUpdated: string;
+    status: string;
+    contact: string;
+    appVersion: string;
+    dbVersion: string;
+    comments: string;
+    statusClass: string;
+}
+
+interface TileContainerProps {
+    environments: Environment[];
+}
+
+const TileContainer: React.FC<TileContainerProps> = ({ environments }) => {
     return (
         <div className="tile-container">
             {environments && environments.length > 0 ? (
@@ -18,7 +33,7 @@ function TileContainer({ environments }) {
                         appVersion={env.appVersion}
                         dbVersion={env.dbVersion}
                         comments={env.comments}
-                        statusClass={env.statusClass}
+                        url=""
                     />
                 ))
             ) : (
@@ -26,6 +41,6 @@ function TileContainer({ environments }) {
             )}
         </div>
     );
-}
+};
 
 export default TileContainer;

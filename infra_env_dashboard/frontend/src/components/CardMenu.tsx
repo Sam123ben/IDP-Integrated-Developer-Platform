@@ -1,21 +1,26 @@
-// src/components/CardMenu.js
+// src/components/CardMenu.tsx
 
 import React, { useState, useRef } from "react";
 import "../styles/CardMenu.css";
 
-const CardMenu = ({ onSkipDeployment, onUpdateComments }) => {
-    const [menuVisible, setMenuVisible] = useState(false);
-    const menuRef = useRef(null);
+interface CardMenuProps {
+    onSkipDeployment: (checked: boolean) => void;
+    onUpdateComments: () => void;
+}
 
-    const toggleMenu = (e) => {
+const CardMenu: React.FC<CardMenuProps> = ({ onSkipDeployment, onUpdateComments }) => {
+    const [menuVisible, setMenuVisible] = useState<boolean>(false);
+    const menuRef = useRef<HTMLDivElement | null>(null);
+
+    const toggleMenu = (e: React.MouseEvent) => {
         e.stopPropagation();
         setMenuVisible((prevVisible) => !prevVisible);
     };
 
     const closeMenu = () => setMenuVisible(false);
 
-    const handleClickOutside = (event) => {
-        if (menuRef.current && !menuRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+        if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
             closeMenu();
         }
     };
@@ -43,10 +48,7 @@ const CardMenu = ({ onSkipDeployment, onUpdateComments }) => {
                             />
                         </label>
                     </div>
-                    <div
-                        className="dropdown-item"
-                        onClick={onUpdateComments}
-                    >
+                    <div className="dropdown-item" onClick={onUpdateComments}>
                         Update Comments
                     </div>
                 </div>

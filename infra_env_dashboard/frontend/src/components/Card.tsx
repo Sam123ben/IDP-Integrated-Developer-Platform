@@ -1,14 +1,25 @@
-// src/components/Card.js
+// src/components/Card.tsx
 
 import React, { useState } from "react";
 import AppVersionModal from "./AppVersionModal";
 import CardMenu from "./CardMenu";
 import "../styles/Card.css";
 
-function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, url }) {
-    const [showModal, setShowModal] = useState(false);
+interface CardProps {
+    name: string;
+    lastUpdated: string;
+    status: string;
+    contact: string;
+    appVersion: string;
+    dbVersion: string;
+    comments: string;
+    url: string;
+}
 
-    const handleVersionClick = (event) => {
+const Card: React.FC<CardProps> = ({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, url }) => {
+    const [showModal, setShowModal] = useState<boolean>(false);
+
+    const handleVersionClick = (event: React.MouseEvent) => {
         event.stopPropagation();
         setShowModal(true);
     };
@@ -17,7 +28,7 @@ function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comme
         setShowModal(false);
     };
 
-    const handleSkipDeployment = (checked) => {
+    const handleSkipDeployment = (checked: boolean) => {
         console.log(`Skip Deployment: ${checked}`);
         // Handle skip deployment logic here
     };
@@ -97,6 +108,6 @@ function Card({ name, lastUpdated, status, contact, appVersion, dbVersion, comme
             {showModal && <AppVersionModal onClose={closeModal} envName={name} />}
         </div>
     );
-}
+};
 
 export default Card;

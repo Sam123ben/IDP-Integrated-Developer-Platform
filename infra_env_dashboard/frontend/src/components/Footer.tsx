@@ -1,11 +1,11 @@
-// src/components/Footer.js
+// src/components/Footer.tsx
 
 import React, { useState } from "react";
 import PrivacyModal from "./PrivacyModal";
 import "../styles/Footer.css";
 
-function Footer() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const Footer: React.FC = () => {
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
@@ -21,6 +21,6 @@ function Footer() {
             {isModalOpen && <PrivacyModal isOpen={isModalOpen} onClose={closeModal} />}
         </div>
     );
-}
+};
 
 export default Footer;

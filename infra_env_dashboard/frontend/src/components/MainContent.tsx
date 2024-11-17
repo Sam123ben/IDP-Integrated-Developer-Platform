@@ -1,10 +1,26 @@
-// src/components/MainContent.js
+// src/components/MainContent.tsx
 
 import React from "react";
 import Card from "./Card";
 import "../styles/MainContent.css";
 
-function MainContent({ envDetails }) {
+interface EnvDetails {
+    id: string;
+    name: string;
+    lastUpdated: string;
+    status: string;
+    contact: string;
+    appVersion: string;
+    dbVersion: string;
+    comments: string;
+    url: string;
+}
+
+interface MainContentProps {
+    envDetails: EnvDetails[];
+}
+
+const MainContent: React.FC<MainContentProps> = ({ envDetails }) => {
     return (
         <div className="main-content">
             {envDetails && envDetails.length > 0 ? (
@@ -30,6 +46,6 @@ function MainContent({ envDetails }) {
             )}
         </div>
     );
-}
+};
 
 export default MainContent;

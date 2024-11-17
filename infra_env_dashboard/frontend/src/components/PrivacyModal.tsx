@@ -1,9 +1,14 @@
-// src/components/PrivacyModal.js
+// src/components/PrivacyModal.tsx
 
 import React from "react";
 import "../styles/PrivacyModal.css";
 
-function PrivacyModal({ isOpen, onClose }) {
+interface PrivacyModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
+const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     return (
@@ -17,11 +22,10 @@ function PrivacyModal({ isOpen, onClose }) {
                 </div>
                 <div className="modal-body">
                     <p>This dashboard is open-source under the MIT License...</p>
-                    {/* Add more content as needed */}
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default PrivacyModal;
