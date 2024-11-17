@@ -93,7 +93,7 @@ jobs:
         with:
           registry: docker.io
           image: im2nguyen/rover:latest
-          options: -v /tmp:/src -p 9000:9000
+          options: -v /tmp/plan.out:/sr/plan.out -p 9000:9000
           run: |
             echo "Starting Rover Visualization"
             rover -planJSONPath=/src/plan.json
