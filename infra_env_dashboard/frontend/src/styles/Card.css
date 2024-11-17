@@ -1,15 +1,16 @@
 /* src/styles/Card.css */
 
-/* Responsive Flex container for cards */
+/* Responsive container for cards */
 .card-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    max-width: 1200px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Auto-fit columns based on available space */
+    gap: 20px; /* Space between the cards */
     width: 100%;
-    justify-content: center;
+    max-width: 100%;
+    justify-items: center; /* Centers items horizontally if there is extra space */
     padding: 20px;
-    margin: 0 auto;
+    box-sizing: border-box;
+    margin: 0 auto; /* Center the card grid in the page */
 }
 
 /* Default card styling */
@@ -19,19 +20,15 @@
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 15px 20px;
-    flex: 1 1 calc(33.33% - 20px);
-    max-width: 400px;
-    min-width: 300px;
-    margin: 10px;
+    width: 100%; /* Take the full width of the grid cell */
     box-sizing: border-box;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: stretch;
-    overflow: auto;
+    overflow: hidden; /* Avoid overflow if content exceeds card size */
     cursor: pointer;
-    width: 100%; /* Ensure the card fills the grid cell */
 }
 
 .card:hover {
@@ -40,9 +37,15 @@
 }
 
 /* Card status-specific borders */
-.card-online { border-color: green; }
-.card-in-progress { border-color: #FF8C00; }
-.card-offline { border-color: red; }
+.card-online {
+    border-color: green;
+}
+.card-in-progress {
+    border-color: #FF8C00;
+}
+.card-offline {
+    border-color: red;
+}
 
 /* Status indicator styling */
 .status-indicator {
@@ -71,15 +74,33 @@
 }
 
 /* Status indicator colors */
-.status-indicator-green { background: linear-gradient(145deg, #084f19, #66ff66); }
-.status-indicator-red { background: linear-gradient(145deg, #931522, #ff6666); }
-.status-indicator-orange { background: linear-gradient(145deg, #c4791e, #d58917); }
+.status-indicator-green {
+    background: linear-gradient(145deg, #084f19, #66ff66);
+}
+.status-indicator-red {
+    background: linear-gradient(145deg, #931522, #ff6666);
+}
+.status-indicator-orange {
+    background: linear-gradient(145deg, #c4791e, #d58917);
+}
 
 /* Status text colors to match indicators */
-.status-text-success { color: green; font-weight: bold; }
-.status-text-progress { color: #FF8C00; font-weight: bold; }
-.status-text-failed { color: red; font-weight: bold; }
-.status-text-default { color: #333; font-weight: normal; }
+.status-text-success {
+    color: green;
+    font-weight: bold;
+}
+.status-text-progress {
+    color: #FF8C00;
+    font-weight: bold;
+}
+.status-text-failed {
+    color: red;
+    font-weight: bold;
+}
+.status-text-default {
+    color: #333;
+    font-weight: normal;
+}
 
 /* Card header styling */
 .card-header {
@@ -95,7 +116,9 @@
     text-decoration: underline;
     cursor: pointer;
 }
-.version-clickable:hover { color: darkblue; }
+.version-clickable:hover {
+    color: darkblue;
+}
 
 /* Card title and updated section styling */
 .card-title-section {
@@ -118,7 +141,9 @@
     gap: 6px;
 }
 
-.card-updated { white-space: nowrap; }
+.card-updated {
+    white-space: nowrap;
+}
 
 /* Three-dot menu styling */
 .three-dots {
@@ -178,7 +203,9 @@
     display: inline-block;
 }
 
-.card-link:hover { color: darkblue; }
+.card-link:hover {
+    color: darkblue;
+}
 
 /* Paragraph styling within card */
 .card p {
@@ -187,6 +214,16 @@
     line-height: 1.2;
 }
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-grid {
+        grid-template-columns: 1fr; /* Stack cards in one column for small screens */
+        gap: 20px;
+        padding: 15px;
+    }
+}
+
+/* Styling for the overall card container layout */
 .card-layout {
     display: flex;
     justify-content: center;
@@ -207,10 +244,4 @@
     border: 1px solid #e0e0e0;
     transition: box-shadow 0.6s ease, transform 0.6s ease;
     align-items: stretch;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .card-grid { flex-direction: column; gap: 20px; padding: 15px; }
-    .card { min-width: 100%; max-width: 100%; }
 }
