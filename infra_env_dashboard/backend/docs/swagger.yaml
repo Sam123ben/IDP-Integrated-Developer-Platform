@@ -9,6 +9,34 @@ definitions:
     required:
     - name
     type: object
+  models.CustomerEnvUpdate:
+    properties:
+      appVersion:
+        type: string
+      comments:
+        type: string
+      contact:
+        type: string
+      customer_name:
+        type: string
+      dbVersion:
+        type: string
+      id:
+        type: integer
+      lastUpdated:
+        type: string
+      name:
+        type: string
+      product_name:
+        type: string
+      status:
+        type: string
+      url:
+        type: string
+    required:
+    - customer_name
+    - product_name
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -106,6 +134,42 @@ paths:
               type: string
             type: object
       summary: Fetch customer environment details
+      tags:
+      - Customer Environment
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing environment detail or inserts a new one if
+        it doesn't exist
+      parameters:
+      - description: Environment Detail with Customer and Product
+        in: body
+        name: environment
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomerEnvUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: message
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update or Insert customer environment details
       tags:
       - Customer Environment
   /internal-env-details:

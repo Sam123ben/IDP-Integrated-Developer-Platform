@@ -14,14 +14,23 @@ type EnvironmentDetail struct {
 	Comments      string `json:"comments"`
 }
 
+type CustomerEnvUpdate struct {
+	ID            int    `json:"id"`
+	CustomerName  string `json:"customer_name" binding:"required"`
+	ProductName   string `json:"product_name" binding:"required"`
+	Name          string `json:"name"`
+	URL           string `json:"url"`
+	LastUpdated   string `json:"lastUpdated"`
+	Status        string `json:"status"`
+	Contact       string `json:"contact"`
+	AppVersion    string `json:"appVersion"`
+	DBVersion     string `json:"dbVersion"`
+	Comments      string `json:"comments"`
+}
+
 type Product struct {
 	ID   int    `gorm:"primaryKey" json:"id"`
 	Name string `json:"name"`
-}
-
-// TableName overrides the default table name for Product
-func (Product) TableName() string {
-	return "products"
 }
 
 type Customer struct {
@@ -29,7 +38,9 @@ type Customer struct {
 	Name string `json:"name"`
 }
 
-// TableName overrides the default table name for Customer
-func (Customer) TableName() string {
-	return "customers"
+type Environment struct {
+	ID         int    `gorm:"primaryKey" json:"id"`
+	CustomerID int    `json:"customer_id"`
+	ProductID  int    `json:"product_id"`
+	Name       string `json:"name"`
 }

@@ -2,9 +2,9 @@
 package handlers
 
 import (
+	"backend/services/fetch_customer_env_details/models"
 	"backend/services/fetch_customer_env_details/repository"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -40,29 +40,6 @@ func (h *CustomerEnvHandler) FetchCustomerEnvDetails(c *gin.Context) {
 		return
 	}
 
-	// Validate customer name
-	customers, err := h.Repo.GetAllCustomers()
-	if err != nil {
-		logrus.Errorf("Failed to fetch customers: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve customers"})
-		return
-	}
-
-	isValidCustomer := false
-	for _, c := range customers {
-		if strings.EqualFold(customer, c.Name) {
-			customer = c.Name // Use the correct casing from the database
-			isValidCustomer = true
-			break
-		}
-	}
-
-	if !isValidCustomer {
-		logrus.Warnf("Invalid customer name provided: %s", customer)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer name. Please provide a valid customer name."})
-		return
-	}
-
 	// Fetch environment details
 	environmentDetails, err := h.Repo.GetCustomerEnvironmentDetails(customer, product)
 	if err != nil {
@@ -72,4 +49,73 @@ func (h *CustomerEnvHandler) FetchCustomerEnvDetails(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"environmentDetails": environmentDetails})
+}
+
+// UpdateEnvironmentDetails godoc
+// @Summary Update or Insert customer environment details
+// @Description Updates an existing environment detail or inserts a new one if it doesn't exist
+// @Tags Customer Environment
+// @Accept json
+// @Produce json
+// @Param environment body models.CustomerEnvUpdate true "Environment Detail with Customer and Product"
+// @Success 200 {object} map[string]string "message"
+// @Failure 400 {object} map[string]string "error"
+// @Failure 500 {object} map[string]string "error"
+// @Router /customer-env-details [put]
+func (h *CustomerEnvHandler) UpdateEnvironmentDetails(c *gin.Context) {
+	var envUpdate models.CustomerEnvUpdate
+
+	// Bind JSON payload to the struct
+	if err := c.ShouldBindJSON(&envUpdate); err != nil {
+		logrus.Errorf("Invalid request payload: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	// Get the customer ID
+	customerID, err := h.Repo.GetCustomerID(envUpdate.CustomerName)
+	if err != nil {
+		logrus.Errorf("Invalid customer name: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer name"})
+		return
+	}
+
+	// Get the product ID
+	productID, err := h.Repo.GetProductID(envUpdate.ProductName)
+	if err != nil {
+		logrus.Errorf("Invalid product name: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product name"})
+		return
+	}
+
+	// Get or create the environment ID
+	environmentID, err := h.Repo.GetOrCreateEnvironment(customerID, productID, envUpdate.Name)
+	if err != nil {
+		logrus.Errorf("Failed to resolve environment: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to resolve environment"})
+		return
+	}
+
+	// Populate the EnvironmentDetail struct
+	envDetail := models.EnvironmentDetail{
+		ID:            envUpdate.ID,
+		EnvironmentID: environmentID,
+		Name:          envUpdate.Name,
+		URL:           envUpdate.URL,
+		LastUpdated:   envUpdate.LastUpdated,
+		Status:        envUpdate.Status,
+		Contact:       envUpdate.Contact,
+		AppVersion:    envUpdate.AppVersion,
+		DBVersion:     envUpdate.DBVersion,
+		Comments:      envUpdate.Comments,
+	}
+
+	// Call the Upsert method in the repository
+	if err := h.Repo.UpsertEnvironmentDetails(envDetail); err != nil {
+		logrus.Errorf("Failed to update environment details: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update environment details"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Environment details updated successfully"})
 }

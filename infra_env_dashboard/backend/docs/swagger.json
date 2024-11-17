@@ -144,6 +144,59 @@
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Updates an existing environment detail or inserts a new one if it doesn't exist",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customer Environment"
+                ],
+                "summary": "Update or Insert customer environment details",
+                "parameters": [
+                    {
+                        "description": "Environment Detail with Customer and Product",
+                        "name": "environment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CustomerEnvUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/internal-env-details": {
@@ -213,6 +266,48 @@
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CustomerEnvUpdate": {
+            "type": "object",
+            "required": [
+                "customer_name",
+                "product_name"
+            ],
+            "properties": {
+                "appVersion": {
+                    "type": "string"
+                },
+                "comments": {
+                    "type": "string"
+                },
+                "contact": {
+                    "type": "string"
+                },
+                "customer_name": {
+                    "type": "string"
+                },
+                "dbVersion": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastUpdated": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "product_name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "url": {
                     "type": "string"
                 }
             }
