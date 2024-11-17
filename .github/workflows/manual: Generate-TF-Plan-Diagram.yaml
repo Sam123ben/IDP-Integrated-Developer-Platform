@@ -72,7 +72,10 @@ jobs:
       # Step 6: Terraform Plan (Run on all branches)
       - name: Terraform Plan
         run: |
-          terraform plan -input=false -lock=true -refresh=true -out /tmp/plan.out
+          while ! terraform plan -input=false -lock=true -refresh=true -out /tmp/plan.out; do
+              echo "State is locked. Retrying in 30 seconds..."
+              sleep 30
+          done
           terraform show -json /tmp/plan.out > plan.json
           docker run --rm -it -p 9000:9000 -v /tmp/plan.json:/src/plan.json im2nguyen/rover:latest -planJSONPath=plan.json
         working-directory: infra_env_dashboard/infra-automation
