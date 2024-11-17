@@ -1,4 +1,4 @@
-/* src/style/Header.css */
+/* src/styles/Header.css */
 
 .header {
     background-color: #00bcd4;
@@ -37,24 +37,25 @@
     margin-bottom: 20px; /* Added space below the entire title and tagline area */
 }
 
+/* Styling for the icons container */
 .header-icons {
     display: flex;
-    gap: 15px;
+    gap: 20px; /* Increased gap for better visual separation */
     position: absolute;
     top: 20px;
     right: 20px;
 }
 
 .icon {
-    font-size: 1.5em;
+    font-size: 1.8em; /* Increased the icon size for better visibility */
     cursor: pointer;
-    color: black;
+    color: black; /* Changed to black for contrast */
     transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .icon:hover {
-    transform: scale(1.1);
-    color: #333;
+    transform: scale(1.2) rotate(15deg); /* Added slight rotation and scaling on hover */
+    color: #666; /* Slightly lighter black color for hover state */
 }
 
 /* Dropdown styling */
@@ -66,15 +67,15 @@
 .dropdown-menu {
     display: none;
     position: absolute;
-    top: 35px; /* Position below the icon */
+    top: 45px; /* Adjusted to position below the icon */
     right: 0;
     background-color: white;
     color: black;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
-    padding: 10px 0;
-    min-width: 150px;
+    padding: 5px 0;
+    min-width: 130px; /* Reduced min-width for better alignment to the icon */
     z-index: 10;
     text-align: left;
     transition: opacity 0.2s ease, transform 0.2s ease;
@@ -88,16 +89,21 @@
     display: block;
     opacity: 1;
     transform: translateY(0);
+    width: 130px; /* Set a fixed width to match the size of the dropdown container for consistency */
+    right: 0; /* Make sure it's aligned perfectly to the right of the settings icon */
+    overflow: hidden; /* Prevents overflow content from escaping the dropdown */
+    box-sizing: border-box; /* Ensures padding is contained within the width, so the dropdown does not extend beyond its intended size */
 }
 
 .dropdown-item {
-    padding: 8px 16px;
+    padding: 8px 12px;
     cursor: pointer;
     font-weight: 500;
     display: flex;
     align-items: center;
     gap: 8px;
     transition: background-color 0.2s ease;
+    font-size: 0.9em; /* Slightly smaller font for better layout */
 }
 
 .dropdown-item:hover {
