@@ -20,10 +20,8 @@ Infra Environment Dashboard is a web application that helps teams manage and vis
 
 The project is divided into multiple services and components:
 
-```plaintext
-# Project Folder Structure
-
-This document provides a detailed overview of the project's folder structure. Each directory and file is organized to enhance modularity, readability, and maintainability.
+```
+# Updated Project Folder Structure
 
 .
 ├── README.md                     # Main project documentation
@@ -32,123 +30,155 @@ This document provides a detailed overview of the project's folder structure. Ea
 │       ├── Deployment-Version.png
 │       ├── Devops-Dashboard.png
 │       └── dashboard.png
-├── infra_env_dashboard           # Primary application directory
-│   ├── README.md                 # README for infra_env_dashboard specifics
-│   ├── backend                   # Backend services and configurations
-│   │   ├── common                # Common utilities and services used across backend
-│   │   │   ├── configs           # Configuration files
-│   │   │   │   └── config.yaml   # Main configuration file
-│   │   │   ├── httpservice       # HTTP service handling
-│   │   │   │   └── http_service.go
-│   │   │   ├── logger            # Logger utility for backend services
-│   │   │   │   └── logger.go
-│   │   │   ├── postgress         # PostgreSQL database connection handler
-│   │   │   │   └── db.go
-│   │   │   └── utils             # Utility functions for error handling, etc.
-│   │   │       └── error_handler.go
-│   │   ├── go.mod                # Go module file
-│   │   ├── go.sum                # Go dependencies
-│   │   └── services              # Backend services for specific features
-│   │       ├── fetch_company_details # Service to fetch company details
-│   │       │   ├── Dockerfile    # Dockerfile for containerizing this service
-│   │       │   ├── docs          # Documentation for this service
-│   │       │   │   ├── docs.go
-│   │       │   │   ├── swagger.json
-│   │       │   │   └── swagger.yaml
-│   │       │   ├── handlers      # API endpoint handlers
-│   │       │   │   └── company_handler.go
-│   │       │   ├── main.go       # Entry point for the service
-│   │       │   ├── models        # Models related to company details
-│   │       │   │   ├── company.go
-│   │       │   │   └── response.go
-│   │       │   ├── repository    # Database operations
-│   │       │   │   └── company_repository.go
-│   │       │   └── router        # Router configuration
-│   │       │       └── router.go
-│   │       ├── fetch_infra_types # Service to fetch infrastructure types
-│   │       │   ├── Dockerfile
-│   │       │   ├── docs
-│   │       │   │   ├── docs.go
-│   │       │   │   ├── swagger.json
-│   │       │   │   └── swagger.yaml
-│   │       │   ├── handlers
-│   │       │   │   └── infra_handler.go
-│   │       │   ├── main.go
-│   │       │   ├── models
-│   │       │   │   ├── infra_type.go
-│   │       │   │   └── response.go
-│   │       │   ├── repository
-│   │       │   │   └── infra_repository.go
-│   │       │   └── router
-│   │       │       └── router.go
-│   │       └── fetch_internal_env_details # Service to fetch internal environment details
-│   │           ├── Dockerfile
-│   │           ├── handlers
-│   │           │   └── handler.go
-│   │           ├── main.go
-│   │           ├── models
-│   │           │   ├── models.go
-│   │           │   └── response.go
-│   │           ├── repository
-│   │           │   └── repository.go
-│   │           └── router
-│   │               └── router.go
-│   ├── database                   # Database setup scripts
-│   │   └── 000_create_database_schema.sql # SQL script to create initial schema
-│   ├── docker-compose.yml         # Docker Compose for the entire application stack
-│   └── frontend                   # Frontend application
-│       ├── Dockerfile             # Dockerfile for frontend containerization
-│       ├── assets                 # Static assets (images, fonts, etc.)
-│       ├── dist                   # Compiled frontend assets
-│       │   ├── bundle.js
-│       │   ├── bundle.js.LICENSE.txt
-│       │   └── index.html
-│       ├── package-lock.json      # Node package lock file
-│       ├── package.json           # Node package configuration
-│       ├── public                 # Public static files
-│       │   └── config
-│       ├── src                    # Source code for the frontend
-│       │   ├── App.js             # Main application component
-│       │   ├── components         # Reusable React components
-│       │   │   ├── AppVersionModal.js
-│       │   │   ├── Card.js
-│       │   │   ├── Footer.js
-│       │   │   ├── Header.js
-│       │   │   ├── MainContent.js
-│       │   │   ├── Modal.js
-│       │   │   ├── PrivacyModal.js
-│       │   │   ├── SectionHeader.js
-│       │   │   ├── Sidebar.js
-│       │   │   └── TileContainer.js
-│       │   ├── config.js          # Configuration file for frontend settings
-│       │   ├── index.css          # Main CSS file
-│       │   ├── index.html         # HTML template
-│       │   ├── index.js           # Entry point for React
-│       │   ├── services           # API services for frontend
-│       │   │   └── api.js
-│       │   └── styles             # CSS files for styling components
-│       │       ├── App.css
-│       │       ├── AppVersionModal.css
-│       │       ├── Card.css
-│       │       ├── Footer.css
-│       │       ├── Header.css
-│       │       ├── MainContent.css
-│       │       ├── Modal.css
-│       │       ├── PrivacyModal.css
-│       │       ├── SectionHeader.css
-│       │       ├── Sidebar.css
-│       │       └── TileContainer.css
-│       └── webpack.config.js      # Webpack configuration
-└── tree.txt                       # File listing of the project structure
+└── infra_env_dashboard           # Primary application directory
+    ├── README.md                 # README for infra_env_dashboard specifics
+    ├── backend                   # Backend services and configurations
+    │   ├── Dockerfile            # Dockerfile for backend containerization
+    │   ├── README.md             # Backend-specific documentation
+    │   ├── common                # Common utilities and services used across backend
+    │   │   ├── configs           # Configuration files
+    │   │   │   └── config.yaml
+    │   │   ├── httpservice       # HTTP service handling
+    │   │   │   └── http_service.go
+    │   │   ├── logger            # Logger utility for backend services
+    │   │   │   └── logger.go
+    │   │   ├── postgress         # PostgreSQL database connection handler
+    │   │   │   └── db.go
+    │   │   └── utils             # Utility functions for error handling, etc.
+    │   │       └── error_handler.go
+    │   ├── docs                  # Swagger and other backend documentation
+    │   │   ├── docs.go
+    │   │   ├── swagger.json
+    │   │   └── swagger.yaml
+    │   ├── go.mod                # Go module file
+    │   ├── go.sum                # Go dependencies
+    │   ├── main.go               # Entry point for backend services
+    │   └── services              # Backend services for specific features
+    │       ├── fetch_company_details # Service to fetch company details
+    │       │   ├── handlers
+    │       │   │   └── company_handler.go
+    │       │   ├── models
+    │       │   │   ├── company.go
+    │       │   │   └── response.go
+    │       │   ├── repository
+    │       │   │   └── company_repository.go
+    │       │   └── router
+    │       │       └── router.go
+    │       ├── fetch_customer_env_details # Service to fetch customer environment details
+    │       │   ├── handlers
+    │       │   │   └── handler.go
+    │       │   ├── models
+    │       │   │   ├── models.go
+    │       │   │   └── response.go
+    │       │   ├── repository
+    │       │   │   └── repository.go
+    │       │   └── router
+    │       │       └── router.go
+    │       └── fetch_internal_env_details # Service to fetch internal environment details
+    │           ├── handlers
+    │           │   └── handler.go
+    │           ├── models
+    │           │   ├── models.go
+    │           │   └── response.go
+    │           ├── repository
+    │           │   └── repository.go
+    │           └── router
+    │               └── router.go
+    ├── database                   # Database setup scripts
+    │   └── 000_create_database_schema.sql # SQL script to create initial schema
+    ├── docker-compose.yml         # Docker Compose for the entire application stack
+    ├── frontend                   # Frontend application (TypeScript)
+    │   ├── Dockerfile             # Dockerfile for frontend containerization
+    │   ├── assets                 # Static assets (images, fonts, etc.)
+    │   ├── dist                   # Compiled frontend assets
+    │   │   ├── bundle.js
+    │   │   ├── bundle.js.LICENSE.txt
+    │   │   └── index.html
+    │   ├── package.json           # Node package configuration
+    │   ├── src                    # Source code for the frontend (converted to TypeScript)
+    │   │   ├── App.tsx            # Main application component
+    │   │   ├── components         # Reusable React components in TypeScript
+    │   │   │   ├── AppVersionModal.tsx
+    │   │   │   ├── Card.tsx
+    │   │   │   ├── CardMenu.tsx
+    │   │   │   ├── Footer.tsx
+    │   │   │   ├── Header.tsx
+    │   │   │   ├── MainContent.tsx
+    │   │   │   ├── Modal.tsx
+    │   │   │   ├── PrivacyModal.tsx
+    │   │   │   ├── Sidebar.tsx
+    │   │   │   └── TileContainer.tsx
+    │   │   ├── config.ts          # TypeScript configuration file for frontend settings
+    │   │   ├── index.css          # Main CSS file
+    │   │   ├── index.html         # HTML template
+    │   │   ├── index.tsx          # Entry point for React (TypeScript)
+    │   │   ├── services           # API services for frontend (converted to TypeScript)
+    │   │   │   ├── api.tsx
+    │   │   │   └── fetchData.tsx
+    │   │   └── styles             # CSS files for styling components
+    │   │       ├── App.css
+    │   │       ├── AppVersionModal.css
+    │   │       ├── Card.css
+    │   │       ├── CardMenu.css
+    │   │       ├── Footer.css
+    │   │       ├── Header.css
+    │   │       ├── MainContent.css
+    │   │       ├── Modal.css
+    │   │       ├── PrivacyModal.css
+    │   │       ├── Sidebar.css
+    │   │       └── TileContainer.css
+    │   ├── tsconfig.json          # TypeScript configuration for frontend
+    │   └── webpack.config.js      # Webpack configuration
+    └── infra-automation           # Terraform scripts for infrastructure management
+        ├── README.md              # Documentation for infrastructure automation
+        ├── backend.tf             # Backend configuration for Terraform
+        ├── environments           # Environment-specific configurations (dev/prod)
+        │   ├── dev
+        │   │   └── main.tf
+        │   └── prod
+        │       └── main.tf
+        ├── main.tf                # Main Terraform configuration
+        ├── modules                # Modular Terraform code
+        │   ├── app
+        │   │   ├── main.tf
+        │   │   ├── outputs.tf
+        │   │   └── variables.tf
+        │   ├── database
+        │   │   ├── outputs.tf
+        │   │   ├── postgress.tf
+        │   │   ├── runsql.tf
+        │   │   ├── scripts
+        │   │   │   └── 000_create_database_schema.sql
+        │   │   └── variables.tf
+        │   ├── network
+        │   │   ├── bastion.tf
+        │   │   ├── nsg.tf
+        │   │   ├── outputs.tf
+        │   │   ├── subnets.tf
+        │   │   ├── variables.tf
+        │   │   └── vnet.tf
+        │   ├── openvpn
+        │   │   ├── main.tf
+        │   │   ├── outputs.tf
+        │   │   ├── scripts
+        │   │   │   └── install_openvpn.sh
+        │   │   └── variables.tf
+        │   └── resource_group
+        │       ├── main.tf
+        │       ├── outputs.tf
+        │       └── variables.tf
+        ├── providers.tf           # Provider configurations for Terraform
+        └── variables.tf           # Terraform variables
 ```
 
 ## Getting Started
 
-## Prerequisites
+### Prerequisites
 Ensure the following are installed on your system:
 - **Docker** and **Docker Compose**
 - **Go (Golang)** for running backend services
 - **Node.js** and **npm** for frontend
+- **TypeScript** for the updated TypeScript frontend components
 
 ---
 
@@ -164,7 +194,7 @@ cd infra_env_dashboard
 ### 2. Set Up and Start PostgreSQL Database
 Run the following Docker command to start a PostgreSQL container locally:
 
-```
+```bash
 docker run --name my_postgres \
   -e POSTGRES_USER=myuser \
   -e POSTGRES_PASSWORD=mypassword \
@@ -172,13 +202,8 @@ docker run --name my_postgres \
   -p 5432:5432 \
   -d postgres
 ```
+
 > **Note**: This command starts the PostgreSQL process locally without a persistent volume. To retain data, use the `-v` option to map a local directory to the Docker container (e.g., `-v /your/local/dir:/var/lib/postgresql/data`).
-
-To enter the running PostgreSQL service and interact with the database, execute:
-
-```bash
-docker exec -it my_postgres psql -U myuser -d mydatabase
-```
 
 ### 3. Initialize Database Schema and Test Data
 To enter the running PostgreSQL service and interact with the database, execute:
@@ -187,9 +212,7 @@ To enter the running PostgreSQL service and interact with the database, execute:
 docker exec -it my_postgres psql -U myuser -d mydatabase
 ```
 
-Once connected, you can initialize the database schema and add some quick test data. Open the SQL script file `database/000_create_database_schema.sql`, copy the SQL commands, and paste them into the PostgreSQL terminal.
-
-This will create the necessary tables and relationships for the application, and you can also add dummy data for testing purposes.
+Initialize the database schema and add some quick test data by running the SQL commands in the `database/000_create_database_schema.sql` file.
 
 ### 4. Start Backend Services
 Navigate to the backend directory:
@@ -200,13 +223,9 @@ cd infra_env_dashboard/backend
 
 Start each backend service individually using Go:
 
-#### Backend Service
-
 ```bash
 go run main.go
 ```
-
-Each service will start and listen on its designated port (e.g., Company Service on port 8081, Environment Service on port 8082).
 
 ### 5. Start the Frontend
 Navigate to the frontend directory:
@@ -229,112 +248,35 @@ npm start
 
 The frontend will be accessible at [http://localhost:3000](http://localhost:3000).
 
-### Testing the Dashboard
-1. Open [http://localhost:3000](http://localhost:3000) in your browser.
-2. Check for correct display of environments grouped by infra type (e.g., **INTERNAL** or **CUSTOMER**).
-3. Test each backend service's integration with the frontend by verifying data from each service is displayed correctly in the UI.
-
-## Option 2: Using Docker Compose (Future Testing)
-In the future, you can use Docker Compose to simplify starting up all services. The `docker-compose.yml` file is already configured for this:
+## Option 2: Using Docker Compose [Not fully tested]
+Use Docker Compose to simplify starting up all services:
 
 1. Adjust any environment variables in `docker-compose.yml` as needed.
-
-2. Run the following command to build and start all services together:
+2. Run:
 
    ```bash
    docker-compose up --build
    ```
-This will automatically start:
 
-- **PostgreSQL Database** on port 5432
-- **Company Service** on port 8081
-- **Environment Service** on port 8082
-- **Frontend** on port 3000
-
-Access the dashboard at [http://localhost:3000](http://localhost:3000) to test it.
-
-## Infrastructure Automation - Terraform
-
-For detailed instructions on setting up and managing the infrastructure using Terraform, please refer to the [Infrastructure Automation README](https://github.com/Sam123ben/IDP-Integrated-Developer-Platform/tree/main/infra_env_dashboard/infra-automation#readme).
+Access the dashboard at [http://localhost:3000](http://localhost:3000).
 
 ## Future Enhancements
 
-To improve the quality and reliability of the application, the following enhancements are planned:
-
-### 1. Implement Unit Testing Frameworks
-
-#### Backend (Go):
-
-- **Framework**: Utilize Go's built-in `testing` package along with `testify` for assertions and mocking.
-- **Description**: Write unit tests for backend services to ensure individual components function as expected.
-- **Tasks**:
-  - Set up the testing environment in each backend service.
-  - Write unit tests for models, handlers, and repository functions.
-  - Integrate tests into the build pipeline.
-
-#### Frontend (React):
-
-- **Framework**: Implement `Jest` and `React Testing Library` for testing React components.
-- **Description**: Write unit tests for React components to verify rendering, user interaction, and state management.
-- **Tasks**:
-  - Configure Jest and React Testing Library in the frontend project.
-  - Write tests for critical components like `Header`, `Footer`, `MainContent`, etc.
-  - Ensure coverage for various user interaction scenarios.
-
-### 2. Introduce Integration Testing
-
-#### Backend Integration Tests:
-
-- **Framework**: Use tools like `GoConvey` or continue with Go's `testing` package for integration tests.
-- **Description**: Write tests that verify the interaction between different parts of the backend services and the database.
-- **Tasks**:
-  - Set up integration test suites that run against a test database.
-  - Write tests that cover API endpoints and database transactions.
-  - Mock external services if necessary.
-
-#### Frontend Integration Tests:
-
-- **Framework**: Utilize `Cypress` or `Selenium` for end-to-end testing.
-- **Description**: Write tests that simulate user interactions with the UI and verify the application flow.
-- **Tasks**:
-  - Configure Cypress in the frontend project.
-  - Write end-to-end tests that cover critical user journeys.
-  - Integrate these tests into the CI/CD pipeline.
-
-### 3. Continuous Integration and Continuous Deployment (CI/CD)
-
-- **Integrate Testing into CI/CD Pipeline**:
-  - **Description**: Ensure that all tests are automatically run during the build and deployment process.
-  - **Tasks**:
-    - Set up GitHub Actions, Jenkins, or another CI tool to run tests on every push and pull request.
-    - Fail builds if any tests fail.
-    - Generate and store test coverage reports.
-
-### 4. Documentation and Code Quality
-
-#### Improve Code Documentation:
-
-- **Description**: Add comments and documentation to the codebase for better maintainability.
-- **Tasks**:
-  - Add GoDoc comments to all public Go functions and types.
-  - Document React components and their props.
-
-#### Enforce Coding Standards:
-
-- **Backend**:
-  - Use `golint` and `go vet` to enforce coding standards.
-- **Frontend**:
-  - Implement `ESLint` and `Prettier` for consistent code formatting and linting.
+- **Unit Testing** using Go's `testing` package and `Jest` with `React Testing Library` for the TypeScript components.
+- **Integration Testing** with tools like `Cypress`.
+- **Documentation and Code Quality Improvements**:
+  - **Backend**: Use `golint` and `go vet`.
+  - **Frontend**: Implement `ESLint` and `Prettier`.
 
 ## Contributing
 
 If you’d like to contribute:
 
-1. Clone the repo
-2. Create a new branch (`git checkout -b feature-name`)
-3. Commit changes (`git commit -am 'Add new feature'`)
-4. Push the branch (`git push origin feature-name`)
-5. Open a pull request
+1. Clone the repo.
+2. Create a new branch (`git checkout -b feature-name`).
+3. Commit changes (`git commit -am 'Add new feature'`).
+4. Push the branch (`git push origin feature-name`).
+5. Open a pull request.
 
 ## License
 
