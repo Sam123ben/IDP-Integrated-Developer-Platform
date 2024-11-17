@@ -21,7 +21,7 @@ const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) => {
                     </button>
                 </div>
                 <div className="modal-body">
-                    <p>This dashboard is open-source under the MIT License...</p>
+                    <p>This dashboard is open-source under the OpenSource License...</p>
                 </div>
             </div>
         </div>

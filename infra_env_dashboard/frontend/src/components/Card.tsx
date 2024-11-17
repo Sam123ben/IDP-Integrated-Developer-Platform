@@ -19,23 +19,25 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ name, lastUpdated, status, contact, appVersion, dbVersion, comments, url }) => {
     const [showModal, setShowModal] = useState<boolean>(false);
 
+    // App version click handler to show modal
     const handleVersionClick = (event: React.MouseEvent) => {
         event.stopPropagation();
         setShowModal(true);
     };
 
+    // Close modal handler
     const closeModal = () => {
         setShowModal(false);
     };
 
-    const handleSkipDeployment = (checked: boolean) => {
-        console.log(`Skip Deployment: ${checked}`);
-        // Handle skip deployment logic here
+    // Skip deployment click handler
+    const handleSkipDeployment = () => {
+        console.log("Skip Deployment clicked");
     };
 
+    // Update comments click handler
     const handleUpdateComments = () => {
         console.log("Update Comments clicked");
-        // Handle update comments logic here
     };
 
     // Determine the CSS class for status color based on status value

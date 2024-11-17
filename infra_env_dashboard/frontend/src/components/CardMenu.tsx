@@ -14,10 +14,15 @@ const CardMenu: React.FC<CardMenuProps> = ({ onSkipDeployment, onUpdateComments 
 
     const toggleMenu = (e: React.MouseEvent) => {
         e.stopPropagation();
-        setMenuVisible((prevVisible) => !prevVisible);
+        setMenuVisible((prevVisible) => {
+            console.log("Previous visibility:", prevVisible);
+            return !prevVisible;
+        });
     };
 
-    const closeMenu = () => setMenuVisible(false);
+    const closeMenu = () => {
+        setMenuVisible(false);
+    };
 
     const handleClickOutside = (event: MouseEvent) => {
         if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -33,12 +38,12 @@ const CardMenu: React.FC<CardMenuProps> = ({ onSkipDeployment, onUpdateComments 
     }, []);
 
     return (
-        <div className="card-menu">
+        <div className="card-menu" ref={menuRef}>
             <span className="three-dots" onClick={toggleMenu}>
                 ⋮
             </span>
             {menuVisible && (
-                <div className="dropdown-menu" ref={menuRef}>
+                <div className="dropdown-menu">
                     <div className="dropdown-item">
                         <label>
                             Skip Deployment

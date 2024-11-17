@@ -26,10 +26,12 @@
     border-radius: 8px;
     padding: 10px;
     z-index: 10;
-    display: flex;
+    display: flex; /* Make sure this is correctly toggled */
     flex-direction: column;
     align-items: start;
     min-width: 150px;
+    border: 1px solid red; /* Debugging - Remove later */
+    background-color: yellow; /* Debugging - Remove later */
 }
 
 .dropdown-item {
