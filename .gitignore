@@ -23,3 +23,10 @@ vendor/
 
 # Ignore package-lock.json
 **/package-lock.json
+
+.terraform
+.terraform.lock.hcl
+*.tfstate
+terraform.tfstate
+terraform.tfstate.backup
+*.tfplan

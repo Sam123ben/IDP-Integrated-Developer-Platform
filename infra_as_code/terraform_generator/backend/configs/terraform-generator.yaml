@@ -1,0 +1,110 @@
+# local:
+#   provider:
+#     name: "local"
+#   backend:
+#     path: "/tmp/terraform.tfstate"
+
+providers:
+  azure:
+    name: "azurerm"
+    version: "4.10.0"
+    backend:
+      resource_group_name: "StorageAccount-ResourceGroup"
+      storage_account_name: "abcd1234"
+      container_name: "tfstate"
+      key: "prod.terraform.tfstate"
+      use_oidc: true
+      client_id: "00000000-0000-0000-0000-000000000000"
+      subscription_id: "00000000-0000-0000-0000-000000000000"
+      tenant_id: "00000000-0000-0000-0000-000000000000"
+    resource_group:
+      name: "app-rg"
+      location: "australiaeast"
+
+#######
+
+# local:
+#   provider:
+#     name: "local"
+#   backend:
+#     path: "/tmp/terraform.tfstate"
+
+# azure:
+#   provider:
+#     name: "azurerm"
+#     version: "~> 4.10"
+#     region: "australiaeast"
+#   backend:
+#     resource_group_name: "dashboard-state-rg"
+#     storage_account_name: "dashboardstatestg"
+#     container_name: "dashboard-tfstate"
+#     key: "terraform.tfstate"
+  # resource_group:
+  #   name: "app-rg"
+  #   location: "australiaeast"
+  # network:
+  #   vnet_name: "app-vnet"
+  #   vnet_cidr: "10.0.0.0/16"
+  #   subnets:
+  #     - name: "frontend-subnet"
+  #       cidr: "10.0.1.0/24"
+  #     - name: "db-subnet"
+  #       cidr: "10.0.2.0/24"
+  #   nsg:
+  #     name: "app-nsg"
+  #     rules:
+  #       - name: "AllowHTTP"
+  #         priority: 100
+  #         direction: "Inbound"
+  #         access: "Allow"
+  #         protocol: "Tcp"
+  #         source_port_range: "*"
+  #         destination_port_range: "80"
+  #         source_address_prefix: "*"
+  #         destination_address_prefix: "*"
+  #   bastion_host:
+  #     name: "bastion"
+  #     subnet_name: "frontend-subnet"
+  # compute:
+  #   vm:
+  #     name: "app-vm"
+  #     size: "Standard_B2s"
+  #     image:
+  #       publisher: "Canonical"
+  #       offer: "UbuntuServer"
+  #       sku: "18.04-LTS"
+  #       version: "latest"
+  #     admin_username: "azureuser"
+  #     disable_password_authentication: true
+  #     ssh_key: "ssh-rsa AAAAB3Nza... user@host"
+  #     extension:
+  #       name: "CustomScriptExtension"
+  #       script_url: "https://example.com/install-nginx-java.sh"
+  #       command_to_execute: "bash install-nginx-java.sh"
+  # database:
+  #   type: "sql_serverless"
+  #   name: "app-db"
+  #   admin_user: "dbadmin"
+  #   admin_password: "P@ssw0rd!"
+  #   subnet_name: "db-subnet"
+  #   sku: "GP_S_Gen5_1"
+  #   version: "12.0"
+
+# aws:
+#   provider:
+#     name: "aws"
+#     region: "us-east-1"
+#     version: "~> 5.76.0"
+#   backend:
+#     bucket_name: "dashboard-tfstate-bucket"
+#     key: "terraform.tfstate"
+#     region: "us-east-1"
+#     lock_table: "dashboard-tfstate-lock"
+
+# gcp:
+#   provider:
+#     name: "gcs"
+#     region: "us-central1"
+#   backend:
+#     bucket_name: "dashboard-tfstate-bucket"
+#     key: "terraform.tfstate"
