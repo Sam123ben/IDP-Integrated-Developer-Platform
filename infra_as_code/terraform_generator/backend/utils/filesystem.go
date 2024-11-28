@@ -4,6 +4,7 @@ package utils
 
 import (
 	"backend/models"
+	"bytes"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -13,52 +14,7 @@ import (
 	"golang.org/x/text/language"
 )
 
-func add(a, b int) int {
-	return a + b
-}
-
-func CreateDirectories(paths []string) error {
-	for _, path := range paths {
-		if err := os.MkdirAll(path, os.ModePerm); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func WriteFile(path string, content []byte) error {
-	return os.WriteFile(path, content, 0644)
-}
-
-func GenerateFileFromTemplate(templatePath, destinationPath string, data interface{}) error {
-	// Register custom functions
-	funcMap := template.FuncMap{
-		"title": cases.Title(language.Und).String,
-		"add":   add,
-	}
-
-	// Parse the template with the function map
-	tmpl, err := template.New(filepath.Base(templatePath)).Funcs(funcMap).ParseFiles(templatePath)
-	if err != nil {
-		return err
-	}
-
-	// Ensure the destination directory exists
-	destDir := filepath.Dir(destinationPath)
-	if err := os.MkdirAll(destDir, os.ModePerm); err != nil {
-		return err
-	}
-
-	destFile, err := os.Create(destinationPath)
-	if err != nil {
-		return err
-	}
-	defer destFile.Close()
-
-	// Execute the template
-	return tmpl.Execute(destFile, data)
-}
-
+// LoadConfig reads the configuration from a JSON file
 func LoadConfig(path string) (*models.Config, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -73,4 +29,63 @@ func LoadConfig(path string) (*models.Config, error) {
 	}
 
 	return &config, nil
+}
+
+// Convert a value to a JSON string
+func toJSON(value interface{}) (string, error) {
+	jsonBytes, err := json.Marshal(value)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonBytes), nil
+}
+
+// CreateDirectories ensures that the specified directories exist
+func CreateDirectories(paths []string) error {
+	for _, path := range paths {
+		if err := os.MkdirAll(path, os.ModePerm); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// WriteFile writes content to a specified path
+func WriteFile(path string, content []byte) error {
+	return os.WriteFile(path, content, 0644)
+}
+
+// GenerateFileFromTemplate generates a file from a template
+func GenerateFileFromTemplate(templatePath, destinationPath string, data interface{}) error {
+	funcMap := template.FuncMap{
+		"title": cases.Title(language.Und).String,
+		"add":   func(a, b int) int { return a + b },
+		"toJSON": func(value interface{}) string {
+			jsonString, err := toJSON(value)
+			if err != nil {
+				return "null"
+			}
+			return jsonString
+		},
+	}
+
+	// Parse the template with the function map
+	tmpl, err := template.New(filepath.Base(templatePath)).Funcs(funcMap).ParseFiles(templatePath)
+	if err != nil {
+		return err
+	}
+
+	// Ensure the destination directory exists
+	destDir := filepath.Dir(destinationPath)
+	if err := os.MkdirAll(destDir, os.ModePerm); err != nil {
+		return err
+	}
+
+	// Execute the template
+	var outputBuffer bytes.Buffer
+	if err := tmpl.Execute(&outputBuffer, data); err != nil {
+		return err
+	}
+
+	return WriteFile(destinationPath, outputBuffer.Bytes())
 }

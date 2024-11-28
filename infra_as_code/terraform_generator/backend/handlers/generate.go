@@ -39,23 +39,19 @@ func GenerateTerraform(req *models.GenerateRequest) error {
 	// Load configuration from terraform-generator.json
 	config, err := utils.LoadConfig("configs/terraform-generator.json")
 	if err != nil {
-		return err
+		return fmt.Errorf("error loading configuration: %w", err)
 	}
 
 	// Filter provider data based on the input provider
 	providerData := filterProviderData(config.Providers, req.Provider)
 	if providerData == nil {
-		return errors.New("specified provider not found in configuration")
+		return fmt.Errorf("specified provider '%s' not found in configuration", req.Provider)
 	}
 
 	// Resolve module dependencies
-	moduleNames := make([]string, len(req.Modules))
-	for i, moduleName := range req.Modules {
-		moduleNames[i] = strings.TrimSpace(moduleName)
-	}
-	modules, err := resolveModuleDependencies(moduleNames, config.Modules)
+	modules, err := resolveModuleDependencies(req.Modules, config.Modules)
 	if err != nil {
-		return err
+		return fmt.Errorf("error resolving module dependencies: %w", err)
 	}
 
 	// Update basePath to include 'output' directory
@@ -63,24 +59,21 @@ func GenerateTerraform(req *models.GenerateRequest) error {
 
 	// Generate module files
 	if err := generateModuleFiles(basePath, modules, req.Provider); err != nil {
-		return err
+		return fmt.Errorf("error generating module files: %w", err)
 	}
 
+	// Generate files for a single product or customers
 	if len(req.Customers) > 0 {
 		return processCustomers(req, config, basePath, providerData, modules)
 	}
 
-	// Process for a single product
+	// Generate product-specific files
 	productPath := filepath.Join(basePath, req.ProductName)
 	if err := utils.CreateDirectories([]string{filepath.Join(productPath, "backend")}); err != nil {
-		return err
+		return fmt.Errorf("error creating directories for product: %w", err)
 	}
 
-	if err := generateProductFiles(req, config, productPath, providerData, modules); err != nil {
-		return err
-	}
-
-	return nil
+	return generateProductFiles(req, config, productPath, providerData, modules)
 }
 
 // filterProviderData filters provider details based on the specified provider name.
@@ -159,7 +152,6 @@ func generateModuleFiles(basePath string, modules []models.Module, provider stri
 			"ResourceName": module.ModuleName,
 		}
 
-		// Prepare list of files to generate
 		files := []struct {
 			Template string
 			Dest     string
@@ -188,7 +180,7 @@ func generateModuleFiles(basePath string, modules []models.Module, provider stri
 		// Generate files
 		for _, file := range files {
 			if err := utils.GenerateFileFromTemplate(file.Template, file.Dest, data); err != nil {
-				return err
+				return fmt.Errorf("error generating file %s: %w", file.Dest, err)
 			}
 		}
 	}
@@ -254,7 +246,7 @@ func prepareTemplateData(req *models.GenerateRequest, config *models.Config, pro
 	for _, module := range modules {
 		vars := make(map[string]string)
 		for varName, varDef := range module.Variables {
-			vars[varName] = varDef.Value // Use the 'value' field for module calls
+			vars[varName] = fmt.Sprintf("%v", varDef.Value) // Convert value to string
 		}
 		moduleVariables[module.ModuleName] = vars
 	}
@@ -263,14 +255,14 @@ func prepareTemplateData(req *models.GenerateRequest, config *models.Config, pro
 		"Provider":         provider,
 		"TerraformVersion": config.TerraformVersion,
 		"Modules":          modules,
-		"ModuleVariables":  moduleVariables,
+		"ModuleVariables":  moduleVariables, // Include populated module variables
 		"OrganisationName": req.OrganisationName,
 		"ProductName":      req.ProductName,
 		"CustomerName":     customerName,
 		"Region":           config.Region,
 		"Environment":      config.Environment,
 		"Backend":          config.Backend,
-		"Variables":        genericVariables, // Only generic variables
+		"Variables":        genericVariables,
 	}
 }
 

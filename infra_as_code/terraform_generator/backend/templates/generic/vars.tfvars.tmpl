@@ -1,3 +1,13 @@
 {{- range $key, $metadata := .Variables }}
-{{ $key }}: "{{ $metadata.Value }}"
+{{- if eq $metadata.Type "list(string)" }}
+{{ $key }} = {{ toJSON $metadata.Value }}
+{{- else if eq $metadata.Type "map(string)" }}
+{{ $key }} = {
+{{- range $mapKey, $mapValue := $metadata.Value }}
+  {{ $mapKey }} = "{{ $mapValue }}"
+{{- end }}
+}
+{{- else }}
+{{ $key }} = "{{ $metadata.Value }}"
+{{- end }}
 {{- end }}

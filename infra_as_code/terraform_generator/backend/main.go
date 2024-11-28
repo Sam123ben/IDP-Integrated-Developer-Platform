@@ -23,10 +23,11 @@ func main() {
 	customers := generateCmd.String("customers", "", "Comma-separated list of customers")
 
 	terraformCmd := flag.NewFlagSet("terraform", flag.ExitOnError)
-	tfCommand := terraformCmd.String("command", "", "Terraform command to execute (init, plan, apply, build)")
+	tfCommand := terraformCmd.String("command", "", "Terraform command to execute (init, plan, apply, build, print)")
 	tfCompany := terraformCmd.String("company", "", "Company name (required)")
 	tfProduct := terraformCmd.String("product", "", "Product name (required)")
 	tfProvider := terraformCmd.String("provider", "", "Provider name (required)")
+	tfInfratype := terraformCmd.String("infratype", "", "Infrastructure type (prod or nonprod)")
 
 	if len(os.Args) < 2 {
 		fmt.Println("Expected 'generate' or 'terraform' subcommands")
@@ -37,61 +38,13 @@ func main() {
 	case "generate":
 		generateCmd.Parse(os.Args[2:])
 		if generateCmd.Parsed() {
-			if *company == "" || *product == "" || *provider == "" {
-				fmt.Println("Error: --company, --product, and --provider are required")
-				generateCmd.Usage()
-				os.Exit(1)
-			}
-
-			// Prepare the request data
-			req := models.GenerateRequest{
-				OrganisationName: *company,
-				ProductName:      *product,
-				Provider:         *provider,
-				Modules:          []string{},
-			}
-
-			// Handle modules
-			if *modules != "" {
-				moduleNames := strings.Split(*modules, ",")
-				for _, moduleName := range moduleNames {
-					moduleName = strings.TrimSpace(moduleName)
-					req.Modules = append(req.Modules, moduleName)
-				}
-			}
-
-			// Handle customers
-			if *customers != "" {
-				req.Customers = strings.Split(*customers, ",")
-				for i, customer := range req.Customers {
-					req.Customers[i] = strings.TrimSpace(customer)
-				}
-			}
-
-			// Call the generation logic
-			err := handlers.GenerateTerraform(&req)
-			if err != nil {
-				fmt.Printf("Error generating Terraform code: %v\n", err)
-				os.Exit(1)
-			}
-
-			fmt.Println("Terraform code generated successfully")
+			handleGenerateCommand(*company, *product, *provider, *modules, *customers)
 		}
 
 	case "terraform":
 		terraformCmd.Parse(os.Args[2:])
 		if terraformCmd.Parsed() {
-			if *tfCommand == "" || *tfCompany == "" || *tfProduct == "" || *tfProvider == "" {
-				fmt.Println("Error: --command, --company, --product, and --provider are required")
-				terraformCmd.Usage()
-				os.Exit(1)
-			}
-
-			// Run the Terraform command
-			err := runTerraformCommand(*tfCommand, *tfCompany, *tfProduct, *tfProvider)
-			if err != nil {
-				log.Fatalf("Error executing Terraform command: %v\n", err)
-			}
+			handleTerraformCommand(*tfCommand, *tfCompany, *tfProduct, *tfProvider, *tfInfratype)
 		}
 
 	default:
@@ -100,45 +53,123 @@ func main() {
 	}
 }
 
-// runTerraformCommand executes Terraform commands (init, plan, apply, build)
-func runTerraformCommand(command, company, product, provider string) error {
-	// Determine the working directory
+func handleGenerateCommand(company, product, provider, modules, customers string) {
+	if company == "" || product == "" || provider == "" {
+		fmt.Println("Error: --company, --product, and --provider are required")
+		os.Exit(1)
+	}
+
+	req := models.GenerateRequest{
+		OrganisationName: company,
+		ProductName:      product,
+		Provider:         provider,
+		Modules:          []string{},
+	}
+
+	// Handle modules
+	if modules != "" {
+		moduleNames := strings.Split(modules, ",")
+		for _, moduleName := range moduleNames {
+			req.Modules = append(req.Modules, strings.TrimSpace(moduleName))
+		}
+	}
+
+	// Handle customers
+	if customers != "" {
+		req.Customers = strings.Split(customers, ",")
+		for i := range req.Customers {
+			req.Customers[i] = strings.TrimSpace(req.Customers[i])
+		}
+	}
+
+	if err := handlers.GenerateTerraform(&req); err != nil {
+		fmt.Printf("Error generating Terraform code: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Println("Terraform code generated successfully")
+}
+
+func handleTerraformCommand(command, company, product, provider, infratype string) {
+	if command == "" || company == "" || product == "" || provider == "" {
+		fmt.Println("Error: --command, --company, --product, and --provider are required")
+		os.Exit(1)
+	}
+
+	// 'init', 'build', and 'print' commands require '--infratype'
+	if (command == "init" || command == "build" || command == "print") && infratype == "" {
+		fmt.Println("Error: --infratype is required for 'init', 'build', and 'print' commands")
+		os.Exit(1)
+	}
+
+	if command == "print" {
+		printTerraformCommands(command, company, product, provider, infratype)
+	} else {
+		if err := runTerraformCommand(command, company, product, provider, infratype); err != nil {
+			log.Fatalf("Error executing Terraform command: %v\n", err)
+		}
+	}
+}
+
+func runTerraformCommand(command, company, product, provider, infratype string) error {
 	terraformDir := filepath.Join("output", "terraform", company, product)
 	if _, err := os.Stat(terraformDir); os.IsNotExist(err) {
 		return fmt.Errorf("Terraform directory %s does not exist", terraformDir)
 	}
 
-	// Change to the Terraform directory
 	if err := os.Chdir(terraformDir); err != nil {
 		return fmt.Errorf("error changing directory to %s: %v", terraformDir, err)
 	}
 
-	// Map of commands to Terraform actions
-	tfCommands := map[string][]string{
-		"init":  {"init"},
-		"plan":  {"plan"},
-		"apply": {"apply", "-auto-approve"},
-		"build": {"init", "plan", "apply", "-auto-approve"},
-	}
+	switch command {
+	case "init":
+		backendConfig := fmt.Sprintf("backend/%s_%s.tfvars", product, strings.ToLower(infratype))
+		args := []string{"init", "-no-color", "-get=true", "-force-copy", fmt.Sprintf("-backend-config=%s", backendConfig)}
+		return executeCommand("terraform", args)
 
-	// Get the commands for the specified action
-	actions, ok := tfCommands[command]
-	if !ok {
+	case "plan":
+		args := []string{"plan", "-no-color", "-input=false", "-lock=true", "-refresh=true", "-var-file=./vars.tfvars"}
+		return executeCommand("terraform", args)
+
+	case "apply":
+		args := []string{"apply", "-no-color", "-input=false", "-auto-approve=true", "-lock=true", "-lock-timeout=7200s", "-refresh=true", "-var-file=./vars.tfvars"}
+		return executeCommand("terraform", args)
+
+	case "build":
+		backendConfig := fmt.Sprintf("backend/%s_%s.tfvars", product, strings.ToLower(infratype))
+		buildCommands := [][]string{
+			{"init", "-no-color", "-get=true", "-force-copy", fmt.Sprintf("-backend-config=%s", backendConfig)},
+			{"plan", "-no-color", "-input=false", "-lock=true", "-refresh=true", "-var-file=./vars.tfvars"},
+			{"apply", "-no-color", "-input=false", "-auto-approve=true", "-lock=true", "-lock-timeout=7200s", "-refresh=true", "-var-file=./vars.tfvars"},
+		}
+
+		for _, args := range buildCommands {
+			if err := executeCommand("terraform", args); err != nil {
+				return err
+			}
+		}
+
+	default:
 		return fmt.Errorf("unsupported Terraform command: %s", command)
 	}
 
-	// Execute the commands in sequence
-	for i := 0; i < len(actions); i++ {
-		cmd := exec.Command("terraform", actions[i])
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-
-		fmt.Printf("Running Terraform command: terraform %s\n", actions[i])
-
-		if err := cmd.Run(); err != nil {
-			return fmt.Errorf("error running Terraform command '%s': %v", actions[i], err)
-		}
-	}
-
 	return nil
+}
+
+func printTerraformCommands(command, company, product, provider, infratype string) {
+	terraformDir := filepath.Join("output", "terraform", company, product)
+	fmt.Printf("Working directory: %s\n", terraformDir)
+
+	backendConfig := fmt.Sprintf("backend/%s_%s.tfvars", product, strings.ToLower(infratype))
+	fmt.Printf("terraform init -no-color -get=true -force-copy -backend-config=%s\n", backendConfig)
+	fmt.Println("terraform plan -no-color -input=false -lock=true -refresh=true -var-file=./vars.tfvars")
+	fmt.Println("terraform apply -no-color -input=false -auto-approve=true -lock=true -lock-timeout=7200s -refresh=true -var-file=./vars.tfvars")
+}
+
+func executeCommand(command string, args []string) error {
+	cmd := exec.Command(command, args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	fmt.Printf("Running command: %s %s\n", command, strings.Join(args, " "))
+	return cmd.Run()
 }

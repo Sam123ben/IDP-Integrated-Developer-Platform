@@ -7,10 +7,8 @@ module "{{ $module.ModuleName }}" {
   {{- end }}
   {{- if $module.DependsOn }}
   depends_on = [
-    {{- $deps := $module.DependsOn }}
-    {{- $depsLen := len $deps }}
-    {{- range $index, $dependency := $deps }}
-    module.{{ $dependency }}{{ if lt (add $index 1) $depsLen }},{{ end }}
+    {{- range $index, $dependency := $module.DependsOn }}
+    module.{{ $dependency }}{{ if lt (add $index 1) (len $module.DependsOn) }},{{ end }}
     {{- end }}
   ]
   {{- end }}
