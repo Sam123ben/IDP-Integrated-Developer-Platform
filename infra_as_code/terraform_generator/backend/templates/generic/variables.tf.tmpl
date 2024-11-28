@@ -1,9 +1,9 @@
-{{ range $key, $metadata := .Variables }}
-variable "{{ $key }}" {
-  description = "{{ $metadata.Description }}"
-  type        = {{ $metadata.Type }}
-  {{ if $metadata.Sensitive }}
+{{- range $name, $var := .Variables }}
+variable "{{ $name }}" {
+  description = "{{ $var.Description }}"
+  type        = {{ $var.Type }}
+  {{- if $var.Sensitive }}
   sensitive   = true
-  {{ end }}
+  {{- end }}
 }
 {{ end }}
