@@ -198,8 +198,8 @@ func prepareTemplateData(req *models.GenerateRequest, config *models.Config, pro
 // generateTerraformFiles creates Terraform files like providers.tf, main.tf, variables.tf, and vars.tfvars.
 func generateTerraformFiles(path string, data map[string]interface{}, provider, entityName string) error {
 	// Debugging statements to check the type of data["Modules"]
-	fmt.Printf("Type of data[\"Modules\"]: %T\n", data["Modules"])
-	fmt.Printf("Value of data[\"Modules\"]: %+v\n", data["Modules"])
+	// fmt.Printf("Type of data[\"Modules\"]: %T\n", data["Modules"])
+	// fmt.Printf("Value of data[\"Modules\"]: %+v\n", data["Modules"])
 
 	files := []struct {
 		Template string
