@@ -41,15 +41,16 @@ func GenerateTerraform(req *models.GenerateRequest) error {
 		return err
 	}
 
-	// Merge modules from the request into the configuration
-	if len(req.Modules) > 0 {
-		config.Modules = append(config.Modules, req.Modules...)
+	// Filter provider data based on the input provider
+	providerData := filterProviderData(config.Providers, req.Provider)
+	if providerData == nil {
+		return errors.New("specified provider not found in configuration")
 	}
 
 	basePath := filepath.Join("output", req.Provider, req.OrganisationName)
 
 	if len(req.Customers) > 0 {
-		return processCustomers(req, config, basePath)
+		return processCustomers(req, config, basePath, providerData)
 	}
 
 	// Process for a single product
@@ -58,11 +59,32 @@ func GenerateTerraform(req *models.GenerateRequest) error {
 		return err
 	}
 
-	return generateProductFiles(req, config, productPath)
+	return generateProductFiles(req, config, productPath, providerData)
+}
+
+// filterProviderData filters provider details based on the specified provider name.
+// filterProviderData filters provider details based on the specified provider name.
+func filterProviderData(providers []models.Provider, providerName string) *models.Provider {
+	aliases := map[string]string{
+		"azure":   "azurerm",
+		"aws":     "aws",
+		"gcp":     "google",
+		"azurerm": "azurerm", // Keep the original name as well
+		"google":  "google",
+	}
+
+	normalizedProvider := aliases[strings.ToLower(providerName)]
+
+	for _, provider := range providers {
+		if strings.EqualFold(provider.Name, normalizedProvider) {
+			return &provider
+		}
+	}
+	return nil
 }
 
 // processCustomers generates Terraform files for multiple customers.
-func processCustomers(req *models.GenerateRequest, config *models.Config, basePath string) error {
+func processCustomers(req *models.GenerateRequest, config *models.Config, basePath string, provider *models.Provider) error {
 	for _, customer := range req.Customers {
 		customer = strings.TrimSpace(customer)
 		customerPath := filepath.Join(basePath, customer)
@@ -77,7 +99,7 @@ func processCustomers(req *models.GenerateRequest, config *models.Config, basePa
 		}
 
 		// Generate files for the customer
-		if err := generateCustomerFiles(req, config, customerPath, customer); err != nil {
+		if err := generateCustomerFiles(req, config, customerPath, customer, provider); err != nil {
 			return err
 		}
 	}
@@ -85,8 +107,8 @@ func processCustomers(req *models.GenerateRequest, config *models.Config, basePa
 }
 
 // generateProductFiles creates Terraform files for a single product.
-func generateProductFiles(req *models.GenerateRequest, config *models.Config, productPath string) error {
-	data := prepareTemplateData(req, config, "")
+func generateProductFiles(req *models.GenerateRequest, config *models.Config, productPath string, provider *models.Provider) error {
+	data := prepareTemplateData(req, config, provider, "")
 
 	// Generate files
 	if err := generateTerraformFiles(productPath, data, req.Provider, req.ProductName); err != nil {
@@ -98,8 +120,8 @@ func generateProductFiles(req *models.GenerateRequest, config *models.Config, pr
 }
 
 // generateCustomerFiles creates Terraform files for a single customer.
-func generateCustomerFiles(req *models.GenerateRequest, config *models.Config, customerPath, customerName string) error {
-	data := prepareTemplateData(req, config, customerName)
+func generateCustomerFiles(req *models.GenerateRequest, config *models.Config, customerPath, customerName string, provider *models.Provider) error {
+	data := prepareTemplateData(req, config, provider, customerName)
 
 	// Generate files
 	if err := generateTerraformFiles(customerPath, data, req.Provider, customerName); err != nil {
@@ -111,9 +133,9 @@ func generateCustomerFiles(req *models.GenerateRequest, config *models.Config, c
 }
 
 // prepareTemplateData prepares data for the templates.
-func prepareTemplateData(req *models.GenerateRequest, config *models.Config, customerName string) map[string]interface{} {
-	data := map[string]interface{}{
-		"Providers":        config.Providers,
+func prepareTemplateData(req *models.GenerateRequest, config *models.Config, provider *models.Provider, customerName string) map[string]interface{} {
+	return map[string]interface{}{
+		"Provider":         provider,
 		"TerraformVersion": config.TerraformVersion,
 		"Modules":          config.Modules,
 		"OrganisationName": req.OrganisationName,
@@ -124,8 +146,6 @@ func prepareTemplateData(req *models.GenerateRequest, config *models.Config, cus
 		"Backend":          config.Backend,
 		"Variables":        config.Variables,
 	}
-	// fmt.Printf("Variables Data: %+v\n", data["Variables"])
-	return data
 }
 
 // generateTerraformFiles creates Terraform files like providers.tf, main.tf, and variables.tf.

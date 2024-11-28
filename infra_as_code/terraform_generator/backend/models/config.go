@@ -24,6 +24,10 @@ type Backend struct {
 	StorageAccountName string `json:"storage_account_name"`
 	ContainerName      string `json:"container_name"`
 	Key                string `json:"key"`
+	SubscriptionId     string `json:"subscription_id"`
+	TenantId           string `json:"tenant_id"`
+	ClientId           string `json:"client_id"`
+	AccessKey          string `json:"AccessKey"`
 }
 
 type Module struct {
