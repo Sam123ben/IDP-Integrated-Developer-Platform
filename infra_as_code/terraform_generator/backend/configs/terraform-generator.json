@@ -49,8 +49,8 @@
             "module_name": "example_module",
             "source": "./modules/example_module",
             "variables": {
-                "variable1": "value1",
-                "variable2": "value2"
+                "variable1": "${var.value1}",
+                "variable2": "${var.value2}"
             }
         }
     ],
