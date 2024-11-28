@@ -1,0 +1,23 @@
+terraform {
+  required_providers {
+    {{ range .Providers }}
+    {{ .Name }} = {
+      source  = "{{ .Source }}"
+      version = "{{ .Version }}"
+    }
+    {{ end }}
+  }
+  required_version = "{{ .TerraformVersion }}"
+}
+
+{{ range .Providers }}
+# Configure the {{ .Name }} provider
+provider "{{ .Name }}" {
+  {{ if .AuthVariables }}
+  # Authentication variables
+  {{ range $key, $value := .AuthVariables }}
+  {{ $key }} = "{{ $value }}"
+  {{ end }}
+  {{ end }}
+}
+{{ end }}

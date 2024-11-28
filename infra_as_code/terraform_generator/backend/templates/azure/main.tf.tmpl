@@ -1,0 +1,8 @@
+{{- range .Modules }}
+module "{{ .ModuleName }}" {
+  source = "{{ .Source }}"
+  {{- range $key, $value := .Variables }}
+  {{ $key }} = "{{ $value }}"
+  {{- end }}
+}
+{{ end }}
