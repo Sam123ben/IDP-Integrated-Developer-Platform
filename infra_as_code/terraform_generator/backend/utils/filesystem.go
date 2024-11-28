@@ -13,7 +13,6 @@ import (
 	"golang.org/x/text/language"
 )
 
-// Add function
 func add(a, b int) int {
 	return a + b
 }
@@ -35,7 +34,7 @@ func GenerateFileFromTemplate(templatePath, destinationPath string, data interfa
 	// Register custom functions
 	funcMap := template.FuncMap{
 		"title": cases.Title(language.Und).String,
-		"add":   add, // Ensure 'add' is included
+		"add":   add,
 	}
 
 	// Parse the template with the function map

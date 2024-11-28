@@ -1,0 +1,8 @@
+{{- range $name, $output := .Module.Outputs }}
+output "{{ $name }}" {
+  value = {{ $output.Value }}
+  {{- if $output.Description }}
+  description = "{{ $output.Description }}"
+  {{- end }}
+}
+{{- end }}

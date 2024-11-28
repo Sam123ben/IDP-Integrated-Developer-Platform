@@ -31,15 +31,27 @@ type Backend struct {
 }
 
 type Module struct {
-	ModuleName string            `json:"module_name"`
-	Source     string            `json:"source"`
-	Variables  map[string]string `json:"variables"`
-	DependsOn  []string          `json:"depends_on,omitempty"`
+	ModuleName string                    `json:"module_name"`
+	Source     string                    `json:"source"`
+	Variables  map[string]ModuleVariable `json:"variables"`
+	Outputs    map[string]ModuleOutput   `json:"outputs,omitempty"`
+	DependsOn  []string                  `json:"depends_on,omitempty"`
+}
+
+type ModuleVariable struct {
+	Type        string `json:"type"`
+	Description string `json:"description"`
+	Value       string `json:"value"` // Expression to use when calling the module
+}
+
+type ModuleOutput struct {
+	Value       string `json:"value"`
+	Description string `json:"description,omitempty"`
 }
 
 type Variable struct {
-	Value       string `json:"value"`
-	Type        string `json:"type"`
-	Description string `json:"description"`
-	Sensitive   bool   `json:"sensitive"`
+	Value       interface{} `json:"value"`
+	Type        string      `json:"type"`
+	Description string      `json:"description"`
+	Sensitive   bool        `json:"sensitive"`
 }

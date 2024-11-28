@@ -1,0 +1,6 @@
+{{- range $name, $var := .Module.Variables }}
+variable "{{ $name }}" {
+  description = "{{ $var.Description }}"
+  type        = {{ $var.Type }}
+}
+{{- end }}

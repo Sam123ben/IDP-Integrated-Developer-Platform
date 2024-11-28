@@ -6,10 +6,10 @@
             "source": "hashicorp/azurerm",
             "version": "~> 4.10.0",
             "auth_variables": {
-                "client_id": "000000-0000-0000-0000-000000000000",
-                "client_secret": "000000-0000-0000-0000-000000000000",
-                "subscription_id": "000000-0000-0000-0000-000000000000",
-                "tenant_id": "000000-0000-0000-0000-000000000000"
+                "client_id": "309fadf3-29d4-44ee-9f0c-5fc2a0ebf3e4",
+                "client_secret": "zu78Q~tGdMUDhezzqQqZP3NPg1J1YQh4tF5E0cb.",
+                "subscription_id": "bad141db-d381-4c5d-9092-410c750672d5",
+                "tenant_id": "72580bc0-52ef-4264-b45d-c6d2b0eb1810"
             }
         },
         {
@@ -39,28 +39,64 @@
         "storage_account_name": "stterraformacmeprod",
         "container_name": "tfstate",
         "key": "terraform.tfstate",
-        "subscription_id": "000000-0000-0000-0000-000000000000",
-        "tenant_id": "000000-0000-0000-0000-000000000000",
-        "client_id": "000000-0000-0000-0000-000000000000",
-        "AccessKey": "000000-0000-0000-0000-000000000000"
+        "subscription_id": "bad141db-d381-4c5d-9092-410c750672d5",
+        "tenant_id": "72580bc0-52ef-4264-b45d-c6d2b0eb1810",
+        "client_id": "309fadf3-29d4-44ee-9f0c-5fc2a0ebf3e4",
+        "AccessKey": "tlPe6yRYKRnPY3ZzOB5R8U3KtfIWZGO2mHziYi99HwL/f/y6JnZZorrUfhRX6t9hQXGr+v2NreT++AStXSrS8w=="
     },
     "modules": [
         {
-            "module_name": "resource_group",
-            "source": "./modules/resource_group",
-            "variables": {
-                "variable1": "${var.value1}",
-                "variable2": "${var.value2}"
+          "module_name": "resource_group",
+          "source": "./modules/resource_group",
+          "variables": {
+            "name": {
+              "type": "string",
+              "description": "Name of the resource group"
+            },
+            "location": {
+              "type": "string",
+              "description": "Location for the resource group"
             }
+          },
+          "outputs": {
+            "name": {
+              "value": "azurerm_resource_group.example.name"
+            },
+            "location": {
+              "value": "azurerm_resource_group.example.location"
+            }
+          }
         },
         {
-            "module_name": "vnet",
-            "source": "./modules/vnet",
-            "variables": {
-                "variable1": "${var.value1}",
-                "variable2": "${var.value2}"
+          "module_name": "vnet",
+          "source": "./modules/vnet",
+          "variables": {
+            "name": {
+              "type": "string",
+              "description": "Name of the virtual network"
             },
-            "depends_on": ["resource_group"]
+            "location": {
+              "type": "string",
+              "description": "Location of the virtual network"
+            },
+            "resource_group_name": {
+              "type": "string",
+              "description": "Name of the resource group"
+            },
+            "address_space": {
+              "type": "list(string)",
+              "description": "Address space for the virtual network"
+            },
+            "dns_servers": {
+              "type": "list(string)",
+              "description": "DNS servers for the virtual network"
+            },
+            "tags": {
+              "type": "map(string)",
+              "description": "Tags for the virtual network"
+            }
+          },
+          "depends_on": ["resource_group"]
         }
     ],
     "variables": {
