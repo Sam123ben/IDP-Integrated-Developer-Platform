@@ -63,7 +63,6 @@ func GenerateTerraform(req *models.GenerateRequest) error {
 }
 
 // filterProviderData filters provider details based on the specified provider name.
-// filterProviderData filters provider details based on the specified provider name.
 func filterProviderData(providers []models.Provider, providerName string) *models.Provider {
 	aliases := map[string]string{
 		"azure":   "azurerm",
@@ -148,7 +147,7 @@ func prepareTemplateData(req *models.GenerateRequest, config *models.Config, pro
 	}
 }
 
-// generateTerraformFiles creates Terraform files like providers.tf, main.tf, and variables.tf.
+// generateTerraformFiles creates Terraform files like providers.tf, main.tf, variables.tf, and vars.tfvars.
 func generateTerraformFiles(path string, data map[string]interface{}, provider, entityName string) error {
 	files := []struct {
 		Template string
@@ -157,6 +156,7 @@ func generateTerraformFiles(path string, data map[string]interface{}, provider, 
 		{Template: filepath.Join("templates", "generic", "providers.tf.tmpl"), Dest: filepath.Join(path, "providers.tf")},
 		{Template: filepath.Join("templates", provider, "main.tf.tmpl"), Dest: filepath.Join(path, "main.tf")},
 		{Template: filepath.Join("templates", "generic", "variables.tf.tmpl"), Dest: filepath.Join(path, "variables.tf")},
+		{Template: filepath.Join("templates", "generic", "vars.tfvars.tmpl"), Dest: filepath.Join(path, "vars.tfvars")}, // Added vars.tfvars generation
 	}
 
 	for _, file := range files {
@@ -191,7 +191,7 @@ func generateBackendAndVarsTfvarsFiles(path string, data map[string]interface{},
 			Dest     string
 		}{
 			{Template: filepath.Join("templates", "generic", "backend.tfvars.tmpl"), Dest: filepath.Join(path, "backend", customerName+"_"+env+".tfvars")},
-			{Template: filepath.Join("templates", "generic", "vars.tf.tmpl"), Dest: filepath.Join(path, "vars", customerName+"_"+env+".tfvars")},
+			{Template: filepath.Join("templates", "generic", "vars.tfvars.tmpl"), Dest: filepath.Join(path, "vars", customerName+"_"+env+".tfvars")}, // Added vars.tfvars generation
 		}
 
 		for _, file := range files {

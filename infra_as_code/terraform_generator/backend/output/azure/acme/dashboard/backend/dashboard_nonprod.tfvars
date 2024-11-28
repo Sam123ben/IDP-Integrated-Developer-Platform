@@ -1,6 +1,0 @@
-resource_group_name  = "rg-terraform-acme-prod"
-storage_account_name = "stterraformacmeprod"
-container_name       = "tfstate"
-key                  = "terraform.tfstate"
-access_key           = "000000-0000-0000-0000-000000000000"
-subscription_id      = "000000-0000-0000-0000-000000000000"
