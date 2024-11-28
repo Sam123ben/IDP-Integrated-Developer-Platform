@@ -8,8 +8,8 @@ type Config struct {
 	Backend          Backend             `json:"backend"`
 	Modules          []Module            `json:"modules"`
 	Variables        map[string]Variable `json:"variables"`
-	Region           string              `json:"region"`      // Add this field
-	Environment      string              `json:"environment"` // Add this field
+	Region           string              `json:"region"`
+	Environment      string              `json:"environment"`
 }
 
 type Provider struct {
@@ -25,15 +25,16 @@ type Backend struct {
 	ContainerName      string `json:"container_name"`
 	Key                string `json:"key"`
 	SubscriptionId     string `json:"subscription_id"`
-	TenantId           string `json:"tenant_id"`
-	ClientId           string `json:"client_id"`
-	AccessKey          string `json:"AccessKey"`
+	TenantID           string `json:"tenant_id"`
+	ClientID           string `json:"client_id"`
+	AccessKey          string `json:"access_key"`
 }
 
 type Module struct {
 	ModuleName string            `json:"module_name"`
 	Source     string            `json:"source"`
 	Variables  map[string]string `json:"variables"`
+	DependsOn  []string          `json:"depends_on,omitempty"`
 }
 
 type Variable struct {

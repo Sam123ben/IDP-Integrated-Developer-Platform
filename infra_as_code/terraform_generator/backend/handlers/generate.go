@@ -7,6 +7,7 @@ import (
 	"backend/utils"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -47,10 +48,17 @@ func GenerateTerraform(req *models.GenerateRequest) error {
 		return errors.New("specified provider not found in configuration")
 	}
 
+	// Resolve module dependencies
+	moduleNames := make([]string, len(req.Modules))
+	for i, moduleName := range req.Modules {
+		moduleNames[i] = strings.TrimSpace(moduleName)
+	}
+	modules := resolveModuleDependencies(moduleNames, config.Modules)
+
 	basePath := filepath.Join("output", req.Provider, req.OrganisationName)
 
 	if len(req.Customers) > 0 {
-		return processCustomers(req, config, basePath, providerData)
+		return processCustomers(req, config, basePath, providerData, modules)
 	}
 
 	// Process for a single product
@@ -59,7 +67,7 @@ func GenerateTerraform(req *models.GenerateRequest) error {
 		return err
 	}
 
-	return generateProductFiles(req, config, productPath, providerData)
+	return generateProductFiles(req, config, productPath, providerData, modules)
 }
 
 // filterProviderData filters provider details based on the specified provider name.
@@ -82,8 +90,47 @@ func filterProviderData(providers []models.Provider, providerName string) *model
 	return nil
 }
 
+// resolveModuleDependencies resolves all dependencies for the requested modules.
+func resolveModuleDependencies(requestedModules []string, availableModules []models.Module) []models.Module {
+	moduleMap := make(map[string]models.Module)
+	for _, module := range availableModules {
+		moduleMap[module.ModuleName] = module
+	}
+
+	visited := make(map[string]bool)
+	var resolved []models.Module
+
+	var resolve func(string)
+	resolve = func(moduleName string) {
+		if visited[moduleName] {
+			return
+		}
+		visited[moduleName] = true
+
+		module, exists := moduleMap[moduleName]
+		if !exists {
+			fmt.Printf("Warning: Module '%s' not found in available modules.\n", moduleName)
+			return
+		}
+
+		// Resolve dependencies first
+		for _, dependency := range module.DependsOn {
+			resolve(dependency)
+		}
+
+		// Add the current module to the resolved list
+		resolved = append(resolved, module)
+	}
+
+	for _, moduleName := range requestedModules {
+		resolve(moduleName)
+	}
+
+	return resolved
+}
+
 // processCustomers generates Terraform files for multiple customers.
-func processCustomers(req *models.GenerateRequest, config *models.Config, basePath string, provider *models.Provider) error {
+func processCustomers(req *models.GenerateRequest, config *models.Config, basePath string, provider *models.Provider, modules []models.Module) error {
 	for _, customer := range req.Customers {
 		customer = strings.TrimSpace(customer)
 		customerPath := filepath.Join(basePath, customer)
@@ -98,7 +145,7 @@ func processCustomers(req *models.GenerateRequest, config *models.Config, basePa
 		}
 
 		// Generate files for the customer
-		if err := generateCustomerFiles(req, config, customerPath, customer, provider); err != nil {
+		if err := generateCustomerFiles(req, config, customerPath, customer, provider, modules); err != nil {
 			return err
 		}
 	}
@@ -106,8 +153,9 @@ func processCustomers(req *models.GenerateRequest, config *models.Config, basePa
 }
 
 // generateProductFiles creates Terraform files for a single product.
-func generateProductFiles(req *models.GenerateRequest, config *models.Config, productPath string, provider *models.Provider) error {
-	data := prepareTemplateData(req, config, provider, "")
+func generateProductFiles(req *models.GenerateRequest, config *models.Config, productPath string, provider *models.Provider, modules []models.Module) error {
+	// Prepare template data with resolved modules
+	data := prepareTemplateData(req, config, provider, "", modules)
 
 	// Generate files
 	if err := generateTerraformFiles(productPath, data, req.Provider, req.ProductName); err != nil {
@@ -119,8 +167,8 @@ func generateProductFiles(req *models.GenerateRequest, config *models.Config, pr
 }
 
 // generateCustomerFiles creates Terraform files for a single customer.
-func generateCustomerFiles(req *models.GenerateRequest, config *models.Config, customerPath, customerName string, provider *models.Provider) error {
-	data := prepareTemplateData(req, config, provider, customerName)
+func generateCustomerFiles(req *models.GenerateRequest, config *models.Config, customerPath, customerName string, provider *models.Provider, modules []models.Module) error {
+	data := prepareTemplateData(req, config, provider, customerName, modules)
 
 	// Generate files
 	if err := generateTerraformFiles(customerPath, data, req.Provider, customerName); err != nil {
@@ -132,11 +180,11 @@ func generateCustomerFiles(req *models.GenerateRequest, config *models.Config, c
 }
 
 // prepareTemplateData prepares data for the templates.
-func prepareTemplateData(req *models.GenerateRequest, config *models.Config, provider *models.Provider, customerName string) map[string]interface{} {
+func prepareTemplateData(req *models.GenerateRequest, config *models.Config, provider *models.Provider, customerName string, modules []models.Module) map[string]interface{} {
 	return map[string]interface{}{
 		"Provider":         provider,
 		"TerraformVersion": config.TerraformVersion,
-		"Modules":          config.Modules,
+		"Modules":          modules, // Ensure this is []models.Module
 		"OrganisationName": req.OrganisationName,
 		"ProductName":      req.ProductName,
 		"CustomerName":     customerName,
@@ -149,6 +197,10 @@ func prepareTemplateData(req *models.GenerateRequest, config *models.Config, pro
 
 // generateTerraformFiles creates Terraform files like providers.tf, main.tf, variables.tf, and vars.tfvars.
 func generateTerraformFiles(path string, data map[string]interface{}, provider, entityName string) error {
+	// Debugging statements to check the type of data["Modules"]
+	fmt.Printf("Type of data[\"Modules\"]: %T\n", data["Modules"])
+	fmt.Printf("Value of data[\"Modules\"]: %+v\n", data["Modules"])
+
 	files := []struct {
 		Template string
 		Dest     string
@@ -156,7 +208,7 @@ func generateTerraformFiles(path string, data map[string]interface{}, provider, 
 		{Template: filepath.Join("templates", "generic", "providers.tf.tmpl"), Dest: filepath.Join(path, "providers.tf")},
 		{Template: filepath.Join("templates", provider, "main.tf.tmpl"), Dest: filepath.Join(path, "main.tf")},
 		{Template: filepath.Join("templates", "generic", "variables.tf.tmpl"), Dest: filepath.Join(path, "variables.tf")},
-		{Template: filepath.Join("templates", "generic", "vars.tfvars.tmpl"), Dest: filepath.Join(path, "vars.tfvars")}, // Added vars.tfvars generation
+		{Template: filepath.Join("templates", "generic", "vars.tfvars.tmpl"), Dest: filepath.Join(path, "vars.tfvars")},
 	}
 
 	for _, file := range files {
@@ -191,7 +243,7 @@ func generateBackendAndVarsTfvarsFiles(path string, data map[string]interface{},
 			Dest     string
 		}{
 			{Template: filepath.Join("templates", "generic", "backend.tfvars.tmpl"), Dest: filepath.Join(path, "backend", customerName+"_"+env+".tfvars")},
-			{Template: filepath.Join("templates", "generic", "vars.tfvars.tmpl"), Dest: filepath.Join(path, "vars", customerName+"_"+env+".tfvars")}, // Added vars.tfvars generation
+			{Template: filepath.Join("templates", "generic", "vars.tfvars.tmpl"), Dest: filepath.Join(path, "vars", customerName+"_"+env+".tfvars")},
 		}
 
 		for _, file := range files {

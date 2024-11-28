@@ -7,80 +7,70 @@ import (
 	"backend/models"
 	"flag"
 	"fmt"
-	"log"
-	"net/http"
 	"os"
 	"strings"
 )
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "generate" {
-		// Command-line mode
-		handleCLI()
-	} else {
-		// Web server mode
-		http.HandleFunc("/generate", handlers.GenerateTerraformHandler)
-		log.Println("Server is running on port 8080...")
-		if err := http.ListenAndServe(":8080", nil); err != nil {
-			log.Fatalf("Server failed to start: %v", err)
-		}
-	}
-}
+	generateCmd := flag.NewFlagSet("generate", flag.ExitOnError)
+	company := generateCmd.String("company", "", "Company name (required)")
+	product := generateCmd.String("product", "", "Product name (required)")
+	provider := generateCmd.String("provider", "", "Provider name (required)")
+	modules := generateCmd.String("modules", "", "Comma-separated list of modules")
+	customers := generateCmd.String("customers", "", "Comma-separated list of customers")
 
-func handleCLI() {
-	// Define flags
-	company := flag.String("company", "", "Company name")
-	product := flag.String("product", "", "Product name")
-	customers := flag.String("customers", "", "Comma-separated list of customer names (optional)")
-	provider := flag.String("provider", "", "Cloud provider (aws, azure, gcp)")
-	modules := flag.String("modules", "", "Comma-separated list of modules")
-
-	// Parse flags
-	flag.CommandLine.Parse(os.Args[2:])
-
-	// Validate required flags
-	if *company == "" || *product == "" || *provider == "" {
-		fmt.Println("Error: --company, --product, and --provider are required")
-		flag.Usage()
+	if len(os.Args) < 2 {
+		fmt.Println("Expected 'generate' subcommands")
 		os.Exit(1)
 	}
 
-	// Prepare the request data
-	req := &models.GenerateRequest{
-		OrganisationName: *company,
-		ProductName:      *product,
-		Provider:         *provider,
-		Modules:          []models.Module{},
+	switch os.Args[1] {
+	case "generate":
+		generateCmd.Parse(os.Args[2:])
+	default:
+		flag.PrintDefaults()
+		os.Exit(1)
 	}
 
-	// Handle modules
-	if *modules != "" {
-		moduleNames := strings.Split(*modules, ",")
-		for _, moduleName := range moduleNames {
-			moduleName = strings.TrimSpace(moduleName)
-			module := models.Module{
-				ModuleName: moduleName,
-				Source:     fmt.Sprintf("./modules/%s", moduleName),
-				Variables:  make(map[string]string),
+	if generateCmd.Parsed() {
+		if *company == "" || *product == "" || *provider == "" {
+			fmt.Println("Error: --company, --product, and --provider are required")
+			generateCmd.Usage()
+			os.Exit(1)
+		}
+
+		// Prepare the request data
+		req := models.GenerateRequest{
+			OrganisationName: *company,
+			ProductName:      *product,
+			Provider:         *provider,
+			Modules:          []string{},
+		}
+
+		// Handle modules
+		if *modules != "" {
+			moduleNames := strings.Split(*modules, ",")
+			for _, moduleName := range moduleNames {
+				moduleName = strings.TrimSpace(moduleName)
+				req.Modules = append(req.Modules, moduleName)
 			}
-			req.Modules = append(req.Modules, module)
 		}
-	}
 
-	// Handle customers
-	if *customers != "" {
-		req.Customers = strings.Split(*customers, ",")
-		for i, customer := range req.Customers {
-			req.Customers[i] = strings.TrimSpace(customer)
+		// Handle customers
+		if *customers != "" {
+			req.Customers = strings.Split(*customers, ",")
+			for i, customer := range req.Customers {
+				req.Customers[i] = strings.TrimSpace(customer)
+			}
 		}
-	}
 
-	// Call the generation logic
-	err := handlers.GenerateTerraform(req)
-	if err != nil {
-		fmt.Printf("Error generating Terraform code: %v\n", err)
-		os.Exit(1)
-	}
+		// Call the generation logic
+		err := handlers.GenerateTerraform(&req)
+		if err != nil {
+			fmt.Printf("Error generating Terraform code: %v\n", err)
+			os.Exit(1)
+		}
 
-	fmt.Println("Terraform code generated successfully")
+		fmt.Println("Terraform code generated successfully")
+	}
 }

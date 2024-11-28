@@ -7,5 +7,5 @@ type GenerateRequest struct {
 	ProductName      string   `json:"product_name"`
 	Customers        []string `json:"customers,omitempty"`
 	Provider         string   `json:"provider"`
-	Modules          []Module `json:"modules"`
+	Modules          []string `json:"modules"` // Changed to []string
 }

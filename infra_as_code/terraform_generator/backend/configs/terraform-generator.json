@@ -46,12 +46,21 @@
     },
     "modules": [
         {
-            "module_name": "example_module",
-            "source": "./modules/example_module",
+            "module_name": "resource_group",
+            "source": "./modules/resource_group",
             "variables": {
                 "variable1": "${var.value1}",
                 "variable2": "${var.value2}"
             }
+        },
+        {
+            "module_name": "vnet",
+            "source": "./modules/vnet",
+            "variables": {
+                "variable1": "${var.value1}",
+                "variable2": "${var.value2}"
+            },
+            "depends_on": ["resource_group"]
         }
     ],
     "variables": {

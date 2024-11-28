@@ -1,8 +1,18 @@
-{{- range .Modules }}
-module "{{ .ModuleName }}" {
-  source = "{{ .Source }}"
-  {{- range $key, $value := .Variables }}
+{{- range $module := .Modules }}
+module "{{ $module.ModuleName }}" {
+  source = "{{ $module.Source }}"
+  {{- range $key, $value := $module.Variables }}
   {{ $key }} = "{{ $value }}"
+  {{- end }}
+
+  {{- if $module.DependsOn }}
+  depends_on = [
+    {{- $deps := $module.DependsOn }}
+    {{- $depsLen := len $deps }}
+    {{- range $index, $dependency := $deps }}
+    module.{{ $dependency }}{{ if lt (add $index 1) $depsLen }},{{ end }}
+    {{- end }}
+  ]
   {{- end }}
 }
 {{ end }}

@@ -13,6 +13,11 @@ import (
 	"golang.org/x/text/language"
 )
 
+// Add function
+func add(a, b int) int {
+	return a + b
+}
+
 func CreateDirectories(paths []string) error {
 	for _, path := range paths {
 		if err := os.MkdirAll(path, os.ModePerm); err != nil {
@@ -27,9 +32,10 @@ func WriteFile(path string, content []byte) error {
 }
 
 func GenerateFileFromTemplate(templatePath, destinationPath string, data interface{}) error {
-	// Register the title function
+	// Register custom functions
 	funcMap := template.FuncMap{
 		"title": cases.Title(language.Und).String,
+		"add":   add, // Ensure 'add' is included
 	}
 
 	// Parse the template with the function map
