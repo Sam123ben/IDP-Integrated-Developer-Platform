@@ -7,6 +7,14 @@
   {{ $mapKey }} = "{{ $mapValue }}"
 {{- end }}
 }
+{{- else if eq $metadata.Type "bool" }}
+{{ $key }} = {{ $metadata.Value }}
+{{- else if eq $metadata.Type "object" }}
+{{ $key }} = {
+{{- range $attrKey, $attrValue := $metadata.Value }}
+  {{ $attrKey }} = {{ if eq (typeOf $attrValue) "string" }}"{{ $attrValue }}"{{ else }}{{ $attrValue }}{{ end }}
+{{- end }}
+}
 {{- else }}
 {{ $key }} = "{{ $metadata.Value }}"
 {{- end }}

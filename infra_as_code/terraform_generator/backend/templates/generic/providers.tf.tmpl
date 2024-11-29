@@ -8,11 +8,9 @@ terraform {
   required_version = "{{ .TerraformVersion }}"
 }
 
-# Configure the {{ .Provider.Name }} provider
 provider "{{ .Provider.Name }}" {
   {{- if eq .Provider.Name "azurerm" }}
   features {}
-
   subscription_id = var.azure_subscription_id
   tenant_id       = var.azure_tenant_id
   client_id       = var.azure_client_id
@@ -22,7 +20,6 @@ provider "{{ .Provider.Name }}" {
 
   {{- else if eq .Provider.Name "aws" }}
   region = var.aws_region
-
   {{- if .Provider.AuthVariables.web_identity_token_file }}
   assume_role_with_web_identity {
     role_arn               = var.aws_role_arn
@@ -35,15 +32,13 @@ provider "{{ .Provider.Name }}" {
   {{- end }}
 
   {{- else if eq .Provider.Name "google" }}
+  project = var.gcp_project_id
+  region  = var.gcp_region
   {{- if .Provider.AuthVariables.workload_identity_pool_provider }}
   impersonate_service_account     = var.gcp_service_account_email
   workload_identity_pool_provider = var.gcp_workload_identity_provider
-  project                         = var.gcp_project_id
-  region                          = var.gcp_region
   {{- else }}
   credentials = file(var.gcp_credentials_file)
-  project     = var.gcp_project_id
-  region      = var.gcp_region
   {{- end }}
   {{- end }}
 }
