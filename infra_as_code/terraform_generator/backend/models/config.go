@@ -56,5 +56,5 @@ type Variable struct {
 	Type        string      `json:"type"`
 	Description string      `json:"description"`
 	Sensitive   bool        `json:"sensitive"`
-	Default     interface{} `json:"default,omitempty"` // Added Default field
+	Default     interface{} `json:"default,omitempty"` // Optional default value
 }

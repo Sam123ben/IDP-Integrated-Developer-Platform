@@ -2,8 +2,8 @@
 module "{{ $module.ModuleName }}" {
   source = "{{ $module.Source }}"
   {{- $moduleVars := index $.ModuleVariables $module.ModuleName }}
-  {{- range $varName, $varValue := $moduleVars }}
-  {{ $varName }} = {{ $varValue }}
+  {{- range $varName, $var := $moduleVars }}
+  {{ $varName }} = {{ formatValue $var.Value $var.Type }}
   {{- end }}
   {{- if $module.DependsOn }}
   depends_on = [

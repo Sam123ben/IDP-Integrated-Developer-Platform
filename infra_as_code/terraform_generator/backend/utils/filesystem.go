@@ -6,8 +6,10 @@ import (
 	"backend/models"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"golang.org/x/text/cases"
@@ -90,6 +92,77 @@ func GenerateFileFromTemplate(templatePath, destinationPath string, data interfa
 				return a
 			}
 			return b
+		},
+		"formatValue": func(value interface{}, varType string) string {
+			switch varType {
+			case "bool", "number":
+				return fmt.Sprintf("%v", value)
+			case "string":
+				// Determine if value is an expression or a literal
+				expr, ok := value.(string)
+				if ok && strings.HasPrefix(expr, "var.") {
+					return expr // Expression
+				}
+				return fmt.Sprintf("\"%v\"", value) // Literal
+			case "list(string)", "set(string)":
+				list, ok := value.([]interface{})
+				if !ok {
+					return "[]"
+				}
+				var items []string
+				for _, item := range list {
+					items = append(items, fmt.Sprintf("\"%v\"", item))
+				}
+				if varType == "set(string)" {
+					return fmt.Sprintf("toset([%s])", strings.Join(items, ", "))
+				}
+				return fmt.Sprintf("[%s]", strings.Join(items, ", "))
+			case "map(string)":
+				var entries []string
+				switch v := value.(type) {
+				case map[string]interface{}:
+					for key, val := range v {
+						entries = append(entries, fmt.Sprintf("\"%s\" = \"%v\"", key, val))
+					}
+				case map[string]string:
+					for key, val := range v {
+						entries = append(entries, fmt.Sprintf("\"%s\" = \"%s\"", key, val))
+					}
+				}
+				return fmt.Sprintf("{ %s }", strings.Join(entries, ", "))
+			case "object":
+				var items []string
+				v, ok := value.(map[string]interface{})
+				if !ok {
+					return "{}"
+				}
+				for key, val := range v {
+					switch val.(type) {
+					case string:
+						items = append(items, fmt.Sprintf("\"%s\" = \"%v\"", key, val))
+					default:
+						items = append(items, fmt.Sprintf("\"%s\" = %v", key, val))
+					}
+				}
+				return fmt.Sprintf("{ %s }", strings.Join(items, ", "))
+			case "tuple":
+				tuple, ok := value.([]interface{})
+				if !ok {
+					return "[]"
+				}
+				var items []string
+				for _, item := range tuple {
+					switch item.(type) {
+					case string:
+						items = append(items, fmt.Sprintf("\"%v\"", item))
+					default:
+						items = append(items, fmt.Sprintf("%v", item))
+					}
+				}
+				return fmt.Sprintf("[%s]", strings.Join(items, ", "))
+			default:
+				return fmt.Sprintf("%v", value)
+			}
 		},
 	}
 
