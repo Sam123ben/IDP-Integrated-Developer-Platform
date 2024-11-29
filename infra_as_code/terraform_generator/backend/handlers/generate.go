@@ -237,26 +237,35 @@ func generateCustomerFiles(req *models.GenerateRequest, config *models.Config, c
 	return generateBackendAndVarsTfvarsFiles(customerPath, data, customerName)
 }
 
-// prepareTemplateData prepares data for the templates.
+// prepareTemplateData prepares the data structure for the templates
 func prepareTemplateData(req *models.GenerateRequest, config *models.Config, provider *models.Provider, customerName string, modules []models.Module) map[string]interface{} {
 	// Extract generic variables from config
 	genericVariables := config.Variables
 
 	// Prepare module variables for module calls in main.tf
-	moduleVariables := make(map[string]map[string]models.ModuleVariable)
+	moduleVariables := make(map[string]map[string]models.Variable)
 	for _, module := range modules {
-		vars := make(map[string]models.ModuleVariable)
+		vars := make(map[string]models.Variable)
 		for varName, varDef := range module.Variables {
-			vars[varName] = varDef // Pass the entire ModuleVariable struct
+			// Extract the embedded Variable from ModuleVariable
+			vars[varName] = models.Variable{
+				Type:        varDef.Type,
+				Description: varDef.Description,
+				Default:     varDef.Default,
+				Sensitive:   varDef.Sensitive,
+				Value:       varDef.Value,
+			}
+			// fmt.Printf("Module: %s, Variable: %s, Value: %v, Type: %s, Default: %v, Sensitive: %v\n",
+			// 	module.ModuleName, varName, varDef.Value, varDef.Type, varDef.Default, varDef.Sensitive)
 		}
 		moduleVariables[module.ModuleName] = vars
 	}
 
-	return map[string]interface{}{
+	data := map[string]interface{}{
 		"Provider":         provider,
 		"TerraformVersion": config.TerraformVersion,
 		"Modules":          modules,
-		"ModuleVariables":  moduleVariables, // Include populated module variables
+		"ModuleVariables":  moduleVariables, // Now using map[string]map[string]models.Variable
 		"OrganisationName": req.OrganisationName,
 		"ProductName":      req.ProductName,
 		"CustomerName":     customerName,
@@ -265,6 +274,11 @@ func prepareTemplateData(req *models.GenerateRequest, config *models.Config, pro
 		"Backend":          config.Backend,
 		"Variables":        genericVariables,
 	}
+
+	// Add debug logging
+	// fmt.Printf("Template Data: %+v\n", data)
+
+	return data
 }
 
 // generateTerraformFiles creates Terraform files like providers.tf, main.tf, variables.tf, and vars.tfvars.

@@ -38,12 +38,10 @@ type Module struct {
 	DependsOn  []string                  `json:"depends_on,omitempty"`
 }
 
+// Embed Variable within ModuleVariable
 type ModuleVariable struct {
-	Type        string      `json:"type"`
-	Description string      `json:"description"`
-	Value       interface{} `json:"value"`               // Expression to use when calling the module
-	Default     interface{} `json:"default,omitempty"`   // Optional default value
-	Sensitive   bool        `json:"sensitive,omitempty"` // Optional sensitivity flag
+	Variable
+	// Add any module-specific fields here if necessary
 }
 
 type ModuleOutput struct {
@@ -52,9 +50,9 @@ type ModuleOutput struct {
 }
 
 type Variable struct {
-	Value       interface{} `json:"value"`
 	Type        string      `json:"type"`
 	Description string      `json:"description"`
-	Sensitive   bool        `json:"sensitive"`
-	Default     interface{} `json:"default,omitempty"` // Optional default value
+	Default     interface{} `json:"default,omitempty"`
+	Sensitive   bool        `json:"sensitive,omitempty"`
+	Value       interface{} `json:"value,omitempty"`
 }

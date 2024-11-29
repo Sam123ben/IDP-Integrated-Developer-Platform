@@ -1,27 +1,12 @@
 {{- range $name, $var := .Variables }}
 variable "{{ $name }}" {
   description = "{{ or $var.Description "No description provided" }}"
-  type        = {{ or $var.Type "any" }}
+  type        = {{ $var.Type }}
   {{- if $var.Default }}
-  default     = {{- if eq $var.Type "bool" }}{{ $var.Default }}
-               {{- else if eq $var.Type "number" }}{{ $var.Default }}
-               {{- else if eq $var.Type "string" }}"{{ $var.Default }}"
-               {{- else if eq $var.Type "list(string)" }}[{{ range $index, $item := $var.Default }}{{ if $index }}, {{ end }}"{{ $item }}"{{ end }}]
-               {{- else if eq $var.Type "set(string)" }}toset([{{ range $index, $item := $var.Default }}{{ if $index }}, {{ end }}"{{ $item }}"{{ end }}])
-               {{- else if eq $var.Type "map(string)" }}{ {{ range $key, $value := $var.Default }}"{{ $key }}" = "{{ $value }}" {{ end }} }
-               {{- else if eq (slice $var.Type 0 6) "object" }}{
-                 {{ range $key, $attr := $var.Default }}
-                 {{ $key }} = {{ if eq (typeOf $attr) "string" }}"{{ $attr }}"{{ else }}{{ $attr }}{{ end }}
-                 {{ end }}
-               }
-               {{- else if eq (slice $var.Type 0 5) "tuple" }}[
-                 {{- range $index, $item := $var.Default }}{{ if $index }}, {{ end }}{{ $item }}{{ end }}
-               ]
-               {{- else }}{{ $var.Default }}
-               {{- end }}
+  default     = {{ formatDefault $var }}
   {{- end }}
   {{- if $var.Sensitive }}
-  sensitive = true
+  sensitive   = true
   {{- end }}
 }
 {{- end }}
