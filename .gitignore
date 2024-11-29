@@ -35,3 +35,5 @@ infra_as_code/terraform_generator/backend/configs/terraform-generator.json
 infra_as_code/terraform_generator/backend/configs/terraform-generator.json.example
 
 **/output/**/*
+
+working-terraform-generator.json

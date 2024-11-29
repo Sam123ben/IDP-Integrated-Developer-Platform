@@ -33,8 +33,8 @@ RUN apt-get update && \
 COPY --from=builder /app/terraform-app /app/terraform-app
 
 # Copy necessary configuration files and templates
-COPY configs/ /app/configs/
-COPY templates/ /app/templates/
+COPY --from=builder /app/configs/ /app/configs/
+COPY --from=builder /app/templates/ /app/templates/
 
 # Expose any required ports (if applicable)
 # EXPOSE 8080
