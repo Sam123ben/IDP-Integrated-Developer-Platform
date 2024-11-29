@@ -1,7 +1,7 @@
 {{- range $name, $var := .Module.Variables }}
 variable "{{ $name }}" {
-  description = "{{ $var.Description }}"
-  type        = {{ $var.Type }}
+  description = "{{ or $var.Description "No description provided" }}"
+  type        = {{ or $var.Type "any" }}
   {{- if $var.Default }}
   default     = {{- if eq $var.Type "bool" }}{{ $var.Default }}
                {{- else if eq $var.Type "number" }}{{ $var.Default }}

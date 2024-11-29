@@ -67,6 +67,30 @@ func GenerateFileFromTemplate(templatePath, destinationPath string, data interfa
 			}
 			return jsonString
 		},
+		"typeOf": func(value interface{}) string {
+			switch value.(type) {
+			case string:
+				return "string"
+			case bool:
+				return "bool"
+			case int, float64:
+				return "number"
+			case []interface{}:
+				return "list"
+			case map[string]interface{}:
+				return "map"
+			case map[string]string:
+				return "map(string)"
+			default:
+				return "any"
+			}
+		},
+		"or": func(a, b interface{}) interface{} {
+			if a != nil {
+				return a
+			}
+			return b
+		},
 	}
 
 	// Parse the template with the function map

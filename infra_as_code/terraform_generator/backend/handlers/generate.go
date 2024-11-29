@@ -148,8 +148,9 @@ func generateModuleFiles(basePath string, modules []models.Module, provider stri
 		}
 
 		data := map[string]interface{}{
-			"Module":       module,
-			"ResourceName": module.ModuleName,
+			"Module":          module,
+			"ResourceName":    module.ModuleName,
+			"ModuleVariables": module.Variables, // Pass module variables directly
 		}
 
 		files := []struct {
@@ -242,11 +243,11 @@ func prepareTemplateData(req *models.GenerateRequest, config *models.Config, pro
 	genericVariables := config.Variables
 
 	// Prepare module variables for module calls in main.tf
-	moduleVariables := make(map[string]map[string]string)
+	moduleVariables := make(map[string]map[string]models.ModuleVariable)
 	for _, module := range modules {
-		vars := make(map[string]string)
+		vars := make(map[string]models.ModuleVariable)
 		for varName, varDef := range module.Variables {
-			vars[varName] = fmt.Sprintf("%v", varDef.Value) // Convert value to string
+			vars[varName] = varDef // Pass the entire ModuleVariable struct
 		}
 		moduleVariables[module.ModuleName] = vars
 	}
@@ -280,7 +281,7 @@ func generateTerraformFiles(path string, data map[string]interface{}, provider, 
 
 	for _, file := range files {
 		if err := utils.GenerateFileFromTemplate(file.Template, file.Dest, data); err != nil {
-			return err
+			return fmt.Errorf("error generating %s: %w", file.Dest, err)
 		}
 	}
 	return nil

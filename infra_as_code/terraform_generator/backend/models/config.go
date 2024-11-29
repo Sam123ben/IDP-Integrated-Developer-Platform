@@ -39,9 +39,11 @@ type Module struct {
 }
 
 type ModuleVariable struct {
-	Type        string `json:"type"`
-	Description string `json:"description"`
-	Value       string `json:"value"` // Expression to use when calling the module
+	Type        string      `json:"type"`
+	Description string      `json:"description"`
+	Value       interface{} `json:"value"`               // Expression to use when calling the module
+	Default     interface{} `json:"default,omitempty"`   // Optional default value
+	Sensitive   bool        `json:"sensitive,omitempty"` // Optional sensitivity flag
 }
 
 type ModuleOutput struct {
@@ -54,4 +56,5 @@ type Variable struct {
 	Type        string      `json:"type"`
 	Description string      `json:"description"`
 	Sensitive   bool        `json:"sensitive"`
+	Default     interface{} `json:"default,omitempty"` // Added Default field
 }
