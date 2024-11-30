@@ -3,8 +3,8 @@
 package main
 
 import (
-	"backend/handlers"
 	"backend/models"
+	"backend/services"
 	"flag"
 	"fmt"
 	"log"
@@ -82,7 +82,7 @@ func handleGenerateCommand(company, product, provider, modules, customers string
 		}
 	}
 
-	if err := handlers.GenerateTerraform(&req); err != nil {
+	if err := services.GenerateTerraform(&req); err != nil {
 		fmt.Printf("Error generating Terraform code: %v\n", err)
 		os.Exit(1)
 	}

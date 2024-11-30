@@ -1,4 +1,4 @@
-// backend/utils/filesystem.go
+// backend/utils/file_utils.go
 
 package utils
 
@@ -16,32 +16,6 @@ import (
 	"golang.org/x/text/language"
 )
 
-// LoadConfig reads the configuration from a JSON file
-func LoadConfig(path string) (*models.Config, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	var config models.Config
-	decoder := json.NewDecoder(file)
-	if err := decoder.Decode(&config); err != nil {
-		return nil, err
-	}
-
-	return &config, nil
-}
-
-// Convert a value to a JSON string
-func toJSON(value interface{}) (string, error) {
-	jsonBytes, err := json.Marshal(value)
-	if err != nil {
-		return "", err
-	}
-	return string(jsonBytes), nil
-}
-
 // CreateDirectories ensures that the specified directories exist
 func CreateDirectories(paths []string) error {
 	for _, path := range paths {
@@ -57,8 +31,17 @@ func WriteFile(path string, content []byte) error {
 	return os.WriteFile(path, content, 0644)
 }
 
+// ToJSON converts a value to a JSON string
+func ToJSON(value interface{}) (string, error) {
+	jsonBytes, err := json.Marshal(value)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonBytes), nil
+}
+
 // FormatDefault formats the default value of a variable
-func formatDefault(varDef models.Variable) string {
+func FormatDefault(varDef models.Variable) string {
 	switch varDef.Type {
 	case "bool", "number":
 		return fmt.Sprintf("%v", varDef.Default)
@@ -138,7 +121,7 @@ func GenerateFileFromTemplate(templatePath, destinationPath string, data interfa
 		"title": cases.Title(language.Und).String,
 		"add":   func(a, b int) int { return a + b },
 		"toJSON": func(value interface{}) string {
-			jsonString, err := toJSON(value)
+			jsonString, err := ToJSON(value)
 			if err != nil {
 				return "null"
 			}
@@ -233,81 +216,7 @@ func GenerateFileFromTemplate(templatePath, destinationPath string, data interfa
 				return fmt.Sprintf("%v", value)
 			}
 		},
-		// backend/utils/filesystem.go
-
-		"formatDefault": func(varDef models.Variable) string {
-			switch varDef.Type {
-			case "bool", "number":
-				return fmt.Sprintf("%v", varDef.Default)
-			case "string":
-				// Check if default is an expression
-				if expr, ok := varDef.Default.(string); ok && strings.HasPrefix(expr, "var.") {
-					return expr // Expression
-				}
-				return fmt.Sprintf("\"%v\"", varDef.Default)
-			case "list(string)", "set(string)":
-				list, ok := varDef.Default.([]interface{})
-				if !ok {
-					return "[]"
-				}
-				var items []string
-				for _, item := range list {
-					items = append(items, fmt.Sprintf("\"%v\"", item))
-				}
-				if varDef.Type == "set(string)" {
-					return fmt.Sprintf("toset([%s])", strings.Join(items, ", "))
-				}
-				return fmt.Sprintf("[%s]", strings.Join(items, ", "))
-			case "map(string)":
-				var entries []string
-				switch v := varDef.Default.(type) {
-				case map[string]interface{}:
-					for key, val := range v {
-						entries = append(entries, fmt.Sprintf("\"%s\" = \"%v\"", key, val))
-					}
-				case map[string]string:
-					for key, val := range v {
-						entries = append(entries, fmt.Sprintf("\"%s\" = \"%s\"", key, val))
-					}
-				}
-				return fmt.Sprintf("{ %s }", strings.Join(entries, ", "))
-			case "object({ provision_vm_agent = bool, enable_automatic_upgrades = bool })",
-				"object({ publisher = string, offer = string, sku = string, version = string })",
-				"object({ name = string, caching = string, create_option = string, managed_disk_type = string })":
-				// Assume default is a map[string]interface{}
-				objMap, ok := varDef.Default.(map[string]interface{})
-				if !ok {
-					return "{}"
-				}
-				var items []string
-				for key, val := range objMap {
-					switch v := val.(type) {
-					case string:
-						items = append(items, fmt.Sprintf("\"%s\" = \"%v\"", key, v))
-					default:
-						items = append(items, fmt.Sprintf("\"%s\" = %v", key, v))
-					}
-				}
-				return fmt.Sprintf("{ %s }", strings.Join(items, ", "))
-			case "tuple":
-				tuple, ok := varDef.Default.([]interface{})
-				if !ok {
-					return "[]"
-				}
-				var items []string
-				for _, item := range tuple {
-					switch v := item.(type) {
-					case string:
-						items = append(items, fmt.Sprintf("\"%v\"", v))
-					default:
-						items = append(items, fmt.Sprintf("%v", v))
-					}
-				}
-				return fmt.Sprintf("[%s]", strings.Join(items, ", "))
-			default:
-				return fmt.Sprintf("%v", varDef.Default)
-			}
-		},
+		"formatDefault": FormatDefault,
 	}
 
 	// Parse the template with the function map

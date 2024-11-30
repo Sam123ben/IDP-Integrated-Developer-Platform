@@ -1,39 +1,19 @@
-// backend/handlers/generate.go
+// backend/services/terraform_service.go
 
-package handlers
+package services
 
 import (
 	"backend/models"
 	"backend/utils"
-	"encoding/json"
-	"errors"
 	"fmt"
-	"net/http"
 	"path/filepath"
 	"strings"
 )
 
-// GenerateTerraformHandler handles HTTP requests to generate Terraform files.
-func GenerateTerraformHandler(w http.ResponseWriter, r *http.Request) {
-	var req models.GenerateRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
-		return
-	}
-
-	if err := GenerateTerraform(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Terraform code generated successfully"))
-}
-
 // GenerateTerraform processes the request to generate Terraform files.
 func GenerateTerraform(req *models.GenerateRequest) error {
 	if req.OrganisationName == "" || req.ProductName == "" || req.Provider == "" {
-		return errors.New("organisation_name, product_name, and provider are required")
+		return fmt.Errorf("organisation_name, product_name, and provider are required")
 	}
 
 	// Load configuration from terraform-generator.json
@@ -43,13 +23,13 @@ func GenerateTerraform(req *models.GenerateRequest) error {
 	}
 
 	// Filter provider data based on the input provider
-	providerData := filterProviderData(config.Providers, req.Provider)
+	providerData := utils.FilterProviderData(config.Providers, req.Provider)
 	if providerData == nil {
 		return fmt.Errorf("specified provider '%s' not found in configuration", req.Provider)
 	}
 
 	// Resolve module dependencies
-	modules, err := resolveModuleDependencies(req.Modules, config.Modules)
+	modules, err := utils.ResolveModuleDependencies(req.Modules, config.Modules)
 	if err != nil {
 		return fmt.Errorf("error resolving module dependencies: %w", err)
 	}
@@ -74,69 +54,6 @@ func GenerateTerraform(req *models.GenerateRequest) error {
 	}
 
 	return generateProductFiles(req, config, productPath, providerData, modules)
-}
-
-// filterProviderData filters provider details based on the specified provider name.
-func filterProviderData(providers []models.Provider, providerName string) *models.Provider {
-	aliases := map[string]string{
-		"azure":   "azurerm",
-		"aws":     "aws",
-		"gcp":     "google",
-		"azurerm": "azurerm",
-		"google":  "google",
-	}
-
-	normalizedProvider := aliases[strings.ToLower(providerName)]
-
-	for _, provider := range providers {
-		if strings.EqualFold(provider.Name, normalizedProvider) {
-			return &provider
-		}
-	}
-	return nil
-}
-
-// resolveModuleDependencies resolves all dependencies for the requested modules.
-func resolveModuleDependencies(requestedModules []string, availableModules []models.Module) ([]models.Module, error) {
-	moduleMap := make(map[string]models.Module)
-	for _, module := range availableModules {
-		moduleMap[module.ModuleName] = module
-	}
-
-	visited := make(map[string]bool)
-	var resolved []models.Module
-
-	var resolve func(string) error
-	resolve = func(moduleName string) error {
-		if visited[moduleName] {
-			return nil
-		}
-		visited[moduleName] = true
-
-		module, exists := moduleMap[moduleName]
-		if !exists {
-			return fmt.Errorf("module '%s' not found in available modules", moduleName)
-		}
-
-		// Resolve dependencies first
-		for _, dependency := range module.DependsOn {
-			if err := resolve(dependency); err != nil {
-				return err
-			}
-		}
-
-		// Add the current module to the resolved list
-		resolved = append(resolved, module)
-		return nil
-	}
-
-	for _, moduleName := range requestedModules {
-		if err := resolve(moduleName); err != nil {
-			return nil, err
-		}
-	}
-
-	return resolved, nil
 }
 
 // generateModuleFiles creates module directories and files.
@@ -255,8 +172,6 @@ func prepareTemplateData(req *models.GenerateRequest, config *models.Config, pro
 				Sensitive:   varDef.Sensitive,
 				Value:       varDef.Value,
 			}
-			// fmt.Printf("Module: %s, Variable: %s, Value: %v, Type: %s, Default: %v, Sensitive: %v\n",
-			// 	module.ModuleName, varName, varDef.Value, varDef.Type, varDef.Default, varDef.Sensitive)
 		}
 		moduleVariables[module.ModuleName] = vars
 	}
@@ -274,9 +189,6 @@ func prepareTemplateData(req *models.GenerateRequest, config *models.Config, pro
 		"Backend":          config.Backend,
 		"Variables":        genericVariables,
 	}
-
-	// Add debug logging
-	// fmt.Printf("Template Data: %+v\n", data)
 
 	return data
 }
