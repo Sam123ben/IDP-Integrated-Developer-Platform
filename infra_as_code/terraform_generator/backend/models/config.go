@@ -20,14 +20,16 @@ type Provider struct {
 }
 
 type Backend struct {
-	ResourceGroupName  string `json:"resource_group_name"`
-	StorageAccountName string `json:"storage_account_name"`
-	ContainerName      string `json:"container_name"`
-	Key                string `json:"key"`
-	SubscriptionId     string `json:"subscription_id"`
-	TenantID           string `json:"tenant_id"`
-	ClientID           string `json:"client_id"`
-	AccessKey          string `json:"access_key"`
+	Type               string            `json:"type"`
+	Parameters         map[string]string `json:"parameters"`
+	ResourceGroupName  string            `json:"resource_group_name"`
+	StorageAccountName string            `json:"storage_account_name"`
+	ContainerName      string            `json:"container_name"`
+	Key                string            `json:"key"`
+	SubscriptionId     string            `json:"subscription_id"`
+	TenantID           string            `json:"tenant_id"`
+	ClientID           string            `json:"client_id"`
+	AccessKey          string            `json:"access_key"`
 }
 
 type Module struct {

@@ -1,16 +1,31 @@
-{{- range $module := .Modules }}
-module "{{ $module.ModuleName }}" {
-  source = "{{ $module.Source }}"
-  {{- $moduleVars := index $.ModuleVariables $module.ModuleName }}
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "{{ .Backend.ResourceGroupName }}"
+    storage_account_name = "{{ .Backend.StorageAccountName }}"
+    container_name       = "{{ .Backend.ContainerName }}"
+    key                  = "{{ .Backend.Key }}"
+    access_key           = "{{ .Backend.AccessKey }}"
+    subscription_id      = "{{ .Backend.SubscriptionId }}"
+    tenant_id            = "{{ .Backend.TenantID }}"
+    client_id            = "{{ .Backend.ClientID }}"
+  }
+}
+
+{{- range .Modules }}
+module "{{ .ModuleName }}" {
+  source = "{{ .Source }}"
+  
+  {{- $moduleVars := index $.ModuleVariables .ModuleName }}
   {{- range $varName, $var := $moduleVars }}
   {{ $varName }} = {{ formatValue $var.Value $var.Type }}
   {{- end }}
-  {{- if $module.DependsOn }}
+
+  {{- if .DependsOn }}
   depends_on = [
-    {{- range $index, $dependency := $module.DependsOn }}
-    module.{{ $dependency }}{{ if lt (add $index 1) (len $module.DependsOn) }},{{ end }}
+    {{- range $index, $dependency := .DependsOn }}
+    module.{{ $dependency }}{{ if lt (add $index 1) (len .DependsOn) }},{{ end }}
     {{- end }}
   ]
   {{- end }}
 }
-{{ end }}
+{{- end }}
