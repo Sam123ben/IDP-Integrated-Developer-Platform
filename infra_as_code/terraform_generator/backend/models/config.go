@@ -50,12 +50,13 @@ type ModuleOutput struct {
 }
 
 type Variable struct {
-	Type        string      `json:"type"`
-	Description string      `json:"description"`
-	Default     interface{} `json:"default,omitempty"`
-	Sensitive   bool        `json:"sensitive,omitempty"`
-	Value       interface{} `json:"value,omitempty"`
-	Validation  *Validation `json:"validation,omitempty"` // Add Validation field
+	Type        string                 `json:"type"`
+	Description string                 `json:"description"`
+	Default     interface{}            `json:"default,omitempty"`
+	Sensitive   bool                   `json:"sensitive,omitempty"`
+	Value       interface{}            `json:"value,omitempty"`
+	Attributes  map[string]interface{} `json:"attributes,omitempty"` // Add attributes for object/tuple types
+	Validation  *Validation            `json:"validation,omitempty"`
 }
 
 type Validation struct {

@@ -156,12 +156,11 @@ func GenerateFileFromTemplate(templatePath, destinationPath string, data interfa
 			case "bool", "number":
 				return fmt.Sprintf("%v", value)
 			case "string":
-				// Determine if value is an expression or a literal
 				expr, ok := value.(string)
 				if ok && strings.HasPrefix(expr, "var.") {
-					return expr // Expression
+					return expr
 				}
-				return fmt.Sprintf("\"%v\"", value) // Literal
+				return fmt.Sprintf("\"%v\"", value)
 			case "list(string)", "set(string)":
 				list, ok := value.([]interface{})
 				if !ok {
@@ -188,35 +187,12 @@ func GenerateFileFromTemplate(templatePath, destinationPath string, data interfa
 					}
 				}
 				return fmt.Sprintf("{ %s }", strings.Join(entries, ", "))
-			case "object({ provision_vm_agent = bool, enable_automatic_upgrades = bool })",
-				"object({ publisher = string, offer = string, sku = string, version = string })",
-				"object({ name = string, caching = string, create_option = string, managed_disk_type = string })":
-				// Assume value is an expression like var.os_profile_windows_config
-				expr, ok := value.(string)
-				if ok {
-					return expr
-				}
-				return "{}" // Default to empty object if not an expression
-			case "tuple":
-				tuple, ok := value.([]interface{})
-				if !ok {
-					return "[]"
-				}
-				var items []string
-				for _, item := range tuple {
-					switch item.(type) {
-					case string:
-						items = append(items, fmt.Sprintf("\"%v\"", item))
-					default:
-						items = append(items, fmt.Sprintf("%v", item))
-					}
-				}
-				return fmt.Sprintf("[%s]", strings.Join(items, ", "))
 			default:
 				return fmt.Sprintf("%v", value)
 			}
 		},
 		"formatDefault": FormatDefault,
+		"formatType":    formatType, // Add formatType to the funcMap
 	}
 
 	// Parse the template with the function map

@@ -85,3 +85,32 @@ func ExtractModuleVariables(module models.Module) map[string]interface{} {
 	}
 	return variables
 }
+
+func formatType(varType string, attributes map[string]interface{}) string {
+	switch varType {
+	case "string", "number", "bool":
+		return varType
+	case "list(string)":
+		return "list(string)"
+	case "map(string)":
+		return "map(string)"
+	case "object":
+		// Construct the object structure
+		var fields []string
+		for name, attrType := range attributes {
+			fields = append(fields, fmt.Sprintf("%s = %s", name, attrType))
+		}
+		return fmt.Sprintf("object({ %s })", strings.Join(fields, ", "))
+	case "tuple":
+		// Construct the tuple structure
+		var elements []string
+		if tuple, ok := attributes["tuple_elements"].([]interface{}); ok {
+			for _, elem := range tuple {
+				elements = append(elements, fmt.Sprintf("%s", elem))
+			}
+		}
+		return fmt.Sprintf("tuple([%s])", strings.Join(elements, ", "))
+	default:
+		return "any"
+	}
+}

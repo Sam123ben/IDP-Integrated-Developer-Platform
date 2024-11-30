@@ -1,12 +1,12 @@
 {{- range $name, $var := .Module.Variables }}
 variable "{{ $name }}" {
   description = "{{ or $var.Description "No description provided" }}"
-  type        = {{ $var.Type }}
+  type = {{ formatType $var.Type $var.Attributes }}
   {{- if $var.Default }}
-  default     = {{ formatDefault $var }}
+  default = {{ formatDefault $var }}
   {{- end }}
   {{- if $var.Sensitive }}
-  sensitive   = true
+  sensitive = true
   {{- end }}
   {{- if $var.Validation }}
   validation {
