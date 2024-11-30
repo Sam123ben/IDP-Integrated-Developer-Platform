@@ -55,4 +55,10 @@ type Variable struct {
 	Default     interface{} `json:"default,omitempty"`
 	Sensitive   bool        `json:"sensitive,omitempty"`
 	Value       interface{} `json:"value,omitempty"`
+	Validation  *Validation `json:"validation,omitempty"` // Add Validation field
+}
+
+type Validation struct {
+	Condition    string `json:"condition"`
+	ErrorMessage string `json:"error_message"`
 }

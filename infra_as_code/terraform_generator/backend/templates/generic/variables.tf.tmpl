@@ -8,5 +8,11 @@ variable "{{ $name }}" {
   {{- if $var.Sensitive }}
   sensitive   = true
   {{- end }}
+  {{- if $var.Validation }}
+  validation {
+    condition     = {{ $var.Validation.Condition }}
+    error_message = "{{ $var.Validation.ErrorMessage }}"
+  }
+  {{- end }}
 }
 {{- end }}

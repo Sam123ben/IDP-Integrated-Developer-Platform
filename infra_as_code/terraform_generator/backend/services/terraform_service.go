@@ -64,6 +64,7 @@ func generateModuleFiles(basePath string, modules []models.Module, provider stri
 			return err
 		}
 
+		// Prepare data for templates
 		data := map[string]interface{}{
 			"Module":          module,
 			"ResourceName":    module.ModuleName,

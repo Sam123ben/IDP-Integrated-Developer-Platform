@@ -70,3 +70,18 @@ func ResolveModuleDependencies(requestedModules []string, availableModules []mod
 
 	return resolved, nil
 }
+
+// ExtractModuleVariables processes the module variables for a given module.
+func ExtractModuleVariables(module models.Module) map[string]interface{} {
+	variables := make(map[string]interface{})
+	for name, varDef := range module.Variables {
+		variables[name] = map[string]interface{}{
+			"description": varDef.Description,
+			"type":        varDef.Type,
+			"default":     varDef.Default,
+			"sensitive":   varDef.Sensitive,
+			"validation":  varDef.Validation,
+		}
+	}
+	return variables
+}
