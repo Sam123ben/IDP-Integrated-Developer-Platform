@@ -38,3 +38,7 @@ infra_as_code/terraform_generator/backend/configs/terraform-generator.json.examp
 
 working-terraform-generator.json
 test-terraform-generator.json
+
+**node_modules/**/*
+**node_modules
+**.next/**/*

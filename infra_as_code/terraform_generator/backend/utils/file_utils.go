@@ -40,6 +40,68 @@ func ToJSON(value interface{}) (string, error) {
 	return string(jsonBytes), nil
 }
 
+// formatValue dynamically formats values based on their types.
+func formatValue(value interface{}, varType string) string {
+	switch varType {
+	case "string":
+		// Quote the value if it's a string and not a variable reference
+		if strVal, ok := value.(string); ok {
+			if strings.HasPrefix(strVal, "var.") {
+				return strVal
+			}
+			return fmt.Sprintf("\"%s\"", strVal)
+		}
+		return "null"
+
+	case "bool", "number":
+		// Render booleans and numbers as-is
+		return fmt.Sprintf("%v", value)
+
+	case "map(string)":
+		// Render map values
+		if mapVal, ok := value.(map[string]interface{}); ok {
+			if len(mapVal) == 0 {
+				return "null"
+			}
+			var entries []string
+			for key, val := range mapVal {
+				entries = append(entries, fmt.Sprintf("\"%s\" = \"%v\"", key, val))
+			}
+			return fmt.Sprintf("{ %s }", strings.Join(entries, ", "))
+		}
+		return "null"
+
+	case "list(string)", "set(string)":
+		// Render lists or sets
+		if listVal, ok := value.([]interface{}); ok {
+			var items []string
+			for _, item := range listVal {
+				items = append(items, fmt.Sprintf("\"%v\"", item))
+			}
+			if varType == "set(string)" {
+				return fmt.Sprintf("toset([%s])", strings.Join(items, ", "))
+			}
+			return fmt.Sprintf("[%s]", strings.Join(items, ", "))
+		}
+		return "[]"
+
+	case "object", "tuple":
+		// Handle objects or tuples
+		if mapVal, ok := value.(map[string]interface{}); ok {
+			var entries []string
+			for key, val := range mapVal {
+				entries = append(entries, fmt.Sprintf("\"%s\" = %v", key, val))
+			}
+			return fmt.Sprintf("{ %s }", strings.Join(entries, ", "))
+		}
+		return "{}"
+
+	default:
+		// Default fallback for unknown types
+		return fmt.Sprintf("%v", value)
+	}
+}
+
 // FormatDefault formats the default value of a variable
 func FormatDefault(varDef models.Variable) string {
 	switch varDef.Type {
@@ -191,8 +253,8 @@ func GenerateFileFromTemplate(templatePath, destinationPath string, data interfa
 				return fmt.Sprintf("%v", value)
 			}
 		},
-		"formatDefault": FormatDefault,
-		"formatType":    formatType, // Add formatType to the funcMap
+		"formatDefault": FormatDefault, // Existing functions
+		"formatType":    formatType,    // Existing functions
 	}
 
 	// Parse the template with the function map
